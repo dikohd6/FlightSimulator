@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 299120df2936e864ca5e955a7162577d
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Materials/Terminal/M_Terminal_Walls.mat
+  uploadId: 379669

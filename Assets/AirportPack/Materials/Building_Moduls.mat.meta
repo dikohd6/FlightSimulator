@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f02f2919bf8fd174d9a0fb34a34ef68f
+timeCreated: 1527670781
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Materials/Building_Moduls.mat
+  uploadId: 379669

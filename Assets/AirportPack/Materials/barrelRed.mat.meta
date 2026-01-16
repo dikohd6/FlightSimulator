@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7da3ccc2df1e5b9409505ab0b70637c5
+timeCreated: 1527867017
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Materials/barrelRed.mat
+  uploadId: 379669

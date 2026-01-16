@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 95c9b53f3267c4d48b9469dfe8791659
+timeCreated: 1527862797
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Materials/containerRed.mat
+  uploadId: 379669

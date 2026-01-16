@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4642bbc426a34b64eba69ec54255fd5f
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Demo_scene/L_Grass.terrainlayer
+  uploadId: 379669

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0e32b531dedd48e40b74c495699967de
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Materials/Terminal/M_Terminal_Cornice_Front.mat
+  uploadId: 379669

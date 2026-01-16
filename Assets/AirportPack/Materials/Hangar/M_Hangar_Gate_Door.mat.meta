@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d5929f77d8b24444890e4e17e64af3a3
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Materials/Hangar/M_Hangar_Gate_Door.mat
+  uploadId: 379669

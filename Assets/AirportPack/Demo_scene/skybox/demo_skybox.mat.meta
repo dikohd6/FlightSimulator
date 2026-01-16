@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ccc2dee0df82f3f41bb7d9942c91b6fe
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Demo_scene/skybox/demo_skybox.mat
+  uploadId: 379669

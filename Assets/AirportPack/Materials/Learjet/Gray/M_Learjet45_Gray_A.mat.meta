@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7d6c55f72c00a3e47a62564bf1a88157
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Materials/Learjet/Gray/M_Learjet45_Gray_A.mat
+  uploadId: 379669

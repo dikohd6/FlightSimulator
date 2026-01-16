@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: cbd06aabe61d58944b8925faef9c2f13
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Demo_scene/script/CameraControl.cs
+  uploadId: 379669

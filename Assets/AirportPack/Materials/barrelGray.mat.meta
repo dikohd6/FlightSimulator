@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 25ad2d852da7a6f4b93e2bbc6d55be0a
+timeCreated: 1527867017
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Materials/barrelGray.mat
+  uploadId: 379669

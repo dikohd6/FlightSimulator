@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 951105d04b4b89a489f558a80525acaf
+timeCreated: 1527592037
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Materials/bench.mat
+  uploadId: 379669

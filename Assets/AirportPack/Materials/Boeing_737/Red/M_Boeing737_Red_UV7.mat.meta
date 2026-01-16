@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c5f600ced4dcd8a4587e88f2880434cf
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Materials/Boeing_737/Red/M_Boeing737_Red_UV7.mat
+  uploadId: 379669

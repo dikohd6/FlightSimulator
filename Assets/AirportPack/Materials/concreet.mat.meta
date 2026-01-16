@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fa4c62adf6ceb17429994dfaf7c50703
+timeCreated: 1527761270
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Materials/concreet.mat
+  uploadId: 379669

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e95c99ef8bc87ac489bdebbf9333e91e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Materials/Boeing_737/M_Boeing737_UV7.mat
+  uploadId: 379669
