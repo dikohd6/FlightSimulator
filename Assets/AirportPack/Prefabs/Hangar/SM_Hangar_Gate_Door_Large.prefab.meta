@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 925e6362213bcc64e923db31c5225f33
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Prefabs/Hangar/SM_Hangar_Gate_Door_Large.prefab
+  uploadId: 379669

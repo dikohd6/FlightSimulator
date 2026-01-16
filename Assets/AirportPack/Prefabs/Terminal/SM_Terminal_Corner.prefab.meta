@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: a6eaec3636c1af24a8f57a7d79438bd7
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Prefabs/Terminal/SM_Terminal_Corner.prefab
+  uploadId: 379669

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 5cf0660bcf9425c42ad9ca124f5f23b0
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Prefabs/ATC Building/SM_ATC_Building_Wall_Windows.prefab
+  uploadId: 379669

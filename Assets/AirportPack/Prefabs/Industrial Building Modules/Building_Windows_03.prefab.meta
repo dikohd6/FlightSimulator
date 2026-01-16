@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4275533b43dc4534c9820c189f5e69a9
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Prefabs/Industrial Building Modules/Building_Windows_03.prefab
+  uploadId: 379669

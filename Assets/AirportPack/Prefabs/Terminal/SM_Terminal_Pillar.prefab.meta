@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 7bbd9f078a19f3a4789aec9d8f15ca5d
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Prefabs/Terminal/SM_Terminal_Pillar.prefab
+  uploadId: 379669

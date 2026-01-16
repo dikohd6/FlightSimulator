@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 1d92ca8d349303742a407ba95a32f795
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Prefabs/Terminal/SM_Terminal_Window.prefab
+  uploadId: 379669

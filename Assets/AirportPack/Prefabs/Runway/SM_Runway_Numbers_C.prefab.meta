@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 339761d705b726141a9e2033b7a6ed0e
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Prefabs/Runway/SM_Runway_Numbers_C.prefab
+  uploadId: 379669

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 8981934e9ea20e14b8ceb376b9471d60
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Script/HangarGateControl.cs
+  uploadId: 379669

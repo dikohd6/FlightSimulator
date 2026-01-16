@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: d06e6e4fdc19e3a46932aa559313a6d4
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Prefabs/Hangar/SM_Hangar_Gates_Corner.prefab
+  uploadId: 379669

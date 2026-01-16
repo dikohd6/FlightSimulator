@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 127895bc8048ce747a5d40950ef46bef
+timeCreated: 1528103238
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Prefabs/barrelBlue.prefab
+  uploadId: 379669

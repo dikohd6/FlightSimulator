@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fbe500bdef57e7945bbafb02e4e02099
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Prefabs/LampIndustrial.prefab
+  uploadId: 379669

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b718f21e9d1979b4fa5f7044c1bbdc02
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Meshes/Hangar/SM_Hangar_Gate_Door_Large_2.controller
+  uploadId: 379669

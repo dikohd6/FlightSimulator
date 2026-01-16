@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: acd37a585edebb244aab9565e68f58a2
+timeCreated: 1528198381
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Prefabs/rock07.prefab
+  uploadId: 379669

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 9a82eb311df7f48429e9fec7dc86969d
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Prefabs/SM_Boeing777.prefab
+  uploadId: 379669

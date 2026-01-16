@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: af2dc4eb23162504d8987b3594e723b1
+timeCreated: 1528112683
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174230
+  packageName: Airport Pack
+  packageVersion: 1.0
+  assetPath: Assets/AirportPack/Prefabs/fence.prefab
+  uploadId: 379669
