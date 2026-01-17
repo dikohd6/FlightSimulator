@@ -1,0 +1,9 @@
+
+
+
+
+.unity-button:hover {
+    -unity-background-scale-mode: stretch-to-fill;
+    background-image: url("project://database/Assets/Images/startBtnHover.png?fileID=2800000&guid=5512b20ad6739e54eb40bfa64e9e9a57&type=3#startBtnHover");
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0);
+}
