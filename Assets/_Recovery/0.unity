@@ -119,11 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &24820361 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7328843155243425838, guid: d240b1b90d42b6c4690a4d530c96be1c, type: 3}
-  m_PrefabInstance: {fileID: 744117548}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &219709118
 GameObject:
   m_ObjectHideFlags: 0
@@ -136,12 +131,12 @@ GameObject:
   - component: {fileID: 219709119}
   - component: {fileID: 219709121}
   m_Layer: 5
-  m_Name: MainMenuDoc
+  m_Name: UIDocument
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &219709119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,8 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fc139fd745686d459c9f8ba94486ddf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIController
-  mainMenuDocument: {fileID: 219709119}
-  gameMenuDocument: {fileID: 1435750254}
+  uiDocument: {fileID: 219709119}
   hangarGate: {fileID: 2093695243}
 --- !u!1001 &445429479
 PrefabInstance:
@@ -203,10 +197,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 638473757}
     m_Modifications:
-    - target: {fileID: 1818120532304626699, guid: 719a1210064dfd64f8cc1d7c0af30594, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4749636126818360162, guid: 719a1210064dfd64f8cc1d7c0af30594, type: 3}
       propertyPath: m_Name
       value: SM_Boeing777_RedTail
@@ -265,53 +255,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8624746489103001969, guid: 719a1210064dfd64f8cc1d7c0af30594, type: 3}
   m_PrefabInstance: {fileID: 445429479}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &625793043
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 625793045}
-  - component: {fileID: 625793044}
-  m_Layer: 0
-  m_Name: PlaneSelection
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &625793044
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 625793043}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22a4b974c60512249b8628288caa03ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlaneSelection
-  planeManager: {fileID: 638473758}
-  gameMenuDocument: {fileID: 1435750254}
-  speed: 8
---- !u!4 &625793045
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 625793043}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: -0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &638473756
 GameObject:
   m_ObjectHideFlags: 0
@@ -321,7 +264,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 638473757}
-  - component: {fileID: 638473758}
   m_Layer: 0
   m_Name: Planes
   m_TagString: Untagged
@@ -346,36 +288,6 @@ Transform:
   - {fileID: 445429480}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &638473758
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 638473756}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 004b7cbceea856540bda065d97cc691f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlaneManager
-  planes:
-  - plane: {fileID: 24820361}
-    speed: 35
-    acceleration: 5
-    deceleration: 5
-    rotation: 5
-    levelSpeed: 5
-  - plane: {fileID: 649961830}
-    speed: 50
-    acceleration: 5
-    deceleration: 5
-    rotation: 15
-    levelSpeed: 20
---- !u!1 &649961830 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4749636126818360162, guid: 719a1210064dfd64f8cc1d7c0af30594, type: 3}
-  m_PrefabInstance: {fileID: 445429479}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -481,10 +393,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 638473757}
     m_Modifications:
-    - target: {fileID: 4423680646851084103, guid: d240b1b90d42b6c4690a4d530c96be1c, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6047790994739466813, guid: d240b1b90d42b6c4690a4d530c96be1c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.78
@@ -531,7 +439,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7328843155243425838, guid: d240b1b90d42b6c4690a4d530c96be1c, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -635,77 +543,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 7.245, y: 180, z: 0}
---- !u!1 &1435750251
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1435750253}
-  - component: {fileID: 1435750252}
-  - component: {fileID: 1435750254}
-  m_Layer: 5
-  m_Name: GameMenuDoc
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1435750252
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1435750251}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3fc139fd745686d459c9f8ba94486ddf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UIController
-  mainMenuDocument: {fileID: 219709119}
-  gameMenuDocument: {fileID: 1435750254}
-  hangarGate: {fileID: 2093695243}
---- !u!4 &1435750253
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1435750251}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1435750254
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1435750251}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
-  m_PanelSettings: {fileID: 11400000, guid: e7ac9426fb0b1af4cb3898a019d9c9ad, type: 2}
-  m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: d5cae0ea867d6ea4d87f85ad9d8ce261, type: 3}
-  m_SortingOrder: 0
-  m_Position: 0
-  m_WorldSpaceSizeMode: 1
-  m_WorldSpaceWidth: 1920
-  m_WorldSpaceHeight: 1080
-  m_PivotReferenceSize: 0
-  m_Pivot: 0
-  m_WorldSpaceCollider: {fileID: 0}
 --- !u!1001 &2093695241
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -827,7 +664,5 @@ SceneRoots:
   - {fileID: 963194228}
   - {fileID: 705507995}
   - {fileID: 219709120}
-  - {fileID: 1435750253}
   - {fileID: 2093695241}
   - {fileID: 638473757}
-  - {fileID: 625793045}
