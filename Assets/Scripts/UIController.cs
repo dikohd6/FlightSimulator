@@ -26,11 +26,13 @@ public class UIController : MonoBehaviour
 
         var mainRoot = mainMenuDocument.rootVisualElement;
         var gameRoot = gameMenuDocument.rootVisualElement;
-        gameMenuOverlay=gameRoot.Q<VisualElement>("missionSelect");
+        gameMenuOverlay = gameRoot.Q<VisualElement>("missionSelect");
+        gameMenuMissionsOverlay = gameRoot.Q<VisualElement>("Missions");
         mainMenuOverlay = mainRoot.Q<VisualElement>("MainMenu");
         optionsOverlay = mainRoot.Q<VisualElement>("Options");
         optionsOverlay.style.display = DisplayStyle.None;
         gameMenuOverlay.style.display = DisplayStyle.None;
+        gameMenuMissionsOverlay.style.display= DisplayStyle.None;
         background = mainRoot.Q<Image>("background");
         startBtn = mainRoot.Q<Button>("startBtn");
         optionsBtn = mainRoot.Q<Button>("optionsBtn");
@@ -50,6 +52,7 @@ public class UIController : MonoBehaviour
         mainMenuOverlay.style.display = DisplayStyle.None;
         background.style.display = DisplayStyle.None;
         gameMenuOverlay.style.display = DisplayStyle.Flex;
+        gameMenuMissionsOverlay.style.display = DisplayStyle.Flex;
 
         hangarGate.OpenGates();
     }
@@ -72,6 +75,8 @@ public class UIController : MonoBehaviour
         mainMenuOverlay.style.display = DisplayStyle.Flex;
         optionsOverlay.style.display = DisplayStyle.None;
         gameMenuOverlay.style.display = DisplayStyle.None;
+        gameMenuMissionsOverlay.style.display = DisplayStyle.None;
+
         background.style.display = DisplayStyle.Flex;
     }
 }

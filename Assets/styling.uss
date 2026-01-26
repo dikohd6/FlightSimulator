@@ -1,37 +1,42 @@
-.unity-button:hover {
-    border-left-color: rgba(255, 244, 0, 255);
-    border-right-color: rgba(255, 244, 0, 255);
-    border-top-color: rgba(255, 244, 0, 255);
-    border-bottom-color: rgba(255, 244, 0, 255);
-    border-top-width: 15px;
-    border-right-width: 15px;
-    border-bottom-width: 15px;
-    border-left-width: 15px;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
-    border-bottom-left-radius: 15px;
+.start-button,
+.options-button,
+.exit-button {
+    width: 320px;
+    height: 90px;
+    background-repeat: no-repeat;
+    -unity-background-scale-mode: scale-to-fit;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    background-image: resource("Images/startBtn");
 }
 
-
-.big-slider {
-    width: 400px;
+.start-button {
+    display: flex;
+    width: 320px;
+    height: 90px;
+    background-image: resource("Images/startBtn");
+    -unity-background-scale-mode: scale-to-fit;
+    background-repeat: no-repeat;
 }
 
-/* override Unity default */
-.big-slider.unity-base-slider--horizontal {
-    min-height: 32px;
+.start-button:hover {
+    background-image: resource("Images/startBtnHover");
 }
 
-/* track */
-.big-slider .unity-slider__track {
-    height: 200px;
+.options-button {
+    background-image: resource("Images/optionsBtn");
 }
 
-/* thumb */
-.big-slider .unity-slider__thumb {
-    width: 200px;
-    height: 300px;
+.options-button:hover {
+    background-image: resource("Images/optionsBtnHover");
 }
 
+.exit-button {
+    background-image: resource("Images/exitBtn");
+}
 
+.exit-button:hover {
+    background-image: resource("Images/exitBtnHover");
+}
