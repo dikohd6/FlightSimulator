@@ -1,42 +1,113 @@
-.start-button,
-.options-button,
-.exit-button {
+#startBtn {
     width: 320px;
     height: 90px;
-    background-repeat: no-repeat;
-    -unity-background-scale-mode: scale-to-fit;
-    border-left-width: 0;
-    border-right-width: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
-    background-image: resource("Images/startBtn");
-}
 
-.start-button {
-    display: flex;
-    width: 320px;
-    height: 90px;
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-image-tint-color: white;
     background-image: resource("Images/startBtn");
     -unity-background-scale-mode: scale-to-fit;
     background-repeat: no-repeat;
+
+    border-width: 0;
+    padding: 0;
 }
 
-.start-button:hover {
+#startBtn:hover {
     background-image: resource("Images/startBtnHover");
 }
 
-.options-button {
+/* ================= OPTIONS BUTTON ================= */
+
+#optionsBtn {
+    width: 320px;
+    height: 90px;
+
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-image-tint-color: white;
     background-image: resource("Images/optionsBtn");
+    -unity-background-scale-mode: scale-to-fit;
+    background-repeat: no-repeat;
+
+    border-width: 0;
+    padding: 0;
 }
 
-.options-button:hover {
+#optionsBtn:hover {
     background-image: resource("Images/optionsBtnHover");
 }
 
-.exit-button {
+
+/* ================= EXIT BUTTON ================= */
+
+#exitBtn {
+    width: 320px;
+    height: 90px;
+
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-image-tint-color: white;
     background-image: resource("Images/exitBtn");
+    -unity-background-scale-mode: scale-to-fit;
+    background-repeat: no-repeat;
+
+    border-width: 0;
+    padding: 0;
 }
 
-.exit-button:hover {
+#exitBtn:hover {
     background-image: resource("Images/exitBtnHover");
 }
+
+#mainMenuBtn {
+    width: 320px;
+    height: 90px;
+
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-image-tint-color: white;
+    background-image: resource("Images/mainMenuBtn");
+    -unity-background-scale-mode: scale-to-fit;
+    background-repeat: no-repeat;
+
+    border-width: 0;
+    padding: 0;
+}
+
+#mainMenuBtn:hover {
+    background-image: resource("Images/mainMenuBtnHover");
+}
+
+.volume-slider {
+    width: 360px;
+    height: 36px;
+}
+
+.volume-slider .unity-base-slider__track,
+.volume-slider .unity-slider__track {
+    height: 18px;
+    border-radius: 12px;
+    background-color: rgba(5, 20, 40, 0.95);
+    border-width: 3px;
+    border-color: rgba(120, 200, 255, 0.85);
+}
+
+.volume-slider .unity-base-slider__dragger,
+.volume-slider .unity-slider__thumb {
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+
+    background-color: rgba(235, 248, 255, 1.0);
+    border-width: 3px;
+    border-color: rgba(80, 190, 255, 1.0);
+}
+
+/* Hover */
+.volume-slider .unity-base-slider__dragger:hover,
+.volume-slider .unity-slider__thumb:hover {
+    background-color: white;
+    border-color: rgba(180, 235, 255, 1.0);
+}
+
+
+
+
+

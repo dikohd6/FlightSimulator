@@ -1,0 +1,36 @@
+#playBtn {
+    width: 320px;
+    height: 90px;
+
+    /* Force the button to use OUR background, not the theme */
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-image-tint-color: white;
+    background-image: resource("Images/playBtn");
+    -unity-background-scale-mode: scale-to-fit;
+    background-repeat: no-repeat;
+
+    /* Kill default button styling */
+    border-width: 0;
+    padding: 0;
+}
+
+#playBtn:hover {
+    background-image: resource("Images/playBtnHover");
+}
+#mainMenuBtn {
+    width: 320px;
+    height: 90px;
+
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-image-tint-color: white;
+    background-image: resource("Images/mainMenuBtn");
+    -unity-background-scale-mode: scale-to-fit;
+    background-repeat: no-repeat;
+
+    border-width: 0;
+    padding: 0;
+}
+
+#mainMenuBtn:hover {
+    background-image: resource("Images/mainMenuBtnHover");
+}
