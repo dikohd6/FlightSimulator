@@ -3,7 +3,9 @@
     <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.69);"/>
     <ui:VisualElement name="OptionsMenu" style="flex-grow: 1; position: absolute; height: 1082px; width: 1925px;">
         <ui:Image style="height: 105px; background-image: resource(&quot;Images/volumeTxt&quot;); position: absolute; width: 377px; top: 437px; left: 241px;"/>
-        <ui:Slider label="" value="42" high-value="100" class="volume-slider" style="position: absolute; height: 56px; width: 599px; top: 455px; left: 691px;"/>
+        <ui:VisualElement class="volume-panel" style="flex-grow: 1; position: absolute; height: 96px; width: 683px; top: 430px; left: 657px;">
+            <ui:Slider label="" value="42" high-value="100" class="volume-slider" style="position: absolute; height: 56px; width: 599px; top: 19px; left: 39px;"/>
+        </ui:VisualElement>
         <ui:Button text="" name="backBtn" style="position: absolute; height: 121px; width: 471px; top: 857px; left: 748px;"/>
     </ui:VisualElement>
     <ui:VisualElement name="PauseMenu" enabled="true" style="flex-grow: 1; position: absolute; height: 1077px; width: 1919px;">

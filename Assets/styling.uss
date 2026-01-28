@@ -36,7 +36,23 @@
     background-image: resource("Images/optionsBtnHover");
 }
 
+#leaderboardBtn {
+    width: 320px;
+    height: 90px;
 
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-image-tint-color: white;
+    background-image: resource("Images/leaderboardBtn");
+    -unity-background-scale-mode: scale-to-fit;
+    background-repeat: no-repeat;
+
+    border-width: 0;
+    padding: 0;
+}
+
+#leaderboardBtn:hover {
+    background-image: resource("Images/leaderboardBtnHover");
+}
 /* ================= EXIT BUTTON ================= */
 
 #exitBtn {
@@ -92,37 +108,80 @@
 #backBtn:hover {
     background-image: resource("Images/backBtnHover");
 }
+/* OPTIONAL: put the slider inside a container panel for contrast */
+.volume-panel {
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+
+    border-radius: 14px;
+    background-color: rgba(0, 0, 0, 0.35);
+    border-width: 2px;
+    border-color: rgba(140, 220, 255, 0.35);
+
+    /* soft halo */
+    box-shadow: 0 0 18px rgba(80, 190, 255, 0.22);
+}
+
+/* Your slider */
 .volume-slider {
     width: 360px;
     height: 36px;
 }
 
+/* TRACK */
 .volume-slider .unity-base-slider__track,
 .volume-slider .unity-slider__track {
     height: 18px;
     border-radius: 12px;
+
     background-color: rgba(5, 20, 40, 0.95);
     border-width: 3px;
-    border-color: rgba(120, 200, 255, 0.85);
+    border-color: rgba(120, 200, 255, 0.9);
+
+    /* glow makes it stand out */
+    box-shadow:
+        0 0 10px rgba(80, 190, 255, 0.35),
+        0 0 22px rgba(80, 190, 255, 0.18);
 }
 
+/* THUMB / DRAGGER */
 .volume-slider .unity-base-slider__dragger,
 .volume-slider .unity-slider__thumb {
-    width: 32px;
-    height: 32px;
-    border-radius: 16px;
+    width: 34px;
+    height: 34px;
+    border-radius: 17px;
 
-    background-color: rgba(235, 248, 255, 1.0);
+    background-color: rgba(245, 252, 255, 1.0);
     border-width: 3px;
     border-color: rgba(80, 190, 255, 1.0);
+
+    /* depth + glow */
+    box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.45),
+        0 0 14px rgba(80, 190, 255, 0.45);
 }
 
-/* Hover */
+/* HOVER (more glow + slightly brighter) */
 .volume-slider .unity-base-slider__dragger:hover,
 .volume-slider .unity-slider__thumb:hover {
     background-color: white;
-    border-color: rgba(180, 235, 255, 1.0);
+    border-color: rgba(190, 245, 255, 1.0);
+    box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.45),
+        0 0 20px rgba(120, 220, 255, 0.7);
 }
+
+/* FOCUS (keyboard/controller) */
+.volume-slider:focus .unity-base-slider__track,
+.volume-slider:focus .unity-slider__track {
+    border-color: rgba(200, 250, 255, 1.0);
+    box-shadow:
+        0 0 14px rgba(150, 240, 255, 0.55),
+        0 0 28px rgba(120, 220, 255, 0.25);
+}
+
 
 
 

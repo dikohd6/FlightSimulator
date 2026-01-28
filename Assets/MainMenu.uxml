@@ -2,15 +2,18 @@
     <Style src="project://database/Assets/styling.uss?fileID=7433441132597879392&amp;guid=cf103261ac70cd445992130208a94671&amp;type=3#styling"/>
     <ui:Image name="background" style="background-image: url(&quot;project://database/Assets/Resources/Images/background.png?fileID=2800000&amp;guid=eccd2fa787e87124589ceeb0e427aeb6&amp;type=3#background&quot;); height: 1080px; position: absolute; width: 1919px;"/>
     <ui:VisualElement name="MainMenu" enabled="true" style="flex-grow: 1;">
-        <ui:GroupBox name="GroupBox" picking-mode="Ignore" enabled="true" style="height: 946px; width: 477px; left: 1350px; top: 350px; bottom: -2000px;">
-            <ui:Button text="" name="startBtn" style="height: 215px; width: 513px;"/>
-            <ui:Button text="" name="optionsBtn" style="height: 215px; width: 513px;"/>
-            <ui:Button text="" name="exitBtn" style="height: 215px; width: 513px;"/>
+        <ui:GroupBox name="GroupBox" picking-mode="Ignore" enabled="true" style="height: 514px; width: 527px; left: 1366px; top: 488px; bottom: 74px; position: absolute; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; min-width: auto; min-height: -60px; padding-top: 0; padding-bottom: 0; padding-left: 0;">
+            <ui:Button text="" name="startBtn" style="height: 134px; width: 513px;"/>
+            <ui:Button text="" name="optionsBtn" style="height: 115px; width: 513px;"/>
+            <ui:Button text="" name="leaderboardBtn" style="height: 125px; width: 513px;"/>
+            <ui:Button text="" name="exitBtn" style="height: 114px; width: 513px;"/>
         </ui:GroupBox>
     </ui:VisualElement>
     <ui:VisualElement name="Options" enabled="true" style="flex-grow: 1; position: absolute;">
         <ui:Label text="&#10;" style="background-image: url(&quot;project://database/Assets/Resources/Images/volumeTxt.png?fileID=2800000&amp;guid=78612b20bc8c0c54b8ef9fd918a719d7&amp;type=3#volumeTxt&quot;); position: absolute; width: 353px; height: 88px; top: 499px; left: 357px;"/>
         <ui:Button text="" name="mainMenuBtn" style="height: 108px; width: 554px; position: absolute; top: 879px; left: 646px;"/>
-        <ui:Slider label="" value="42" high-value="100" picking-mode="Position" class="volume-slider" style="height: 45px; width: 510px; position: absolute; top: 526px; left: 752px;"/>
+        <ui:VisualElement class="volume-panel" style="flex-grow: 1; position: absolute; height: 100px; width: 612px; top: 484px; left: 705px;">
+            <ui:Slider label="" value="42" high-value="100" picking-mode="Position" class="volume-slider unity-base-slider__track unity-slider__track unity-base-slider__dragger unity-slider__thumb" style="height: 92px; width: 600px; position: absolute; top: 2px; left: 1px;"/>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
