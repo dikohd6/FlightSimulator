@@ -136,6 +136,15 @@ public partial class @PlaneInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""2e49a6b1-216e-4887-b06c-832f4a1ee17e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -259,6 +268,17 @@ public partial class @PlaneInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""ThrottleDown"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""26fc0a42-e985-460a-9ce6-9e1bf37db8c4"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -272,6 +292,7 @@ public partial class @PlaneInputActions: IInputActionCollection2, IDisposable
         m_Flight_Yaw = m_Flight.FindAction("Yaw", throwIfNotFound: true);
         m_Flight_ThrottleUp = m_Flight.FindAction("ThrottleUp", throwIfNotFound: true);
         m_Flight_ThrottleDown = m_Flight.FindAction("ThrottleDown", throwIfNotFound: true);
+        m_Flight_Pause = m_Flight.FindAction("Pause", throwIfNotFound: true);
     }
 
     ~@PlaneInputActions()
@@ -357,6 +378,7 @@ public partial class @PlaneInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Flight_Yaw;
     private readonly InputAction m_Flight_ThrottleUp;
     private readonly InputAction m_Flight_ThrottleDown;
+    private readonly InputAction m_Flight_Pause;
     /// <summary>
     /// Provides access to input actions defined in input action map "Flight".
     /// </summary>
@@ -388,6 +410,10 @@ public partial class @PlaneInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Flight/ThrottleDown".
         /// </summary>
         public InputAction @ThrottleDown => m_Wrapper.m_Flight_ThrottleDown;
+        /// <summary>
+        /// Provides access to the underlying input action "Flight/Pause".
+        /// </summary>
+        public InputAction @Pause => m_Wrapper.m_Flight_Pause;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -429,6 +455,9 @@ public partial class @PlaneInputActions: IInputActionCollection2, IDisposable
             @ThrottleDown.started += instance.OnThrottleDown;
             @ThrottleDown.performed += instance.OnThrottleDown;
             @ThrottleDown.canceled += instance.OnThrottleDown;
+            @Pause.started += instance.OnPause;
+            @Pause.performed += instance.OnPause;
+            @Pause.canceled += instance.OnPause;
         }
 
         /// <summary>
@@ -455,6 +484,9 @@ public partial class @PlaneInputActions: IInputActionCollection2, IDisposable
             @ThrottleDown.started -= instance.OnThrottleDown;
             @ThrottleDown.performed -= instance.OnThrottleDown;
             @ThrottleDown.canceled -= instance.OnThrottleDown;
+            @Pause.started -= instance.OnPause;
+            @Pause.performed -= instance.OnPause;
+            @Pause.canceled -= instance.OnPause;
         }
 
         /// <summary>
@@ -530,5 +562,12 @@ public partial class @PlaneInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnThrottleDown(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Pause" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPause(InputAction.CallbackContext context);
     }
 }

@@ -75,6 +75,23 @@
     background-image: resource("Images/mainMenuBtnHover");
 }
 
+#backBtn {
+    width: 320px;
+    height: 90px;
+
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-image-tint-color: white;
+    background-image: resource("Images/backBtn");
+    -unity-background-scale-mode: scale-to-fit;
+    background-repeat: no-repeat;
+
+    border-width: 0;
+    padding: 0;
+}
+
+#backBtn:hover {
+    background-image: resource("Images/backBtnHover");
+}
 .volume-slider {
     width: 360px;
     height: 36px;
