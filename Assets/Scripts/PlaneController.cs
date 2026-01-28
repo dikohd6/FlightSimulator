@@ -5,27 +5,20 @@ using UnityEngine.SceneManagement;
 public class PlaneController : MonoBehaviour
 {
     [Header("Thrust / Speed")]
-    [Tooltip("Forward acceleration at full throttle (m/s^2). Tune 6–20.")]
     public float maxThrustAccel = 12f;
-
-    [Tooltip("Hard speed cap (m/s-ish).")]
     public float maxSpeed = 55f;
 
-    [Header("Lift / Drag (mass-independent)")]
-    [Tooltip("Below this forward speed, lift fades out.")]
+    [Header("Lift / Drag")]
     public float stallSpeed = 12f;
-
-    [Tooltip("Lift acceleration factor. Tune 0.02–0.12.")]
-    public float liftAccelFactor = 0.06f;
-
-    [Tooltip("Drag acceleration factor. Tune 0.0005–0.004.")]
-    public float dragAccelFactor = 0.0015f;
+    public float liftCoeff = 0.06f;          // base lift
+    public float inducedDragCoeff = 0.015f;  // drag from lift
+    public float baseDragCoeff = 0.0015f;    // parasitic drag
 
     [Header("Ground Handling")]
     public float groundCheckDistance = 1.6f;
-    public float rotateSpeed = 18f;       // must be > stallSpeed
-    [Range(0f, 0.2f)] public float taxiLiftFactor = 0.03f; // keep low
-    public float groundStickAccel = 6f;   // pushes plane down when grounded to stop bouncing
+    public float rotateSpeed = 18f;
+    [Range(0f, 0.2f)] public float taxiLiftFactor = 0.03f;
+    public float groundStickAccel = 6f;
     public LayerMask groundMask = ~0;
 
     [Header("Throttle")]
@@ -43,11 +36,11 @@ public class PlaneController : MonoBehaviour
     public float rollLevelStrength = 12f;
     public float rollLevelMaxTorque = 20f;
 
-    [Header("Mode Scaling (set by ModeManager)")]
+    [Header("Mode Scaling")]
     public float thrustMultiplier = 1f;
     public float maxSpeedCap = 1f;
     public float accelMultiplier = 1f;
-    public float speedBleed = 0f; // extra drag accel-ish
+    public float speedBleed = 0f;
 
     private Rigidbody rb;
     private PlaneInputActions input;
@@ -59,8 +52,7 @@ public class PlaneController : MonoBehaviour
 
     void OnEnable()
     {
-        if (input == null) input = new PlaneInputActions();
-        input.Enable();
+        input?.Enable();
     }
 
     void OnDisable()
@@ -70,23 +62,17 @@ public class PlaneController : MonoBehaviour
 
     void Start()
     {
-        var cols = GetComponentsInChildren<Collider>(true);
-        Debug.Log("Plane colliders found: " + cols.Length);
-        foreach (var c in cols)
-            Debug.Log($" - {c.name}  trigger={c.isTrigger}  enabled={c.enabled}");
-
         rb = GetComponent<Rigidbody>();
         rb.useGravity = true;
         rb.isKinematic = false;
 
         rb.angularDamping = angularDamp;
         rb.maxAngularVelocity = 3.5f;
-
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-
-        // Let our own drag do the work
         rb.linearDamping = 0f;
+        rb.sleepThreshold = 0f;
+        rb.WakeUp();
     }
 
     void FixedUpdate()
@@ -94,11 +80,7 @@ public class PlaneController : MonoBehaviour
         if (rb == null || input == null) return;
 
         var flight = input.Flight;
-        if (flight.Pitch == null || flight.Roll == null || flight.Yaw == null ||
-            flight.ThrottleUp == null || flight.ThrottleDown == null)
-            return;
 
-        // ===== INPUT =====
         float pitchInput = Mathf.Clamp(flight.Pitch.ReadValue<float>(), -1f, 1f);
         float rollInput = Mathf.Clamp(flight.Roll.ReadValue<float>(), -1f, 1f);
         float yawInput = Mathf.Clamp(flight.Yaw.ReadValue<float>(), -1f, 1f);
@@ -114,47 +96,40 @@ public class PlaneController : MonoBehaviour
 
         Vector3 vel = rb.linearVelocity;
         float speed = vel.magnitude;
-
-        // Forward speed for aero
         float forwardSpeed = Mathf.Max(0f, Vector3.Dot(vel, transform.forward));
 
-        // Ground check
         bool grounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance, groundMask);
 
-        // ===== THRUST (Acceleration) =====
+        // ===== THRUST =====
         float thrustAccel = maxThrustAccel * throttle01 * thrustMultiplier * accelMultiplier;
         rb.AddForce(transform.forward * thrustAccel, ForceMode.Acceleration);
 
-        // ===== LIFT (Acceleration) =====
-        // stallFactor 0..1 based on forward speed
+        // ===== ANGLE OF ATTACK =====
+        float aoa = 0f;
+        if (speed > 0.1f)
+            aoa = Vector3.SignedAngle(transform.forward, vel.normalized, transform.right);
+
+        float aoaLiftFactor = Mathf.Clamp01((aoa + 10f) / 20f); // peak around +10° AoA
+
+        // ===== LIFT =====
         float stallFactor = Mathf.InverseLerp(stallSpeed * 0.6f, stallSpeed, forwardSpeed);
-        stallFactor = Mathf.Clamp01(stallFactor);
+        float lift = liftCoeff * forwardSpeed * forwardSpeed * stallFactor * aoaLiftFactor;
 
-        // Lift accel grows with v^2
-        float liftAccel = liftAccelFactor * forwardSpeed * forwardSpeed * stallFactor;
-
-        // Taxi lockout: keep it planted until rotate speed
         if (grounded && forwardSpeed < rotateSpeed)
-            liftAccel *= taxiLiftFactor;
+            lift *= taxiLiftFactor;
 
-        rb.AddForce(Vector3.up * liftAccel, ForceMode.Acceleration);
+        rb.AddForce(transform.up * lift, ForceMode.Acceleration);
 
-        // Ground stick: slight downforce when grounded to prevent bouncing/jitter
-        if (grounded && forwardSpeed < rotateSpeed * 1.2f)
-            rb.AddForce(Vector3.down * groundStickAccel, ForceMode.Acceleration);
+        // ===== INDUCED DRAG (from lift) =====
+        float inducedDrag = lift * inducedDragCoeff;
 
-        // ===== DRAG (Acceleration) =====
+        // ===== PARASITIC DRAG =====
+        float parasiticDrag = baseDragCoeff * speed * speed;
+
+        float totalDrag = inducedDrag + parasiticDrag + (speedBleed * forwardSpeed * 0.02f);
+
         if (speed > 0.01f)
-        {
-            Vector3 dragDir = -vel.normalized;
-
-            float dragAccel = dragAccelFactor * forwardSpeed * forwardSpeed;
-
-            // Emergency bleed adds extra drag-like accel
-            dragAccel += speedBleed * forwardSpeed * 0.02f;
-
-            rb.AddForce(dragDir * dragAccel, ForceMode.Acceleration);
-        }
+            rb.AddForce(-vel.normalized * totalDrag, ForceMode.Acceleration);
 
         // ===== HARD SPEED CAP =====
         float cap = maxSpeed * Mathf.Max(0.05f, maxSpeedCap);
@@ -163,9 +138,8 @@ public class PlaneController : MonoBehaviour
 
         // ===== CONTROL AUTHORITY =====
         float authority = Mathf.InverseLerp(0f, controlMinSpeed, speed);
-        authority = Mathf.Clamp01(authority);
 
-        // ===== ROTATION =====
+        // ===== TORQUES =====
         Vector3 torque = new Vector3(
             -pitchInput * pitchTorque,
             yawInput * yawTorque,
@@ -174,13 +148,20 @@ public class PlaneController : MonoBehaviour
 
         rb.AddRelativeTorque(torque, ForceMode.Force);
 
-        // ===== ROLL AUTO-LEVEL =====
+        // ===== AUTO-LEVEL =====
         if (Mathf.Abs(rollInput) < 0.01f)
         {
             float rollAngle = GetSignedRollAngle();
             float levelTorque = Mathf.Clamp(-rollAngle * rollLevelStrength * 0.01f, -rollLevelMaxTorque, rollLevelMaxTorque);
             rb.AddRelativeTorque(new Vector3(0f, 0f, levelTorque) * authority, ForceMode.Force);
         }
+
+        // ===== GROUND STICK =====
+        float takeoffIntent = Mathf.Clamp01(-pitchInput);
+        if (grounded && forwardSpeed < rotateSpeed && takeoffIntent < 0.2f)
+            rb.AddForce(Vector3.down * groundStickAccel, ForceMode.Acceleration);
+
+        rb.WakeUp();
     }
 
     float GetSignedRollAngle()
@@ -188,6 +169,12 @@ public class PlaneController : MonoBehaviour
         float z = transform.localEulerAngles.z;
         if (z > 180f) z -= 360f;
         return z;
+    }
+
+    void OnCollisionEnter(Collision c)
+    {
+        if (((1 << c.gameObject.layer) & groundMask) != 0)
+            rb.angularVelocity *= 0.25f;
     }
 
     public float GetCurrentSpeed() => rb != null ? rb.linearVelocity.magnitude : 0f;
