@@ -1,0 +1,15 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/HUDstyling.uss?fileID=7433441132597879392&amp;guid=3901488926de9e8478b4d6d66986bdb6&amp;type=3#HUDstyling"/>
+    <ui:VisualElement class="hud-panel" style="flex-grow: 1; width: 424px; position: absolute; height: 98px; top: 12px; left: 18px; align-items: flex-start; flex-direction: row;">
+        <ui:Label text="TIME" name="timeTxt" class="hud-label hud-value" style="font-size: 40px; width: 230px; align-self: auto; align-items: auto; position: absolute; top: 16px; left: 148px;"/>
+        <ui:Label text="TIME:" class="hud-label" style="font-size: 40px; width: 126px; position: absolute; top: 12px; left: 14px;"/>
+    </ui:VisualElement>
+    <ui:VisualElement class="hud-panel" style="flex-grow: 1; position: absolute; top: 956px; left: 1464px; width: 424px;">
+        <ui:Label text="SPEED:" class="hud-label" style="font-size: 40px;"/>
+        <ui:Label text="SPEED" name="speedTxt" class="hud-label hud-value" style="font-size: 40px; width: 230px; align-self: auto; align-items: auto; position: absolute; top: 10px; left: 176px;"/>
+    </ui:VisualElement>
+    <ui:VisualElement class="hud-panel" style="flex-grow: 1; position: absolute; top: 12px; left: 1474px; width: 424px;">
+        <ui:Label text="SCORE:" class="hud-label" style="font-size: 40px;"/>
+        <ui:Label text="SCORE" name="scoreTxt" class="hud-label hud-value" style="font-size: 40px; width: 230px; align-self: auto; align-items: auto; position: absolute; top: 10px; left: 186px;"/>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,42 @@
+/* A dark HUD pill behind the text so it pops on any background */
+.hud-panel{
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    border-radius: 14px;
+    background-color: rgba(0, 0, 0, 0.55);
+
+    border-width: 2px;
+    border-color: rgba(120, 200, 255, 0.65);
+
+    /* If box-shadow breaks in your Builder, remove this line */
+    box-shadow: 0 0 18px rgba(80, 190, 255, 0.22);
+}
+
+/* Small label: SPEED / TIME */
+.hud-label{
+    -unity-font-style: bold;
+    font-size: 14px;
+    color: rgba(190, 235, 255, 0.95);
+
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: rgba(0, 0, 0, 0.85);
+}
+
+/* Big value: 245 KM/H, 01:32 */
+.hud-value{
+    -unity-font-style: bold-and-italic;
+    font-size: 34px;
+    color: rgba(245, 252, 255, 1.0);
+
+    -unity-text-outline-width: 4px;
+    -unity-text-outline-color: rgba(10, 25, 55, 0.95);
+}
+
+/* Warning: low time / overspeed */
+.hud-value--warning{
+    color: rgba(255, 235, 170, 1.0);
+    -unity-text-outline-color: rgba(60, 35, 0, 0.95);
+}

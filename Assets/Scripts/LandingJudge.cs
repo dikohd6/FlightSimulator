@@ -5,6 +5,7 @@ public class LandingJudge : MonoBehaviour
     [Header("References")]
     [SerializeField] private PlaneController plane;
     [SerializeField] private EmergencyLandingMode emergency;
+    [SerializeField] private LandingCinematicController ending;
 
     [Header("Touchdown Limits (pass/fail)")]
     [SerializeField] private float maxDescentRate = -5.5f;
@@ -46,7 +47,6 @@ public class LandingJudge : MonoBehaviour
     [Header("Tags")]
     [SerializeField] private string runwayTag = "Runway";
 
-    // Weights (points)
     [Header("Point Weights")]
     [SerializeField] private int pointsYaw = 30;
     [SerializeField] private int pointsBank = 20;
@@ -64,10 +64,16 @@ public class LandingJudge : MonoBehaviour
     {
         if (plane == null) plane = FindFirstObjectByType<PlaneController>();
         if (emergency == null) emergency = FindFirstObjectByType<EmergencyLandingMode>();
+        if (ending == null) ending = FindFirstObjectByType<LandingCinematicController>();
+
         if (plane != null) planeRb = plane.GetComponent<Rigidbody>();
         if (planeRb == null) planeRb = GetComponentInParent<Rigidbody>();
+
+        if (ending == null)
+            Debug.LogError("LandingJudge: LandingCinematicController not found/assigned!");
     }
 
+    // Called by runway trigger script
     public void NotifyEnteredRunway(PlaneController p)
     {
         if (p != plane) return;
@@ -86,7 +92,8 @@ public class LandingJudge : MonoBehaviour
         if (result != Result.None) return;
         if (plane == null || planeRb == null || col == null) return;
 
-        if (!col.gameObject.CompareTag(runwayTag) && !col.gameObject.transform.root.CompareTag(runwayTag))
+        // Only runway collisions
+        if (!col.gameObject.CompareTag(runwayTag) && !col.transform.root.CompareTag(runwayTag))
             return;
 
         EvaluateTouchdown();
@@ -116,39 +123,66 @@ public class LandingJudge : MonoBehaviour
             yawLimit = 7f;
         }
 
-        // ---- Score (always) ----
-        var breakdown = ComputeBreakdown(verticalSpeed, speed, bank, yaw, inZoneNow);
+        ScoreBreakdown breakdown = ComputeBreakdown(verticalSpeed, speed, bank, yaw, inZoneNow);
         string grade = GradeFromScore(breakdown.total);
 
-        // ---- Pass/Fail ----
-        if (!inZoneNow) { Fail($"Missed the runway (touchdown outside runway zone)."); PrintBreakdown(verticalSpeed, speed, bank, yaw, breakdown, grade, inZoneNow); return; }
-        if (verticalSpeed < descentLimit) { Fail($"Hard landing (descent {verticalSpeed:0.0} m/s)."); PrintBreakdown(verticalSpeed, speed, bank, yaw, breakdown, grade, inZoneNow); return; }
-        if (speed < minTouchdownSpeed) { Fail($"Stall landing (too slow {speed:0.0})."); PrintBreakdown(verticalSpeed, speed, bank, yaw, breakdown, grade, inZoneNow); return; }
-        if (speed > maxTouchdownSpeed) { Fail($"Too fast on touchdown ({speed:0.0})."); PrintBreakdown(verticalSpeed, speed, bank, yaw, breakdown, grade, inZoneNow); return; }
-        if (bank > bankLimit) { Fail($"Wings not level (bank {bank:0}°)."); PrintBreakdown(verticalSpeed, speed, bank, yaw, breakdown, grade, inZoneNow); return; }
-        if (yaw > yawLimit) { Fail($"Not aligned with runway (yaw slip {yaw:0}°)."); PrintBreakdown(verticalSpeed, speed, bank, yaw, breakdown, grade, inZoneNow); return; }
+        string failReason = null;
+        if (!inZoneNow) failReason = "Missed the runway (touchdown outside runway zone).";
+        else if (verticalSpeed < descentLimit) failReason = $"Hard landing (descent {verticalSpeed:0.0} m/s).";
+        else if (speed < minTouchdownSpeed) failReason = $"Stall landing (too slow {speed:0.0}).";
+        else if (speed > maxTouchdownSpeed) failReason = $"Too fast on touchdown ({speed:0.0}).";
+        else if (bank > bankLimit) failReason = $"Wings not level (bank {bank:0}°).";
+        else if (yaw > yawLimit) failReason = $"Not aligned with runway (yaw slip {yaw:0}°).";
+
+        if (failReason != null)
+        {
+            result = Result.Fail;
+            TriggerEnding(false, failReason, breakdown, grade);
+            return;
+        }
 
         result = Result.Success;
-        Debug.Log($"✅ Emergency landing SUCCESS! Score: {breakdown.total}/100 ({grade})");
-        PrintBreakdown(verticalSpeed, speed, bank, yaw, breakdown, grade, inZoneNow);
+        TriggerEnding(true, "", breakdown, grade);
     }
 
-    // ---------- Breakdown struct ----------
+    private void TriggerEnding(bool success, string reason, ScoreBreakdown b, string grade)
+    {
+        var data = new LandingScoreData
+        {
+            success = success,
+            failReason = reason ?? "",
+
+            yawPts = b.yawPts,
+            bankPts = b.bankPts,
+            descentPts = b.descentPts,
+            speedPts = b.speedPts,
+
+            maxYawPts = pointsYaw,
+            maxBankPts = pointsBank,
+            maxDescentPts = pointsDescent,
+            maxSpeedPts = pointsSpeed,
+
+            total = b.total,
+            grade = grade
+        };
+
+        if (ending != null)
+            ending.PlayEnding(data);
+
+        Debug.Log(success
+            ? $"✅ Emergency landing SUCCESS! Score {b.total}/100 ({grade})"
+            : $"❌ Emergency landing FAILED: {reason}  Score {b.total}/100 ({grade})");
+    }
+
     private struct ScoreBreakdown
     {
-        public int yawPts;
-        public int bankPts;
-        public int descentPts;
-        public int speedPts;
-        public int zonePts;
-        public int total;
+        public int yawPts, bankPts, descentPts, speedPts, zonePts, total;
     }
 
     private ScoreBreakdown ComputeBreakdown(float verticalSpeed, float speed, float bankDeg, float yawDeg, bool inZone)
     {
         ScoreBreakdown b = new ScoreBreakdown();
 
-        // target speed
         float target = autoSpeedTarget ? (minTouchdownSpeed + maxTouchdownSpeed) * 0.5f : speedTarget;
 
         float yaw01 = Score01(yawDeg, yawPerfect, yawOkay, yawBad);
@@ -168,14 +202,12 @@ public class LandingJudge : MonoBehaviour
         b.descentPts = Mathf.RoundToInt(descent01 * pointsDescent);
         b.speedPts = Mathf.RoundToInt(speed01 * pointsSpeed);
 
-        // Runway zone points (binary + grace already handled by inZone)
-        b.zonePts = inZone ? 0 : -30; // penalty if outside zone
+        b.zonePts = inZone ? 0 : -30;
 
         b.total = Mathf.Clamp(b.yawPts + b.bankPts + b.descentPts + b.speedPts + b.zonePts, 0, 100);
         return b;
     }
 
-    // 1 = perfect, 0 = bad
     private float Score01(float value, float perfect, float okay, float bad)
     {
         if (value <= perfect) return 1f;
@@ -203,26 +235,6 @@ public class LandingJudge : MonoBehaviour
         return "F";
     }
 
-    private void PrintBreakdown(float vSpeed, float speed, float bank, float yaw, ScoreBreakdown b, string grade, bool inZone)
-    {
-        Debug.Log(
-            $"--- Landing Score Breakdown ---\n" +
-            $"Runway Zone: {(inZone ? "IN" : "OUT")} (penalty {b.zonePts})\n" +
-            $"Yaw Alignment: {yaw:0.0}° -> {b.yawPts}/{pointsYaw}\n" +
-            $"Bank Level: {bank:0.0}° -> {b.bankPts}/{pointsBank}\n" +
-            $"Descent Rate: {vSpeed:0.0} m/s -> {b.descentPts}/{pointsDescent}\n" +
-            $"Touchdown Speed: {speed:0.0} m/s -> {b.speedPts}/{pointsSpeed}\n" +
-            $"TOTAL: {b.total}/100 ({grade})"
-        );
-    }
-
-    private void Fail(string reason)
-    {
-        if (result != Result.None) return;
-        result = Result.Fail;
-        Debug.Log("❌ Emergency landing FAILED: " + reason);
-    }
-
     private float SignedBankDeg(Transform t)
     {
         float z = t.localEulerAngles.z;
@@ -234,7 +246,8 @@ public class LandingJudge : MonoBehaviour
     {
         if (runwayTransform == null || plane == null) return 0f;
 
-        Vector3 planeFwd = plane.transform.forward; planeFwd.y = 0f;
+        Vector3 planeFwd = plane.transform.forward;
+        planeFwd.y = 0f;
         if (planeFwd.sqrMagnitude < 0.0001f) return 0f;
         planeFwd.Normalize();
 
@@ -244,6 +257,32 @@ public class LandingJudge : MonoBehaviour
         runwayDir.Normalize();
 
         return Vector3.SignedAngle(runwayDir, planeFwd, Vector3.up);
+    }
+    public void FailMissionFromCrash(string reason)
+    {
+        
+        if (result != Result.None) return;
+        result = Result.Fail;
+
+        // Make a score data (0s) or reuse your last computed score if you want.
+        LandingScoreData data = new LandingScoreData
+        {
+            success = false,
+            failReason = reason,
+            yawPts = 0,
+            bankPts = 0,
+            descentPts = 0,
+            speedPts = 0,
+            maxYawPts = pointsYaw,
+            maxBankPts = pointsBank,
+            maxDescentPts = pointsDescent,
+            maxSpeedPts = pointsSpeed,
+            total = 0,
+            grade = "F"
+        };
+
+        if (ending != null) ending.PlayEnding(data);
+        Debug.Log("❌ Emergency landing FAILED (CRASH): " + reason);
     }
 
     public void ResetJudge()

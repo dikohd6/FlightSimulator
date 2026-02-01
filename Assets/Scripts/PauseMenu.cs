@@ -1,6 +1,8 @@
 using UnityEngine;
-using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
+using UnityEngine.InputSystem;
+
 public class PauseMenu : MonoBehaviour
 {
     [Header("UI")]
@@ -24,10 +26,10 @@ public class PauseMenu : MonoBehaviour
     {
         input = new PlaneInputActions();
 
-        var pauseRoot = pauseMenuDocument.rootVisualElement;
+        var root = pauseMenuDocument.rootVisualElement;
 
-        optionsOverlay = pauseRoot.Q<VisualElement>("OptionsMenu");
-        pauseOverlay = pauseRoot.Q<VisualElement>("PauseMenu");
+        optionsOverlay = root.Q<VisualElement>("OptionsMenu");
+        pauseOverlay = root.Q<VisualElement>("PauseMenu");
 
         optionsBtn = pauseOverlay.Q<Button>("optionsBtn");
         mainMenuBtn = pauseOverlay.Q<Button>("mainMenuBtn");
@@ -38,7 +40,6 @@ public class PauseMenu : MonoBehaviour
         mainMenuBtn.clicked += MainMenuBtn_clicked;
         backBtn.clicked += BackBtn_clicked;
 
-        // Start hidden
         HideAll();
     }
 
@@ -46,23 +47,26 @@ public class PauseMenu : MonoBehaviour
     {
         input.Enable();
 
-        // IMPORTANT: add Flight/Pause action bound to <Keyboard>/escape in your Input Actions asset
-        input.Flight.Pause.performed += _ => TogglePause();
+        // IMPORTANT: this requires a "Pause" action in the Flight action map
+        input.Flight.Pause.performed += OnPausePerformed;
     }
 
     private void OnDisable()
     {
         if (input != null)
-            input.Flight.Pause.performed -= _ => TogglePause(); // can't unsubscribe lambdas safely
+            input.Flight.Pause.performed -= OnPausePerformed;
 
         input?.Disable();
 
-        // safety
+        // safety if object disables while paused
         if (pauseTimeScale) Time.timeScale = 1f;
+        isPaused = false;
     }
 
-    // Better unsubscribe-safe version:
-    private void OnPausePerformed(UnityEngine.InputSystem.InputAction.CallbackContext ctx) => TogglePause();
+    private void OnPausePerformed(InputAction.CallbackContext ctx)
+    {
+        TogglePause();
+    }
 
     private void TogglePause()
     {
@@ -74,7 +78,7 @@ public class PauseMenu : MonoBehaviour
     {
         isPaused = true;
 
-        // Show pause overlay, hide options
+        // show pause menu
         pauseMenuDocument.rootVisualElement.style.display = DisplayStyle.Flex;
         pauseOverlay.style.display = DisplayStyle.Flex;
         optionsOverlay.style.display = DisplayStyle.None;
@@ -92,9 +96,11 @@ public class PauseMenu : MonoBehaviour
 
     private void HideAll()
     {
-        optionsOverlay.style.display = DisplayStyle.None;
-        pauseOverlay.style.display = DisplayStyle.None;
-        pauseMenuDocument.rootVisualElement.style.display = DisplayStyle.None;
+        if (optionsOverlay != null) optionsOverlay.style.display = DisplayStyle.None;
+        if (pauseOverlay != null) pauseOverlay.style.display = DisplayStyle.None;
+
+        if (pauseMenuDocument != null)
+            pauseMenuDocument.rootVisualElement.style.display = DisplayStyle.None;
     }
 
     private void BackBtn_clicked()
@@ -105,7 +111,7 @@ public class PauseMenu : MonoBehaviour
 
     private void MainMenuBtn_clicked()
     {
-        
+        if (pauseTimeScale) Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenuScene");
     }
 

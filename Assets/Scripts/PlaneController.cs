@@ -21,6 +21,14 @@ public class PlaneController : MonoBehaviour
     public float groundStickAccel = 6f;
     public LayerMask groundMask = ~0;
 
+    [Header("Crash / Mission Fail")]
+    [SerializeField] private LandingJudge landingJudge;          // assign in inspector or auto-find
+    [SerializeField] private string runwayTag = "Runway";
+    [SerializeField] private string runwayZoneTag = "RunwayZone"; // optional (if you tag your trigger)
+    [SerializeField] private string ignoreTag = "PlaneLane";      // optional (if you have this)
+    [SerializeField] private float crashArmSeconds = 0.5f;        // avoids instant fail on spawn
+    private float spawnTime;
+
     [Header("Throttle")]
     public float throttleChangeRate = 0.8f;
     [Range(0f, 1f)] public float throttle01 = 0f;
@@ -175,6 +183,27 @@ public class PlaneController : MonoBehaviour
     {
         if (((1 << c.gameObject.layer) & groundMask) != 0)
             rb.angularVelocity *= 0.25f;
+
+        // wait a moment after spawn
+        if (Time.time - spawnTime < crashArmSeconds) return;
+
+        if (c == null || c.collider == null) return;
+
+        // Ignore triggers (your runway landing zone trigger should be trigger anyway)
+        if (c.collider.isTrigger) return;
+
+        // Ignore runway itself (landing judge will handle success/fail)
+        if (c.collider.CompareTag(runwayTag)) return;
+
+        // If we hit anything else -> crash fail mission
+        if (landingJudge != null)
+        {
+            landingJudge.FailMissionFromCrash($"Crashed into {c.collider.name}");
+        }
+        else
+        {
+            Debug.Log($"❌ Crash: {c.collider.name} (LandingJudge not found)");
+        }
     }
 
     public float GetCurrentSpeed() => rb != null ? rb.linearVelocity.magnitude : 0f;

@@ -1,0 +1,118 @@
+#ResultsRoot {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0,0.55);
+}
+
+#Panel {
+    width: 650px;
+    padding: 24px;
+    border-radius: 12px;
+    background-color: rgba(20, 25, 35, 0.95);
+}
+
+#titleTxt {
+    width: 100%;
+    text-align: center;
+    unity-font-style: bold;
+    font-size: 34px;          /* bigger title */
+    margin-bottom: 18px;
+}
+
+
+Label {
+    font-size: 18px;
+    margin-top: 6px;
+}
+
+
+#mainMenuBtn {
+    margin-top: 18px;
+    height: 46px;
+
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-image-tint-color: white;
+    background-image: resource("Images/mainMenuBtn");
+    -unity-background-scale-mode: scale-to-fit;
+    background-repeat: no-repeat;
+
+    border-width: 0;
+    padding: 0;
+}
+
+#mainMenuBtn:hover {
+    background-image: resource("Images/mainMenuBtnHover");
+}
+
+.hud-panel{
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    border-radius: 14px;
+    background-color: rgba(0, 0, 0, 0.55);
+
+    border-width: 2px;
+    border-color: rgba(120, 200, 255, 0.65);
+
+    /* If box-shadow breaks in your Builder, remove this line */
+    box-shadow: 0 0 18px rgba(80, 190, 255, 0.22);
+}
+
+/* Small label: SPEED / TIME */
+.hud-label{
+    -unity-font-style: bold;
+    font-size: 14px;
+    color: rgba(190, 235, 255, 0.95);
+
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: rgba(0, 0, 0, 0.85);
+}
+
+/* Big value: 245 KM/H, 01:32 */
+.hud-value{
+    -unity-font-style: bold-and-italic;
+    font-size: 34px;
+    color: rgba(245, 252, 255, 1.0);
+
+    -unity-text-outline-width: 4px;
+    -unity-text-outline-color: rgba(10, 25, 55, 0.95);
+}
+
+/* Warning: low time / overspeed */
+.hud-value--warning{
+    color: rgba(255, 235, 170, 1.0);
+    -unity-text-outline-color: rgba(60, 35, 0, 0.95);
+}
+
+    /* Make the panel itself a bit bigger */
+#Panel {
+    width: 760px;             /* was ~650 */
+    padding: 32px;
+    border-radius: 14px;
+}
+
+/* Make score lines bigger */
+#lineLanding,
+#lineAlignment,
+#lineBank,
+#lineDescent,
+#lineSpeed,
+#lineTotal {
+    font-size: 24px;
+    margin-top: 10px;
+}
+
+/* Make the button bigger */
+#mainMenuBtn {
+    margin-top: 24px;
+    height: 56px;
+    font-size: 22px;
+    unity-font-style: bold;
+}
