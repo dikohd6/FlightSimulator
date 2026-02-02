@@ -24,7 +24,7 @@ public class HUDController : MonoBehaviour
     private Label speedLabel;
 
     private float startTime;
-    private float frozenElapsed;   // <- stores final time when stopped
+    private float frozenElapsed;     // final time once stopped
     private bool timerRunning = true;
 
     private int score;
@@ -73,10 +73,9 @@ public class HUDController : MonoBehaviour
             scoreLabel.text = $"{score}";
     }
 
-    public void AddScore(int delta)
-    {
-        SetScore(score + delta);
-    }
+    public void AddScore(int delta) => SetScore(score + delta);
+
+    public int GetScore() => score;
 
     public void ResetTimer()
     {
@@ -88,14 +87,28 @@ public class HUDController : MonoBehaviour
     public void StopTimer()
     {
         if (!timerRunning) return;
-        frozenElapsed = Time.time - startTime;  // lock the final time
+        frozenElapsed = Time.time - startTime;
         timerRunning = false;
     }
 
-    public float GetElapsedTime()
+    // Alias (LandingJudge calls this)
+    public void FreezeTimer() => StopTimer();
+
+    // If you ever want to resume counting again
+    public void UnfreezeTimer()
+    {
+        if (timerRunning) return;
+        timerRunning = true;
+        startTime = Time.time - frozenElapsed;
+    }
+
+    public float GetElapsedTimeSeconds()
     {
         return timerRunning ? (Time.time - startTime) : frozenElapsed;
     }
+
+    // (compat if you already used GetElapsedTime elsewhere)
+    public float GetElapsedTime() => GetElapsedTimeSeconds();
 
     public void SetSpeedVisible(bool visible)
     {

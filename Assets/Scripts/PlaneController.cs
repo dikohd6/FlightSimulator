@@ -24,8 +24,6 @@ public class PlaneController : MonoBehaviour
     [Header("Crash / Mission Fail")]
     [SerializeField] private LandingJudge landingJudge;          // assign in inspector or auto-find
     [SerializeField] private string runwayTag = "Runway";
-    [SerializeField] private string runwayZoneTag = "RunwayZone"; // optional (if you tag your trigger)
-    [SerializeField] private string ignoreTag = "PlaneLane";      // optional (if you have this)
     [SerializeField] private float crashArmSeconds = 0.5f;        // avoids instant fail on spawn
     private float spawnTime;
 

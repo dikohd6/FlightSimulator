@@ -1,3 +1,5 @@
+﻿/* ================= START BUTTON ================= */
+
 #startBtn {
     width: 320px;
     height: 90px;
@@ -12,9 +14,7 @@
     padding: 0;
 }
 
-#startBtn:hover {
-    background-image: resource("Images/startBtnHover");
-}
+#startBtn:hover { background-image: resource("Images/startBtnHover"); }
 
 /* ================= OPTIONS BUTTON ================= */
 
@@ -32,9 +32,9 @@
     padding: 0;
 }
 
-#optionsBtn:hover {
-    background-image: resource("Images/optionsBtnHover");
-}
+#optionsBtn:hover { background-image: resource("Images/optionsBtnHover"); }
+
+/* ================= LEADERBOARD BUTTON ================= */
 
 #leaderboardBtn {
     width: 320px;
@@ -50,9 +50,8 @@
     padding: 0;
 }
 
-#leaderboardBtn:hover {
-    background-image: resource("Images/leaderboardBtnHover");
-}
+#leaderboardBtn:hover { background-image: resource("Images/leaderboardBtnHover"); }
+
 /* ================= EXIT BUTTON ================= */
 
 #exitBtn {
@@ -69,9 +68,9 @@
     padding: 0;
 }
 
-#exitBtn:hover {
-    background-image: resource("Images/exitBtnHover");
-}
+#exitBtn:hover { background-image: resource("Images/exitBtnHover"); }
+
+/* ================= MAIN MENU BUTTON ================= */
 
 #mainMenuBtn {
     width: 320px;
@@ -87,9 +86,9 @@
     padding: 0;
 }
 
-#mainMenuBtn:hover {
-    background-image: resource("Images/mainMenuBtnHover");
-}
+#mainMenuBtn:hover { background-image: resource("Images/mainMenuBtnHover"); }
+
+/* ================= BACK BUTTON ================= */
 
 #backBtn {
     width: 320px;
@@ -105,10 +104,13 @@
     padding: 0;
 }
 
-#backBtn:hover {
-    background-image: resource("Images/backBtnHover");
-}
-/* OPTIONAL: put the slider inside a container panel for contrast */
+#backBtn:hover { background-image: resource("Images/backBtnHover"); }
+
+/* ================= SLIDER PANEL ================= */
+
+/* =========================
+   VOLUME PANEL (no box-shadow)
+   ========================= */
 .volume-panel {
     padding-left: 18px;
     padding-right: 18px;
@@ -117,36 +119,54 @@
 
     border-radius: 14px;
     background-color: rgba(0, 0, 0, 0.35);
+
     border-width: 2px;
     border-color: rgba(140, 220, 255, 0.35);
-
-    /* soft halo */
-    box-shadow: 0 0 18px rgba(80, 190, 255, 0.22);
 }
 
-/* Your slider */
+/* Optional: add a stronger “glow” feel by making the border brighter */
+.volume-panel.glow {
+    border-color: rgba(140, 220, 255, 0.65);
+    background-color: rgba(0, 0, 0, 0.40);
+}
+
+
+/* =========================
+   SLIDER SIZE
+   ========================= */
 .volume-slider {
     width: 360px;
     height: 36px;
+
+    /* (optional) makes it easier to spot even without shadow */
+    border-radius: 12px;
 }
 
-/* TRACK */
+
+/* =========================
+   TRACK (no box-shadow)
+   ========================= */
 .volume-slider .unity-base-slider__track,
 .volume-slider .unity-slider__track {
     height: 18px;
     border-radius: 12px;
 
     background-color: rgba(5, 20, 40, 0.95);
+
     border-width: 3px;
     border-color: rgba(120, 200, 255, 0.9);
-
-    /* glow makes it stand out */
-    box-shadow:
-        0 0 10px rgba(80, 190, 255, 0.35),
-        0 0 22px rgba(80, 190, 255, 0.18);
 }
 
-/* THUMB / DRAGGER */
+/* Optional brighter track state */
+.volume-slider.glow .unity-base-slider__track,
+.volume-slider.glow .unity-slider__track {
+    border-color: rgba(170, 240, 255, 1.0);
+}
+
+
+/* =========================
+   THUMB / DRAGGER (no box-shadow)
+   ========================= */
 .volume-slider .unity-base-slider__dragger,
 .volume-slider .unity-slider__thumb {
     width: 34px;
@@ -154,36 +174,192 @@
     border-radius: 17px;
 
     background-color: rgba(245, 252, 255, 1.0);
+
     border-width: 3px;
     border-color: rgba(80, 190, 255, 1.0);
-
-    /* depth + glow */
-    box-shadow:
-        0 4px 10px rgba(0, 0, 0, 0.45),
-        0 0 14px rgba(80, 190, 255, 0.45);
 }
 
-/* HOVER (more glow + slightly brighter) */
+/* HOVER (no box-shadow) */
 .volume-slider .unity-base-slider__dragger:hover,
 .volume-slider .unity-slider__thumb:hover {
-    background-color: white;
+    background-color: rgba(255, 255, 255, 1.0);
     border-color: rgba(190, 245, 255, 1.0);
-    box-shadow:
-        0 4px 10px rgba(0, 0, 0, 0.45),
-        0 0 20px rgba(120, 220, 255, 0.7);
 }
 
-/* FOCUS (keyboard/controller) */
-.volume-slider:focus .unity-base-slider__track,
-.volume-slider:focus .unity-slider__track {
+
+.volume-slider:focus {
+    border-width: 2px;
     border-color: rgba(200, 250, 255, 1.0);
-    box-shadow:
-        0 0 14px rgba(150, 240, 255, 0.55),
-        0 0 28px rgba(120, 220, 255, 0.25);
+}
+
+
+/* ================= HUD PANEL ================= */
+
+.hud-panel {
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    border-radius: 14px;
+    background-color: rgba(0, 0, 0, 0.55);
+
+    border-width: 2px;
+    border-color: rgba(120, 200, 255, 0.65);
+}
+
+/* ===============================
+   LEADERBOARD
+   =============================== */
+
+#LeaderboardRoot {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgba(0, 0, 0, 0.0);
+}
+
+.panel {
+    width: 92%;
+    max-width: 1500px;
+
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 18px;
+    padding-bottom: 18px;
+
+    border-radius: 18px;
+    background-color: rgba(0, 0, 0, 0.28);
+
+    border-width: 2px;
+    border-color: rgba(120, 200, 255, 0.35);
+}
+
+/* Header row (your labels at top) */
+.headerRow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    height: 64px;
+    padding-left: 18px;
+    padding-right: 18px;
+
+    border-radius: 14px;
+    background-color: rgba(10, 30, 55, 0.35);
+
+    border-width: 2px;
+    border-color: rgba(120, 200, 255, 0.25);
+
+    margin-bottom: 14px;
+}
+
+/* Header text */
+.header {
+    -unity-font-style: bold;
+    font-size: 32px;
+    color: rgba(230, 250, 255, 1.0);
+    -unity-text-outline-color: rgba(0, 0, 0, 0.75);
+    -unity-text-outline-width: 2px;
+    -unity-text-align: middle-center;
+}
+
+/* ListView area */
+#leaderboardList {
+    height: 560px; /* taller */
+    min-height: 0;
+
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+
+    background-color: rgba(0, 0, 0, 0.18);
+    border-radius: 14px;
+
+    border-width: 2px;
+    border-color: rgba(120, 200, 255, 0.18);
+}
+
+/* Important: ListView internal containers */
+#leaderboardList .unity-list-view__content-container {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+/* Remove Unity's internal padding so rows start exactly where header starts */
+#leaderboardList .unity-scroll-view__content-container {
+    padding-left: 0;
+    padding-right: 0;
+}
+#leaderboardList .unity-collection-view__item,
+#leaderboardList .unity-list-view__item {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* The row created by makeItem */
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    width: 100%;
+
+    /* bigger rows */
+    min-height: 54px;
+
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+
+    margin-bottom: 10px; /* spacing between rows */
+
+    border-radius: 12px;
+
+    background-color: rgba(0, 0, 0, 0.26);
+    border-width: 1px;
+    border-color: rgba(120, 200, 255, 0.22);
 }
 
 
 
+/* Data text */
+.col {
+    font-size: 24px;
+    color: white;
+    -unity-text-outline-color: rgba(0, 0, 0, 0.75);
+    -unity-text-outline-width: 1px;
+    -unity-font-style: bold;
+    align-self: center;
+}
+
+
+/* Header/row column alignment */
+.rank  { width: 100px;  min-width: 100px;  -unity-text-align: middle-center; }
+.mode  { width: 400px;  min-width: 400px;  -unity-text-align: middle-left; padding-left: 18px; }
+.time  { width: 250px;  min-width: 250px;  -unity-text-align: middle-center;}
+.score { width: 250px;  min-width: 250px;  -unity-text-align: middle-center; }
+.grade { width: 200px;  min-width: 200px;  -unity-text-align: middle-center; }
+.result{ width: 300px;  min-width: 300px;  -unity-text-align: middle-center; }
 
 
 
+
+/* ================= Footer row ================= */
+
+.footerRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-top: 16px;
+}

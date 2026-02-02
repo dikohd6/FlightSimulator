@@ -16,4 +16,18 @@
             <ui:Slider label="" value="42" high-value="100" picking-mode="Position" class="volume-slider unity-base-slider__track unity-slider__track unity-base-slider__dragger unity-slider__thumb" style="height: 92px; width: 600px; position: absolute; top: 2px; left: 1px;"/>
         </ui:VisualElement>
     </ui:VisualElement>
+    <ui:VisualElement name="LeaderboardRoot" style="flex-grow: 1; position: absolute; height: 1072px; width: 1916px; background-image: resource(&quot;Images/planeBackground&quot;); top: 0; left: 0; bottom: 0; right: 0; justify-content: center; align-items: center;">
+        <ui:Image name="titleTxt" style="background-image: resource(&quot;Images/leaderboardTitle&quot;); height: 100px; position: absolute; top: 28px; width: 696px; left: 608px;"/>
+        <ui:Image name="rankTxt" style="background-image: resource(&quot;Images/rankTxt&quot;); height: 56px; position: absolute; top: 192px; width: 180px; left: 228px;"/>
+        <ui:Image name="timeTxt" style="background-image: resource(&quot;Images/timeTxt&quot;); height: 64px; position: absolute; top: 184px; width: 172px; left: 760px;"/>
+        <ui:Image name="gradeTxt" style="background-image: resource(&quot;Images/gradeTxt&quot;); height: 56px; position: absolute; top: 188px; width: 180px; left: 1298px;"/>
+        <ui:Image name="modeTxt" style="background-image: resource(&quot;Images/modeTxt&quot;); height: 56px; position: absolute; top: 188px; width: 180px; left: 504px;"/>
+        <ui:Image name="scoreTxt" style="background-image: resource(&quot;Images/scoreTxt&quot;); height: 58px; position: absolute; top: 188px; width: 190px; left: 1014px;"/>
+        <ui:Image name="resultTxt" style="background-image: resource(&quot;Images/resultTxt&quot;); height: 56px; position: absolute; top: 190px; width: 180px; left: 1562px;"/>
+        <ui:Button text="" name="mainMenuBtn" style="height: 108px; width: 428px; position: absolute; top: 939px; left: 1426px;"/>
+        <ui:Button text="" name="clearBtn" style="height: 94px; width: 308px; position: absolute; top: 943px; left: 234px; background-color: rgba(188, 188, 188, 0); background-image: resource(&quot;Images/clearBtn&quot;); border-left-color: rgba(149, 149, 149, 0); border-right-color: rgba(149, 149, 149, 0); border-top-color: rgba(149, 149, 149, 0); border-bottom-color: rgba(149, 149, 149, 0);"/>
+        <ui:VisualElement enabled="true" name="" class="hud-panel" style="flex-grow: 1; position: absolute; width: 1584px; top: 270px; left: 192px; height: 638px; background-color: rgba(0, 0, 0, 0.56);">
+            <ui:ListView name="LeaderboardList" style="height: 598px; align-content: flex-start; min-height: auto; max-height: 650px; top: 0; left: 0; right: 0; bottom: 0;"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
 </ui:UXML>

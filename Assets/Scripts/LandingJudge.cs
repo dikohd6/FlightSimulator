@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class LandingJudge : MonoBehaviour
 {
@@ -6,6 +7,10 @@ public class LandingJudge : MonoBehaviour
     [SerializeField] private PlaneController plane;
     [SerializeField] private EmergencyLandingMode emergency;
     [SerializeField] private LandingCinematicController ending;
+    [SerializeField] private HUDController hud;
+
+    [Header("Mode Name")]
+    [SerializeField] private string modeName = "Emergency Landing";
 
     [Header("Touchdown Limits (pass/fail)")]
     [SerializeField] private float maxDescentRate = -5.5f;
@@ -65,6 +70,7 @@ public class LandingJudge : MonoBehaviour
         if (plane == null) plane = FindFirstObjectByType<PlaneController>();
         if (emergency == null) emergency = FindFirstObjectByType<EmergencyLandingMode>();
         if (ending == null) ending = FindFirstObjectByType<LandingCinematicController>();
+        if (hud == null) hud = FindFirstObjectByType<HUDController>();
 
         if (plane != null) planeRb = plane.GetComponent<Rigidbody>();
         if (planeRb == null) planeRb = GetComponentInParent<Rigidbody>();
@@ -92,7 +98,7 @@ public class LandingJudge : MonoBehaviour
         if (result != Result.None) return;
         if (plane == null || planeRb == null || col == null) return;
 
-        // Only runway collisions
+        // Only runway collisions count as touchdown
         if (!col.gameObject.CompareTag(runwayTag) && !col.transform.root.CompareTag(runwayTag))
             return;
 
@@ -142,11 +148,34 @@ public class LandingJudge : MonoBehaviour
         }
 
         result = Result.Success;
-        TriggerEnding(true, "", breakdown, grade);
+        TriggerEnding(true, null, breakdown, grade);
     }
 
     private void TriggerEnding(bool success, string reason, ScoreBreakdown b, string grade)
     {
+        // stop HUD timer at end
+        if (hud != null) hud.FreezeTimer();
+
+        // mode string
+        string mode = modeName;
+        if (emergency != null && emergency.enabled)
+            mode = $"Emergency - {emergency.GetActiveFailure()}";
+
+        // time
+        float timeSec = hud != null ? hud.GetElapsedTimeSeconds() : 0f;
+
+        // Save leaderboard
+        LeaderboardStore.AddEntry(new LeaderboardStore.Entry
+        {
+            mode = mode,
+            timeSeconds = timeSec,
+            score = b.total,
+            grade = grade,
+            success = success,
+            dateUtc = DateTime.UtcNow.ToString("o")
+        });
+
+        // UI/cinematic data
         var data = new LandingScoreData
         {
             success = success,
@@ -174,6 +203,27 @@ public class LandingJudge : MonoBehaviour
             : $"❌ Emergency landing FAILED: {reason}  Score {b.total}/100 ({grade})");
     }
 
+    // ---------- Crash fail entry point (call this from PlaneController) ----------
+    public void FailMissionFromCrash(string reason)
+    {
+        if (result != Result.None) return;
+        result = Result.Fail;
+
+        // Minimal breakdown for crashes (0 score)
+        ScoreBreakdown b = new ScoreBreakdown
+        {
+            yawPts = 0,
+            bankPts = 0,
+            descentPts = 0,
+            speedPts = 0,
+            zonePts = 0,
+            total = 0
+        };
+
+        TriggerEnding(false, $"Crash: {reason}", b, "F");
+    }
+
+    // ---------- Scoring ----------
     private struct ScoreBreakdown
     {
         public int yawPts, bankPts, descentPts, speedPts, zonePts, total;
@@ -257,32 +307,6 @@ public class LandingJudge : MonoBehaviour
         runwayDir.Normalize();
 
         return Vector3.SignedAngle(runwayDir, planeFwd, Vector3.up);
-    }
-    public void FailMissionFromCrash(string reason)
-    {
-        
-        if (result != Result.None) return;
-        result = Result.Fail;
-
-        // Make a score data (0s) or reuse your last computed score if you want.
-        LandingScoreData data = new LandingScoreData
-        {
-            success = false,
-            failReason = reason,
-            yawPts = 0,
-            bankPts = 0,
-            descentPts = 0,
-            speedPts = 0,
-            maxYawPts = pointsYaw,
-            maxBankPts = pointsBank,
-            maxDescentPts = pointsDescent,
-            maxSpeedPts = pointsSpeed,
-            total = 0,
-            grade = "F"
-        };
-
-        if (ending != null) ending.PlayEnding(data);
-        Debug.Log("❌ Emergency landing FAILED (CRASH): " + reason);
     }
 
     public void ResetJudge()

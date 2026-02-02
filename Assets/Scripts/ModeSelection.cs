@@ -11,7 +11,6 @@ public class ModeSelection : MonoBehaviour
     private VisualElement missionSelect;
     private Button leftBtn;
     private Button rightBtn;
-
     private Label modeLabel;
     private VisualElement standardMission;
     private VisualElement emergencyMission;
@@ -124,4 +123,6 @@ public class ModeSelection : MonoBehaviour
         if (i < 0) i += count;
         return i;
     }
+
+
 }

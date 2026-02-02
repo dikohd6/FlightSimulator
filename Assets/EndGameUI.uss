@@ -61,8 +61,7 @@ Label {
     border-width: 2px;
     border-color: rgba(120, 200, 255, 0.65);
 
-    /* If box-shadow breaks in your Builder, remove this line */
-    box-shadow: 0 0 18px rgba(80, 190, 255, 0.22);
+   
 }
 
 /* Small label: SPEED / TIME */

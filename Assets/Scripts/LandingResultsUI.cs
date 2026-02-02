@@ -10,7 +10,7 @@ public class LandingResultsUI : MonoBehaviour
     [Header("UXML Names")]
     [SerializeField] private string rootName = "ResultsRoot";
     [SerializeField] private string mainMenuButtonName = "mainMenuBtn";
-    [SerializeField] private string mainMenuSceneName = "MainMenu";
+    [SerializeField] private string mainMenuSceneName = "MainMenuScene";
 
     [SerializeField] private float revealDelay = 0.7f;
 
