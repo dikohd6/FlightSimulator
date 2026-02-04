@@ -40,3 +40,100 @@
     color: rgba(255, 235, 170, 1.0);
     -unity-text-outline-color: rgba(60, 35, 0, 0.95);
 }
+
+/* INFO BANNER (normal) */
+.info-banner {
+    position: absolute;
+    left: 50%;
+    top: 18px;
+    transform: translateX(-50%);
+
+    min-width: 520px;
+    max-width: 860px;
+
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+
+    background-color: rgba(5, 20, 40, 0.78);
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-left-color: rgba(120, 200, 255, 0.55);
+    border-right-color: rgba(120, 200, 255, 0.55);
+    border-top-color: rgba(120, 200, 255, 0.55);
+    border-bottom-color: rgba(120, 200, 255, 0.55);
+
+    -unity-font-style: bold;
+    font-size: 18px;
+    color: rgba(235, 250, 255, 0.98);
+
+    unity-text-align: middle-center;
+    white-space: normal;
+
+    letter-spacing: 0.8px;
+}
+
+.info-banner {
+    position: absolute;
+    left: 50%;
+    top: 18px;
+    translate: -50% 0;
+
+    min-width: 520px;
+    max-width: 760px;
+
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+
+    border-radius: 12px;
+
+    background-color: rgba(10, 18, 28, 0.72);
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-left-color: rgba(140, 220, 255, 0.55);
+    border-right-color: rgba(140, 220, 255, 0.55);
+    border-top-color: rgba(140, 220, 255, 0.35);
+    border-bottom-color: rgba(140, 220, 255, 0.35);
+
+    unity-font-style: bold;
+    font-size: 18px;
+    letter-spacing: 1px;
+
+    color: rgba(235, 250, 255, 0.95);
+
+    -unity-text-align: middle-center;
+    white-space: normal;
+
+    /* soft glow (UITK supports text-shadow) */
+    text-shadow: 0 0 6px rgba(80, 190, 255, 0.35);
+}
+
+.info-banner--hint {
+    background-color: rgba(8, 20, 28, 0.65);
+    border-left-color: rgba(120, 220, 255, 0.35);
+    border-right-color: rgba(120, 220, 255, 0.35);
+    color: rgba(220, 245, 255, 0.92);
+}
+
+.info-banner--warning {
+    background-color: rgba(28, 14, 14, 0.72);
+    border-left-color: rgba(255, 120, 120, 0.55);
+    border-right-color: rgba(255, 120, 120, 0.55);
+    border-top-color: rgba(255, 120, 120, 0.35);
+    border-bottom-color: rgba(255, 120, 120, 0.35);
+    color: rgba(255, 235, 235, 0.95);
+    text-shadow: 0 0 7px rgba(255, 120, 120, 0.35);
+}
+

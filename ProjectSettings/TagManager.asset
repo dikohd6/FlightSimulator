@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Runway
+  - NoCrash
   layers:
   - Default
   - TransparentFX

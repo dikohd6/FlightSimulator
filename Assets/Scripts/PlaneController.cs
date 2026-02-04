@@ -24,6 +24,10 @@ public class PlaneController : MonoBehaviour
     [Header("Crash / Mission Fail")]
     [SerializeField] private LandingJudge landingJudge;          // assign in inspector or auto-find
     [SerializeField] private string runwayTag = "Runway";
+
+    [Tooltip("Anything with this tag will NEVER cause mission fail on collision.")]
+    [SerializeField] private string noCrashTag = "NoCrash";
+
     [SerializeField] private float crashArmSeconds = 0.5f;        // avoids instant fail on spawn
     private float spawnTime;
 
@@ -79,6 +83,12 @@ public class PlaneController : MonoBehaviour
         rb.linearDamping = 0f;
         rb.sleepThreshold = 0f;
         rb.WakeUp();
+
+        // IMPORTANT: this was missing before
+        spawnTime = Time.time;
+
+        if (landingJudge == null)
+            landingJudge = FindFirstObjectByType<LandingJudge>();
     }
 
     void FixedUpdate()
@@ -115,7 +125,7 @@ public class PlaneController : MonoBehaviour
         if (speed > 0.1f)
             aoa = Vector3.SignedAngle(transform.forward, vel.normalized, transform.right);
 
-        float aoaLiftFactor = Mathf.Clamp01((aoa + 10f) / 20f); // peak around +10° AoA
+        float aoaLiftFactor = Mathf.Clamp01((aoa + 10f) / 20f);
 
         // ===== LIFT =====
         float stallFactor = Mathf.InverseLerp(stallSpeed * 0.6f, stallSpeed, forwardSpeed);
@@ -126,12 +136,9 @@ public class PlaneController : MonoBehaviour
 
         rb.AddForce(transform.up * lift, ForceMode.Acceleration);
 
-        // ===== INDUCED DRAG (from lift) =====
+        // ===== DRAG =====
         float inducedDrag = lift * inducedDragCoeff;
-
-        // ===== PARASITIC DRAG =====
         float parasiticDrag = baseDragCoeff * speed * speed;
-
         float totalDrag = inducedDrag + parasiticDrag + (speedBleed * forwardSpeed * 0.02f);
 
         if (speed > 0.01f)
@@ -179,21 +186,26 @@ public class PlaneController : MonoBehaviour
 
     void OnCollisionEnter(Collision c)
     {
+        if (rb == null || c == null || c.collider == null) return;
+
         if (((1 << c.gameObject.layer) & groundMask) != 0)
             rb.angularVelocity *= 0.25f;
 
         // wait a moment after spawn
         if (Time.time - spawnTime < crashArmSeconds) return;
 
-        if (c == null || c.collider == null) return;
-
-        // Ignore triggers (your runway landing zone trigger should be trigger anyway)
+        // Ignore triggers
         if (c.collider.isTrigger) return;
 
-        // Ignore runway itself (landing judge will handle success/fail)
-        if (c.collider.CompareTag(runwayTag)) return;
+        // Ignore runway itself (landing judge handles touchdown)
+        if (c.collider.CompareTag(runwayTag) || c.transform.root.CompareTag(runwayTag))
+            return;
 
-        // If we hit anything else -> crash fail mission
+        // ✅ NEW: Ignore anything tagged NoCrash (collider object OR its root)
+        if (c.collider.CompareTag(noCrashTag) || c.transform.root.CompareTag(noCrashTag))
+            return;
+
+        // Anything else -> crash fail mission
         if (landingJudge != null)
         {
             landingJudge.FailMissionFromCrash($"Crashed into {c.collider.name}");

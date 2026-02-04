@@ -12,4 +12,9 @@
         <ui:Label text="SCORE:" class="hud-label" style="font-size: 40px;"/>
         <ui:Label text="SCORE" name="scoreTxt" class="hud-label hud-value" style="font-size: 40px; width: 230px; align-self: auto; align-items: auto; position: absolute; top: 10px; left: 186px;"/>
     </ui:VisualElement>
+    <ui:VisualElement class="hud-panel" style="flex-grow: 1; width: 424px; position: absolute; height: 98px; top: 832px; left: 1462px; align-items: flex-start; flex-direction: row;">
+        <ui:Label text="TIME" name="altitudeTxt" class="hud-label hud-value" style="font-size: 40px; width: 156px; align-self: auto; align-items: auto; position: absolute; top: 16px; left: 248px;"/>
+        <ui:Label text="ALTITUDE:" class="hud-label" style="font-size: 40px; width: 126px; position: absolute; top: 12px; left: 14px;"/>
+    </ui:VisualElement>
+    <ui:Label text="Info" name="infoTxt" class="info-banner" style="font-size: 40px; width: 760px; position: absolute; top: 28px; left: 964px;"/>
 </ui:UXML>
