@@ -786,24 +786,28 @@ MonoBehaviour:
     deceleration: 5
     rotation: 5
     levelSpeed: 5
+    shoulderOffset: {x: 1.43, y: 3.98, z: -40.4}
   - plane: {fileID: 649961830}
     speed: 50
     acceleration: 5
     deceleration: 5
     rotation: 15
     levelSpeed: 20
+    shoulderOffset: {x: -0.06, y: 2.47, z: -20}
   - plane: {fileID: 774521209}
     speed: 20
     acceleration: 5
     deceleration: 5
     rotation: 15
     levelSpeed: 20
+    shoulderOffset: {x: -0.06, y: 2.47, z: -20}
   - plane: {fileID: 951879098}
     speed: 35
     acceleration: 5
     deceleration: 5
     rotation: 15
     levelSpeed: 20
+    shoulderOffset: {x: -0.06, y: 2.47, z: -20}
 --- !u!1 &649961830 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4749636126818360162, guid: 719a1210064dfd64f8cc1d7c0af30594, type: 3}

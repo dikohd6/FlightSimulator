@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using Unity.Cinemachine;
+using UnityEngine;
 
 public class PlaneActivator : MonoBehaviour
 {
-    [SerializeField] private Transform planeParent; // Your scene's "Plane" GameObject
+    [SerializeField] private Transform planeParent;
     [SerializeField] private PlaneController planeController;
 
     private ModeManager modeManager;
@@ -10,12 +11,11 @@ public class PlaneActivator : MonoBehaviour
 
     void Start()
     {
-        // REMOVE ANIMATORS FIRST (fixes the error)
-        RemoveAnimators();
-
-        // Then do your normal setup...
         modeManager = FindFirstObjectByType<ModeManager>();
         planeManager = FindFirstObjectByType<PlaneManager>();
+
+        Debug.Log($"🔍 ModeManager found: {modeManager != null}");
+        Debug.Log($"🔍 PlaneManager found: {planeManager != null}");
 
         if (planeParent == null)
         {
@@ -30,27 +30,15 @@ public class PlaneActivator : MonoBehaviour
         }
 
         int selectedIndex = modeManager != null ? modeManager.SelectedPlaneIndex : 0;
+        Debug.Log($"🔍 Selected plane index: {selectedIndex}");
+
         ActivateScenePlane(selectedIndex);
         ApplyPlaneStats(selectedIndex);
-    }
-
-    // NEW METHOD - Add this
-    private void RemoveAnimators()
-    {
-        if (planeParent == null) return;
-
-        Animator[] animators = planeParent.GetComponentsInChildren<Animator>(true);
-        foreach (Animator anim in animators)
-        {
-            Destroy(anim);
-        }
-
-        Debug.Log($"🧹 Removed {animators.Length} Animator components from planes");
+        ApplyCameraSettings(selectedIndex);
     }
 
     private void ActivateScenePlane(int selectedIndex)
     {
-        // Activate only the selected plane child in YOUR SCENE
         for (int i = 0; i < planeParent.childCount; i++)
         {
             Transform child = planeParent.GetChild(i);
@@ -83,16 +71,68 @@ public class PlaneActivator : MonoBehaviour
 
         PlaneManager.PlaneData planeData = planeManager.planes[selectedIndex];
 
-        // LOG THE STATS BEFORE APPLYING
-        Debug.Log($"🔍 PlaneData from menu - Speed: {planeData.speed}, Accel: {planeData.acceleration}, Rotation: {planeData.rotation}");
-
-        // Apply to your scene's PlaneController
         planeController.maxSpeed = planeData.speed;
         planeController.maxThrustAccel = planeData.acceleration;
         planeController.pitchTorque = planeData.rotation;
         planeController.rollTorque = planeData.rotation * 0.75f;
         planeController.yawTorque = planeData.rotation * 0.5f;
 
-        Debug.Log($"✅ Applied to PlaneController - MaxSpeed: {planeController.maxSpeed}, MaxThrustAccel: {planeController.maxThrustAccel}");
+        Debug.Log($"📊 Applied stats: Speed={planeData.speed}, Accel={planeData.acceleration}");
+    }
+
+    private void ApplyCameraSettings(int selectedIndex)
+    {
+        Debug.Log("🔍 Starting ApplyCameraSettings...");
+
+        if (planeManager == null || planeManager.planes == null)
+        {
+            Debug.LogWarning("PlaneActivator: PlaneManager or planes is null");
+            return;
+        }
+
+        if (selectedIndex < 0 || selectedIndex >= planeManager.planes.Length)
+        {
+            Debug.LogWarning($"PlaneActivator: Invalid plane index {selectedIndex}");
+            return;
+        }
+
+        PlaneManager.PlaneData planeData = planeManager.planes[selectedIndex];
+        Debug.Log($"🔍 Plane data shoulder offset: {planeData.shoulderOffset}");
+
+        // Find the camera GameObject
+        GameObject aimCameraObject = GameObject.Find("Third Person Aim Camera");
+
+        if (aimCameraObject == null)
+        {
+            Debug.LogError("PlaneActivator: Could not find 'Third Person Aim Camera' GameObject");
+            return;
+        }
+
+        Debug.Log($"🔍 Found camera GameObject: {aimCameraObject.name}");
+
+        // Cinemachine 3.0 uses CinemachineCamera instead of CinemachineVirtualCamera
+        CinemachineCamera cmCamera = aimCameraObject.GetComponent<CinemachineCamera>();
+
+        if (cmCamera == null)
+        {
+            Debug.LogError($"PlaneActivator: No CinemachineCamera found on {aimCameraObject.name}");
+            return;
+        }
+
+        Debug.Log($"🔍 Found CinemachineCamera component");
+
+        // Get the CinemachineThirdPersonFollow component
+        var thirdPersonFollow = cmCamera.GetComponent<CinemachineThirdPersonFollow>();
+
+        if (thirdPersonFollow != null)
+        {
+            Debug.Log($"🔍 Old shoulder offset: {thirdPersonFollow.ShoulderOffset}");
+            thirdPersonFollow.ShoulderOffset = planeData.shoulderOffset;
+            Debug.Log($"✅ NEW shoulder offset: {thirdPersonFollow.ShoulderOffset}");
+        }
+        else
+        {
+            Debug.LogError("PlaneActivator: CinemachineThirdPersonFollow component not found!");
+        }
     }
 }
