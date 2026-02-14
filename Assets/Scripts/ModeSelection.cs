@@ -5,8 +5,8 @@ public class ModeSelection : MonoBehaviour
 {
     [SerializeField] private ModeManager modeManager;
     [SerializeField] private UIDocument gameMenuDocument;
+    
     private VisualElement missionsOverlay;
-
     private VisualElement root;
     private VisualElement missionSelect;
     private Button leftBtn;
@@ -14,6 +14,7 @@ public class ModeSelection : MonoBehaviour
     private Label modeLabel;
     private VisualElement standardMission;
     private VisualElement emergencyMission;
+    private VisualElement fuelMission;
 
     private int currentModeIndex = 0;
 
@@ -59,6 +60,7 @@ public class ModeSelection : MonoBehaviour
         modeLabel = root.Q<Label>("modeLabel");
         standardMission = missionsOverlay.Q<VisualElement>("StandardMission");
         emergencyMission = missionsOverlay.Q<VisualElement>("EmergencyMission");
+        fuelMission = missionsOverlay.Q<VisualElement>("FuelMission");
 
         // Sync with ModeManager
         if (modeManager != null)
@@ -115,6 +117,9 @@ public class ModeSelection : MonoBehaviour
         if (emergencyMission != null)
             emergencyMission.style.display =
                 (mode == ModeManager.ModeType.Emergency) ? DisplayStyle.Flex : DisplayStyle.None;
+        if (fuelMission != null)
+            fuelMission.style.display =
+                (mode == ModeManager.ModeType.Fuel) ? DisplayStyle.Flex : DisplayStyle.None;
     }
 
     private int WrapIndex(int i, int count)

@@ -17,4 +17,10 @@
         <ui:Label text="ALTITUDE:" class="hud-label" style="font-size: 40px; width: 126px; position: absolute; top: 12px; left: 14px;"/>
     </ui:VisualElement>
     <ui:Label text="Info" name="infoTxt" class="info-banner" style="font-size: 40px; width: 760px; position: absolute; top: 28px; left: 964px;"/>
+    <ui:VisualElement name="fuelGroup" class="fuel-container">
+    <ui:VisualElement name="fuelFrame" class="fuel-frame">
+        <ui:VisualElement name="fuelFill" class="fuel-fill" />
+    </ui:VisualElement>
+    <ui:Label name="fuelPct" text="100%" class="fuel-label" />
+</ui:VisualElement>
 </ui:UXML>

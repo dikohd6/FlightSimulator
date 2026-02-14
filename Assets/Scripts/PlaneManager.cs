@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+
 public class PlaneManager : MonoBehaviour
 {
     [System.Serializable]
@@ -14,4 +15,10 @@ public class PlaneManager : MonoBehaviour
     }
 
     public PlaneData[] planes;
+
+    private void Awake()
+    {
+        // Make this persist across scenes like ModeManager
+        DontDestroyOnLoad(gameObject);
+    }
 }

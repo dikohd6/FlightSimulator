@@ -10,7 +10,6 @@ public class LandingResultsUI : MonoBehaviour
     [Header("UXML Names")]
     [SerializeField] private string rootName = "ResultsRoot";
     [SerializeField] private string mainMenuButtonName = "mainMenuBtn";
-    [SerializeField] private string mainMenuSceneName = "MainMenuScene";
 
     [SerializeField] private float revealDelay = 0.7f;
 
@@ -37,7 +36,7 @@ public class LandingResultsUI : MonoBehaviour
         mainMenuBtn = ve.Q<Button>(mainMenuButtonName);
 
         if (mainMenuBtn != null)
-            mainMenuBtn.clicked += () => SceneManager.LoadScene(mainMenuSceneName);
+            mainMenuBtn.clicked += () => SceneManager.LoadScene("MainMenuScene");
 
         HideAll();
     }

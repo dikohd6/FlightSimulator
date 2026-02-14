@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/EmergencyLanding.unity
     guid: b9ebbec4998104c468522eb2647b956e
+  - enabled: 1
+    path: Assets/Scenes/FuelMode.unity
+    guid: 8c281608c20efac4a97c9d4f5292a42c
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 289c1b55c9541489481df5cc06664110, type: 3}
   m_UseUCBPForAssetBundles: 0

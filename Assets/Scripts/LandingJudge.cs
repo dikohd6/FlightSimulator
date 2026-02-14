@@ -8,9 +8,7 @@ public class LandingJudge : MonoBehaviour
     [SerializeField] private EmergencyLandingMode emergency;
     [SerializeField] private LandingCinematicController ending;
     [SerializeField] private HUDController hud;
-
-    [Header("Mode Name")]
-    [SerializeField] private string modeName = "Emergency Landing";
+    [SerializeField] private ModeManager modeManager; // NEW
 
     [Header("Touchdown Limits (pass/fail)")]
     [SerializeField] private float maxDescentRate = -5.5f;
@@ -71,6 +69,7 @@ public class LandingJudge : MonoBehaviour
         if (emergency == null) emergency = FindFirstObjectByType<EmergencyLandingMode>();
         if (ending == null) ending = FindFirstObjectByType<LandingCinematicController>();
         if (hud == null) hud = FindFirstObjectByType<HUDController>();
+        if (modeManager == null) modeManager = FindFirstObjectByType<ModeManager>(); // NEW
 
         if (plane != null) planeRb = plane.GetComponent<Rigidbody>();
         if (planeRb == null) planeRb = GetComponentInParent<Rigidbody>();
@@ -156,10 +155,8 @@ public class LandingJudge : MonoBehaviour
         // stop HUD timer at end
         if (hud != null) hud.FreezeTimer();
 
-        // mode string
-        string mode = modeName;
-        if (emergency != null && emergency.enabled)
-            mode = $"Emergency - {emergency.GetActiveFailure()}";
+        // Get mode string from ModeManager
+        string mode = GetModeDisplayName();
 
         // time
         float timeSec = hud != null ? hud.GetElapsedTimeSeconds() : 0f;
@@ -201,6 +198,31 @@ public class LandingJudge : MonoBehaviour
         Debug.Log(success
             ? $"✅ Emergency landing SUCCESS! Score {b.total}/100 ({grade})"
             : $"❌ Emergency landing FAILED: {reason}  Score {b.total}/100 ({grade})");
+    }
+
+    // NEW: Get mode name from ModeManager
+    private string GetModeDisplayName()
+    {
+        if (modeManager == null)
+            return "Unknown Mode";
+
+        switch (modeManager.CurrentMode)
+        {
+            case ModeManager.ModeType.Standard:
+                return "Standard Landing";
+
+            case ModeManager.ModeType.Emergency:
+                // Add failure type detail if available
+                if (emergency != null && emergency.enabled)
+                    return $"Emergency - {emergency.GetActiveFailure()}";
+                return "Emergency Landing";
+
+            case ModeManager.ModeType.Fuel:
+                return "Fuel Challenge";
+
+            default:
+                return "Unknown Mode";
+        }
     }
 
     // ---------- Crash fail entry point (call this from PlaneController) ----------

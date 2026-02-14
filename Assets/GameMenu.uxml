@@ -11,6 +11,9 @@
         <ui:VisualElement name="StandardMission" enabled="true" style="flex-grow: 1; position: absolute; height: 285px; width: 1261px; top: 4px; left: 4px;">
             <ui:Label text="STANDARD&#10;" name="standardTxt" style="height: 70px; -unity-text-auto-size: none; color: rgb(255, 255, 255); font-size: 55px; width: 322px; position: absolute; top: 68px; left: 611px;"/>
         </ui:VisualElement>
+        <ui:VisualElement name="FuelMission" enabled="true" style="flex-grow: 1; position: absolute; height: 285px; width: 1261px; top: 4px; left: 4px;">
+            <ui:Label text="FUEL" name="fuelTxt" style="height: 70px; -unity-text-auto-size: none; color: rgb(255, 255, 255); font-size: 55px; width: 322px; position: absolute; top: 68px; left: 611px;"/>
+        </ui:VisualElement>
         <ui:VisualElement name="EmergencyMission" style="flex-grow: 1; position: absolute; height: 285px; width: 1261px; top: 0; left: 10px;">
             <ui:Label text="EMERGENCY" name="emergencyTxt" style="height: 78px; -unity-text-auto-size: none; color: rgb(255, 255, 255); font-size: 55px; width: 370px; position: absolute; top: 70px; left: 611px;"/>
         </ui:VisualElement>

@@ -167,6 +167,10 @@ public class UIController : MonoBehaviour
         {
             // standard logic
         }
+        else if (modeManager.CurrentMode == ModeManager.ModeType.Fuel)
+        {
+            SceneManager.LoadScene("FuelMode");
+        }
     }
     void ClearLeaderboard()
     {
