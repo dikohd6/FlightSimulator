@@ -9,15 +9,17 @@
     </ui:VisualElement>
     <ui:VisualElement name="Missions" style="flex-grow: 1; position: absolute; height: 285px; width: 1261px; top: 791px; left: -12px;">
         <ui:VisualElement name="StandardMission" enabled="true" style="flex-grow: 1; position: absolute; height: 285px; width: 1261px; top: 4px; left: 4px;">
-            <ui:Label text="STANDARD&#10;" name="standardTxt" style="height: 70px; -unity-text-auto-size: none; color: rgb(255, 255, 255); font-size: 55px; width: 322px; position: absolute; top: 68px; left: 611px;"/>
+            <ui:Label text="STANDARD&#10;" name="standardTxt" style="height: 70px; -unity-text-auto-size: none; color: rgb(255, 255, 255); font-size: 55px; width: 322px; position: absolute; top: 68px; left: 611px; -unity-font-style: bold;"/>
+            <ui:Image name="Image" style="height: 185px; background-image: resource(&quot;Images/airplane&quot;); position: absolute; width: 258px; top: 38px; left: 330px;"/>
         </ui:VisualElement>
         <ui:VisualElement name="FuelMission" enabled="true" style="flex-grow: 1; position: absolute; height: 285px; width: 1261px; top: 4px; left: 4px;">
-            <ui:Label text="FUEL" name="fuelTxt" style="height: 70px; -unity-text-auto-size: none; color: rgb(255, 255, 255); font-size: 55px; width: 322px; position: absolute; top: 68px; left: 611px;"/>
+            <ui:Label text="FUEL" name="fuelTxt" style="height: 70px; -unity-text-auto-size: none; color: rgb(255, 255, 255); font-size: 55px; width: 322px; position: absolute; top: 68px; left: 611px; -unity-font-style: bold;"/>
+            <ui:Image name="Image" style="height: 153px; background-image: resource(&quot;Images/fuel&quot;); position: absolute; width: 220px; top: 52px; left: 340px;"/>
         </ui:VisualElement>
         <ui:VisualElement name="EmergencyMission" style="flex-grow: 1; position: absolute; height: 285px; width: 1261px; top: 0; left: 10px;">
-            <ui:Label text="EMERGENCY" name="emergencyTxt" style="height: 78px; -unity-text-auto-size: none; color: rgb(255, 255, 255); font-size: 55px; width: 370px; position: absolute; top: 70px; left: 611px;"/>
+            <ui:Label text="EMERGENCY" name="emergencyTxt" style="height: 78px; -unity-text-auto-size: none; color: rgb(255, 255, 255); font-size: 55px; width: 370px; position: absolute; top: 70px; left: 611px; -unity-font-style: bold;"/>
+            <ui:Image name="Image" style="height: 245px; background-image: resource(&quot;Images/warning&quot;); position: absolute; width: 308px; top: 8px; left: 302px;"/>
         </ui:VisualElement>
-        <ui:Image name="Image" style="height: 153px; background-image: url(&quot;project://database/Assets/Resources/Images/emergency.png?fileID=2800000&amp;guid=123e441c1ddac614eb74453636940ad2&amp;type=3#emergency&quot;); position: absolute; width: 220px; top: 52px; left: 340px;"/>
         <ui:Button text="" name="missionLeftBtn" style="position: absolute; height: 108px; width: 129px; background-color: rgba(188, 188, 188, 0); -unity-background-image-tint-color: rgb(255, 255, 255); background-image: url(&quot;project://database/Assets/Resources/Images/left.png?fileID=2800000&amp;guid=28c35f7303fbb4c42bb68ab18cccbd33&amp;type=3#left&quot;); top: 77px; left: 120px; border-left-color: rgba(149, 149, 149, 0); border-right-color: rgba(149, 149, 149, 0); border-top-color: rgba(149, 149, 149, 0); border-bottom-color: rgba(149, 149, 149, 0);"/>
         <ui:Button text="" name="missionRightBtn" style="position: absolute; height: 102px; width: 107px; background-color: rgba(188, 188, 188, 0); -unity-background-image-tint-color: rgb(255, 255, 255); background-image: url(&quot;project://database/Assets/Resources/Images/right.png?fileID=2800000&amp;guid=b3e21d7fe7210824f88c106d61a5888e&amp;type=3#right&quot;); top: 78px; left: 1055px; border-left-color: rgba(149, 149, 149, 0); border-right-color: rgba(149, 149, 149, 0); border-top-color: rgba(149, 149, 149, 0); border-bottom-color: rgba(149, 149, 149, 0);"/>
     </ui:VisualElement>

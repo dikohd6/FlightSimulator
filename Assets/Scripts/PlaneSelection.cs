@@ -1,31 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class PlaneSelection : MonoBehaviour
 {
-    public PlaneManager planeManager;
-    [SerializeField] private ModeManager modeManager; // NEW
+    [SerializeField] private PlaneManager planeManager;
+    [SerializeField] private ModeManager modeManager;
     [SerializeField] private UIDocument gameMenuDocument;
 
+    [Header("Preview")]
+    [SerializeField] private Transform previewAnchor;
+    [SerializeField] private float spinSpeed = 30f;
+
     private VisualElement gameMenuOverlay;
-    Button leftBtn;
-    Button rightBtn;
-    public int speed;
+    private Button leftBtn;
+    private Button rightBtn;
+
     private int currentIndex = 0;
+    private GameObject currentPreview;
 
     private void Awake()
     {
-        // Find ModeManager if not assigned
+        if (planeManager == null)
+            planeManager = PlaneManager.Instance != null ? PlaneManager.Instance : FindFirstObjectByType<PlaneManager>();
+
         if (modeManager == null)
-            modeManager = FindFirstObjectByType<ModeManager>();
+            modeManager = ModeManager.Instance != null ? ModeManager.Instance : FindFirstObjectByType<ModeManager>();
 
-        var gameRoot = gameMenuDocument.rootVisualElement;
-        gameMenuOverlay = gameRoot.Q<VisualElement>("missionSelect");
-
-        planeManager.planes[currentIndex].plane.SetActive(true);
+        var root = gameMenuDocument.rootVisualElement;
+        gameMenuOverlay = root.Q<VisualElement>("missionSelect");
 
         leftBtn = gameMenuOverlay.Q<Button>("leftBtn");
         rightBtn = gameMenuOverlay.Q<Button>("rightBtn");
@@ -33,70 +35,50 @@ public class PlaneSelection : MonoBehaviour
         leftBtn.clicked += OnLeftButtonClicked;
         rightBtn.clicked += OnRightButtonClicked;
 
-        // NEW: Update ModeManager with initial selection
+        SpawnPreview(currentIndex);
         UpdateModeManager();
     }
 
-    private void Start()
+    private void OnDestroy()
     {
-        ShowPlaneStats();
+        if (leftBtn != null) leftBtn.clicked -= OnLeftButtonClicked;
+        if (rightBtn != null) rightBtn.clicked -= OnRightButtonClicked;
     }
 
     private void Update()
     {
-        ShowPlaneStats();
-        planeManager.planes[currentIndex].plane.SetActive(true);
-        planeManager.planes[currentIndex].plane.transform.Rotate(0f, speed * Time.deltaTime, 0f);
+        if (currentPreview)
+            currentPreview.transform.Rotate(0f, spinSpeed * Time.deltaTime, 0f, Space.Self);
     }
 
-    public int currentPlane()
+    private void SpawnPreview(int index)
     {
-        return currentIndex;
+        if (currentPreview) Destroy(currentPreview);
+
+        var prefab = planeManager.planes[index].planePrefab;
+        if (!prefab) { Debug.LogError("Missing plane prefab on PlaneManager."); return; }
+
+        currentPreview = Instantiate(prefab, previewAnchor);
+        currentPreview.transform.localPosition = Vector3.zero;
+        currentPreview.transform.localRotation = Quaternion.identity;
     }
 
-    void ShowPlaneStats()
+    private void OnLeftButtonClicked()
     {
-        // Your plane stats display code here
+        currentIndex = (currentIndex - 1 + planeManager.planes.Length) % planeManager.planes.Length;
+        SpawnPreview(currentIndex);
+        UpdateModeManager();
     }
 
-    // NEW: Update ModeManager whenever plane selection changes
+    private void OnRightButtonClicked()
+    {
+        currentIndex = (currentIndex + 1) % planeManager.planes.Length;
+        SpawnPreview(currentIndex);
+        UpdateModeManager();
+    }
+
     private void UpdateModeManager()
     {
-        if (modeManager != null)
-            modeManager.SetSelectedPlane(currentIndex);
-    }
-
-    void OnLeftButtonClicked()
-    {
-        planeManager.planes[currentIndex].plane.SetActive(false);
-
-        if (currentIndex - 1 < 0)
-        {
-            currentIndex = planeManager.planes.Length - 1; // Fixed: wrap to last plane
-        }
-        else
-        {
-            currentIndex--;
-        }
-
-        ShowPlaneStats();
-        UpdateModeManager(); // NEW
-    }
-
-    void OnRightButtonClicked()
-    {
-        planeManager.planes[currentIndex].plane.SetActive(false);
-
-        if (currentIndex + 1 >= planeManager.planes.Length) // Fixed: use array length
-        {
-            currentIndex = 0;
-        }
-        else
-        {
-            currentIndex++;
-        }
-
-        ShowPlaneStats();
-        UpdateModeManager(); // NEW
+        if (modeManager) modeManager.SetSelectedPlane(currentIndex);
     }
 }

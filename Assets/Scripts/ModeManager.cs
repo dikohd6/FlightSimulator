@@ -7,7 +7,7 @@ public class ModeManager : MonoBehaviour
 
     [SerializeField] private ModeType[] modes = { ModeType.Standard, ModeType.Emergency, ModeType.Fuel };
     [SerializeField] private int currentModeIndex = 0;
-    [SerializeField] private int selectedPlaneIndex = 0; // NEW: Track selected plane
+    [SerializeField] private int selectedPlaneIndex = 0;
 
     private PlaneController plane;
     private EmergencyLandingMode emergency;
@@ -15,20 +15,35 @@ public class ModeManager : MonoBehaviour
     public int CurrentModeIndex => currentModeIndex;
     public int ModeCount => modes.Length;
     public ModeType CurrentMode => modes[currentModeIndex];
-    public int SelectedPlaneIndex => selectedPlaneIndex; // NEW
+    public int SelectedPlaneIndex => selectedPlaneIndex;
+
+    public static ModeManager Instance { get; private set; }
 
     private void Awake()
     {
+        // Kill duplicates
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
         DontDestroyOnLoad(gameObject);
+
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnDestroy()
     {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
+        // Only the real instance should clean up + clear Instance
+        if (Instance == this)
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            Instance = null;
+        }
     }
 
-    // NEW: Called by PlaneSelection in main menu
     public void SetSelectedPlane(int index)
     {
         selectedPlaneIndex = index;
@@ -44,16 +59,17 @@ public class ModeManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        // Optional but helps ensure we hook the new scene’s components
+        plane = null;
+        emergency = null;
+
         TryHookAndApply();
     }
 
     private void TryHookAndApply()
     {
-        if (plane == null)
-            plane = FindFirstObjectByType<PlaneController>();
-        if (emergency == null)
-            emergency = FindFirstObjectByType<EmergencyLandingMode>();
-
+        if (plane == null) plane = FindFirstObjectByType<PlaneController>();
+        if (emergency == null) emergency = FindFirstObjectByType<EmergencyLandingMode>();
         if (plane == null) return;
 
         ApplyMode(modes[currentModeIndex]);
@@ -63,15 +79,9 @@ public class ModeManager : MonoBehaviour
     {
         switch (m)
         {
-            case ModeType.Standard:
-                SetStandardMode();
-                break;
-            case ModeType.Emergency:
-                SetEmergencyMode();
-                break;
-            case ModeType.Fuel:
-                SetStandardMode();
-                break;
+            case ModeType.Standard: SetStandardMode(); break;
+            case ModeType.Emergency: SetEmergencyMode(); break;
+            case ModeType.Fuel: SetStandardMode(); break;
         }
     }
 
@@ -81,8 +91,7 @@ public class ModeManager : MonoBehaviour
         plane.accelMultiplier = 1f;
         plane.speedBleed = 0f;
         plane.thrustMultiplier = 1f;
-        if (emergency != null)
-            emergency.enabled = false;
+        if (emergency != null) emergency.enabled = false;
     }
 
     private void SetEmergencyMode()

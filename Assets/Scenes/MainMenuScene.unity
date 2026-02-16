@@ -119,11 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &24820361 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7328843155243425838, guid: d240b1b90d42b6c4690a4d530c96be1c, type: 3}
-  m_PrefabInstance: {fileID: 744117548}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &109146148
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -643,7 +638,8 @@ MonoBehaviour:
   planeManager: {fileID: 638473758}
   modeManager: {fileID: 959634041}
   gameMenuDocument: {fileID: 1435750254}
-  speed: 8
+  previewAnchor: {fileID: 0}
+  spinSpeed: 30
 --- !u!4 &625793045
 Transform:
   m_ObjectHideFlags: 0
@@ -780,39 +776,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlaneManager
   planes:
-  - plane: {fileID: 24820361}
+  - planePrefab: {fileID: 7328843155243425838, guid: d240b1b90d42b6c4690a4d530c96be1c, type: 3}
     speed: 35
     acceleration: 5
     deceleration: 5
     rotation: 5
     levelSpeed: 5
     shoulderOffset: {x: 1.43, y: 3.98, z: -40.4}
-  - plane: {fileID: 649961830}
+  - planePrefab: {fileID: 4749636126818360162, guid: 719a1210064dfd64f8cc1d7c0af30594, type: 3}
     speed: 50
     acceleration: 5
     deceleration: 5
     rotation: 15
     levelSpeed: 20
-    shoulderOffset: {x: -0.06, y: 2.47, z: -20}
-  - plane: {fileID: 774521209}
+    shoulderOffset: {x: 3.07, y: 0.5, z: -61.9}
+  - planePrefab: {fileID: 2407291213859380536, guid: 27b3a3bede542df4faa703c8e3e6d758, type: 3}
     speed: 20
     acceleration: 5
     deceleration: 5
     rotation: 15
     levelSpeed: 20
-    shoulderOffset: {x: -0.06, y: 2.47, z: -20}
-  - plane: {fileID: 951879098}
+    shoulderOffset: {x: 3.1, y: 2.98, z: -61}
+  - planePrefab: {fileID: 4693425654840330386, guid: a98becf48d91c384db0df87ceee924b1, type: 3}
     speed: 35
     acceleration: 5
     deceleration: 5
     rotation: 15
     levelSpeed: 20
     shoulderOffset: {x: -0.06, y: 2.47, z: -20}
---- !u!1 &649961830 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4749636126818360162, guid: 719a1210064dfd64f8cc1d7c0af30594, type: 3}
-  m_PrefabInstance: {fileID: 445429479}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1060,11 +1051,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1671736245892886315, guid: 27b3a3bede542df4faa703c8e3e6d758, type: 3}
   m_PrefabInstance: {fileID: 774521207}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &774521209 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2407291213859380536, guid: 27b3a3bede542df4faa703c8e3e6d758, type: 3}
-  m_PrefabInstance: {fileID: 774521207}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &778418965
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1203,11 +1189,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a98becf48d91c384db0df87ceee924b1, type: 3}
---- !u!1 &951879098 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4693425654840330386, guid: a98becf48d91c384db0df87ceee924b1, type: 3}
-  m_PrefabInstance: {fileID: 951879097}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &951879099 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8608978257005542017, guid: a98becf48d91c384db0df87ceee924b1, type: 3}
