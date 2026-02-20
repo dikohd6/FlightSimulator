@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a0fd5509c566a9d4f862b56b6155cb04
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 1889
+  packageName: NYC Urban Buildings
+  packageVersion: 2.2
+  assetPath: Assets/NYC_buildings/textures/demo_scene/cubemap 1.mat
+  uploadId: 363066

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2012052feececb14da71ad982b86deb3
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 1889
+  packageName: NYC Urban Buildings
+  packageVersion: 2.2
+  assetPath: Assets/NYC_buildings/meshes/closed meshes/Materials/tunnel.mat
+  uploadId: 363066

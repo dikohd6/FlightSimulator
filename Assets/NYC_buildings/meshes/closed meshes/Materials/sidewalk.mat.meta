@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5fbc57aeae464bd4a9711d95e3377bd7
+timeCreated: 1473192776
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 1889
+  packageName: NYC Urban Buildings
+  packageVersion: 2.2
+  assetPath: Assets/NYC_buildings/meshes/closed meshes/Materials/sidewalk.mat
+  uploadId: 363066

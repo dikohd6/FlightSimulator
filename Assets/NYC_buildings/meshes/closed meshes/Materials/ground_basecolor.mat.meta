@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 80491df6ba1017e4f8922b01f2e3a270
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 1889
+  packageName: NYC Urban Buildings
+  packageVersion: 2.2
+  assetPath: Assets/NYC_buildings/meshes/closed meshes/Materials/ground_basecolor.mat
+  uploadId: 363066

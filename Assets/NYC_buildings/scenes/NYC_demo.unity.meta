@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: ae3316d474dfd47478267f8980b8f398
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 1889
+  packageName: NYC Urban Buildings
+  packageVersion: 2.2
+  assetPath: Assets/NYC_buildings/scenes/NYC_demo.unity
+  uploadId: 363066

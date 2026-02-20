@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c3d2374c27e8fe34d9bc0495cbf4492c
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 1889
+  packageName: NYC Urban Buildings
+  packageVersion: 2.2
+  assetPath: Assets/NYC_buildings/meshes/closed meshes/Materials/Asphalt2_basecolor.mat
+  uploadId: 363066

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5c69210de6260b94f84896fbe1fc9ca6
+timeCreated: 1472917298
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 1889
+  packageName: NYC Urban Buildings
+  packageVersion: 2.2
+  assetPath: Assets/NYC_buildings/meshes/closed meshes/Materials/NYC_set6.mat
+  uploadId: 363066

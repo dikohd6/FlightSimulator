@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: fc3f85ff922e572439e84a0bf6a0964a
+timeCreated: 1513466159
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: -1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 1889
+  packageName: NYC Urban Buildings
+  packageVersion: 2.2
+  assetPath: Assets/NYC_buildings/textures/demo_scene/cubemap 1.cubemap
+  uploadId: 363066
