@@ -18,9 +18,10 @@
     </ui:VisualElement>
     <ui:Label text="Info" name="infoTxt" class="info-banner" style="font-size: 40px; width: 760px; position: absolute; top: 28px; left: 964px;"/>
     <ui:VisualElement name="fuelGroup" class="fuel-container">
-    <ui:VisualElement name="fuelFrame" class="fuel-frame">
-        <ui:VisualElement name="fuelFill" class="fuel-fill" />
+        <ui:VisualElement name="fuelFrame" class="fuel-frame">
+            <ui:VisualElement name="fuelFill" class="fuel-fill"/>
+        </ui:VisualElement>
+        <ui:Label name="fuelPct" text="100%" class="fuel-label"/>
     </ui:VisualElement>
-    <ui:Label name="fuelPct" text="100%" class="fuel-label" />
-</ui:VisualElement>
+    <ui:Image source="project://database/Assets/Resources/Images/SurfaceDamage.png?fileID=2800000&amp;guid=7eb18c499247bff4d8032f055ec784e2&amp;type=3#SurfaceDamage" name="emergencyBannerImage" style="height: 487px; width: 1038px; position: absolute; top: -76px; left: 427px;"/>
 </ui:UXML>

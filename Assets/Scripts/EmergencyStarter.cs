@@ -3,11 +3,11 @@ using UnityEngine;
 public class EmergencyStarter : MonoBehaviour
 {
     [SerializeField] private EmergencyLandingMode emergency;
+    [SerializeField] private float triggerAfterSeconds = 10f;
 
     void Start()
     {
-        // Wait 10 seconds, then trigger the emergency
-        Invoke(nameof(StartEmergency), 10f);
+        Invoke(nameof(StartEmergency), triggerAfterSeconds);
     }
 
     void StartEmergency()

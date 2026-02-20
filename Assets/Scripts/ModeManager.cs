@@ -96,10 +96,6 @@ public class ModeManager : MonoBehaviour
 
     private void SetEmergencyMode()
     {
-        plane.maxSpeedCap = 0.55f;
-        plane.accelMultiplier = 0.4f;
-        plane.speedBleed = 1.0f;
-        plane.thrustMultiplier = 1f;
 
         if (emergency != null)
         {

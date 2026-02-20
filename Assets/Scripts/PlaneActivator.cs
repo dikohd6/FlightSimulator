@@ -73,6 +73,7 @@ public class PlaneActivator : MonoBehaviour
 
         planeController.maxSpeed = planeData.speed;
         planeController.maxThrustAccel = planeData.acceleration;
+        planeController.throttleChangeRate = planeData.deceleration * 0.8f;
         planeController.pitchTorque = planeData.rotation;
         planeController.rollTorque = planeData.rotation * 0.75f;
         planeController.yawTorque = planeData.rotation * 0.5f;

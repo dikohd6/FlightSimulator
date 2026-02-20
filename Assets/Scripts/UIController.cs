@@ -15,14 +15,14 @@ public class UIController : MonoBehaviour
     private VisualElement gameMenuOverlay;
     private VisualElement gameMenuMissionsOverlay;
     private VisualElement optionsOverlay;
-    
-     
+
     private Button startBtn;
     private Button optionsBtn;
     private Button exitBtn;
     private Button menubtn;
     private Button GameMenubtn;
     private Button playBtn;
+
     private Image background;
 
     // ---------- Leaderboard ----------
@@ -35,7 +35,7 @@ public class UIController : MonoBehaviour
     // Keep a cached list so ListView has a stable reference
     private List<LeaderboardStore.Entry> cachedEntries = new();
 
-    void Awake()
+    private void Awake()
     {
         var mainRoot = mainMenuDocument.rootVisualElement;
         var gameRoot = gameMenuDocument.rootVisualElement;
@@ -47,6 +47,7 @@ public class UIController : MonoBehaviour
         // --- main menu overlays ---
         mainMenuOverlay = mainRoot.Q<VisualElement>("MainMenu");
         optionsOverlay = mainRoot.Q<VisualElement>("Options");
+
         background = mainRoot.Q<Image>("background");
 
         startBtn = mainRoot.Q<Button>("startBtn");
@@ -57,6 +58,7 @@ public class UIController : MonoBehaviour
         menubtn = optionsOverlay.Q<Button>("mainMenuBtn");
         GameMenubtn = gameMenuOverlay.Q<Button>("mainMenuBtn");
         playBtn = gameMenuOverlay.Q<Button>("playBtn");
+
         // Start hidden
         optionsOverlay.style.display = DisplayStyle.None;
         gameMenuOverlay.style.display = DisplayStyle.None;
@@ -77,7 +79,6 @@ public class UIController : MonoBehaviour
                 leaderboardList = leaderboardRoot.Q<ListView>();
 
             leaderboardRoot.style.display = DisplayStyle.None;
-
             SetupLeaderboardListView();
         }
         else
@@ -89,21 +90,20 @@ public class UIController : MonoBehaviour
         startBtn.clicked += OnStartClicked;
         optionsBtn.clicked += OnOptionsClicked;
         exitBtn.clicked += OnExitClicked;
+
         menubtn.clicked += OnMainMenuClicked;
         GameMenubtn.clicked += OnMainMenuClicked;
+
         playBtn.clicked += OnPlayClicked;
+
         leaderboardMainMenuBtn.clicked += OnMainMenuClicked;
-        if (leaderboardBtn != null)
-            leaderboardBtn.clicked += OnLeaderboardClicked;
 
-
-        if (leaderboardClearBtn != null)
-            leaderboardClearBtn.clicked += ClearLeaderboard;
+        if (leaderboardBtn != null) leaderboardBtn.clicked += OnLeaderboardClicked;
+        if (leaderboardClearBtn != null) leaderboardClearBtn.clicked += ClearLeaderboard;
     }
 
-
     // ---------------- Main Menu ----------------
-    void OnStartClicked()
+    private void OnStartClicked()
     {
         mainMenuOverlay.style.display = DisplayStyle.None;
         background.style.display = DisplayStyle.None;
@@ -114,7 +114,7 @@ public class UIController : MonoBehaviour
         hangarGate.OpenGates();
     }
 
-    void OnOptionsClicked()
+    private void OnOptionsClicked()
     {
         optionsOverlay.style.display = DisplayStyle.Flex;
         mainMenuOverlay.style.display = DisplayStyle.None;
@@ -123,13 +123,13 @@ public class UIController : MonoBehaviour
             leaderboardRoot.style.display = DisplayStyle.None;
     }
 
-    void OnExitClicked()
+    private void OnExitClicked()
     {
         Debug.Log("exit button clicked!");
         Application.Quit();
     }
 
-    void OnMainMenuClicked()
+    private void OnMainMenuClicked()
     {
         mainMenuOverlay.style.display = DisplayStyle.Flex;
         optionsOverlay.style.display = DisplayStyle.None;
@@ -143,10 +143,11 @@ public class UIController : MonoBehaviour
     }
 
     // ---------------- Leaderboard ----------------
-    void OnLeaderboardClicked()
+    private void OnLeaderboardClicked()
     {
         // Hide other overlays
         optionsOverlay.style.display = DisplayStyle.None;
+
         // Keep background visible (looks like your design)
         background.style.display = DisplayStyle.Flex;
 
@@ -157,7 +158,7 @@ public class UIController : MonoBehaviour
         }
     }
 
-    void OnPlayClicked()
+    private void OnPlayClicked()
     {
         if (modeManager.CurrentMode == ModeManager.ModeType.Emergency)
         {
@@ -172,7 +173,8 @@ public class UIController : MonoBehaviour
             SceneManager.LoadScene("FuelMode");
         }
     }
-    void ClearLeaderboard()
+
+    private void ClearLeaderboard()
     {
         LeaderboardStore.Clear();
         RefreshLeaderboard();
@@ -239,7 +241,6 @@ public class UIController : MonoBehaviour
 
         // Load newest data
         cachedEntries = new List<LeaderboardStore.Entry>(LeaderboardStore.GetEntriesSorted());
-
         leaderboardList.itemsSource = cachedEntries;
         leaderboardList.Rebuild();
     }

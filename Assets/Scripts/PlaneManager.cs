@@ -5,7 +5,11 @@ public class PlaneManager : MonoBehaviour
     [System.Serializable]
     public class PlaneData
     {
-        public GameObject planePrefab;   // prefab in Project, NOT scene object
+        public GameObject planePrefab;
+
+        [Header("UI Toolkit")]
+        public string uiNameElement; // MUST match the UXML element name (ex: "LearJet45")
+
         public int speed;
         public int acceleration;
         public int deceleration;

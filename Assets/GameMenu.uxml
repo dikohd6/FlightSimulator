@@ -3,8 +3,8 @@
     <ui:VisualElement name="missionSelect" style="flex-grow: 1; position: absolute; height: 291px; width: 1925px; top: 792px; background-color: rgba(0, 0, 0, 0.67); border-left-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-top-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); left: -5px; -unity-font-definition: url(&quot;project://database/Assets/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&amp;guid=92406e58e9fd3044fbadf2a4822b18b0&amp;type=3#NotInter-Regular&quot;); -unity-font-style: bold;">
         <ui:Button text="" name="playBtn" style="height: 121px; width: 463px; position: absolute; top: 13px; left: 1384px; background-color: rgba(0, 0, 0, 0); -unity-background-image-tint-color: rgb(255, 255, 255);"/>
         <ui:Button text="" name="mainMenuBtn" style="height: 144px; width: 482px; position: absolute; top: 132px; left: 1359px;"/>
-        <ui:Button text="" name="leftBtn" style="position: absolute; height: 118px; width: 114px; background-color: rgba(188, 188, 188, 0); -unity-background-image-tint-color: rgb(255, 255, 255); background-image: url(&quot;project://database/Assets/Resources/Images/left.png?fileID=2800000&amp;guid=28c35f7303fbb4c42bb68ab18cccbd33&amp;type=3#left&quot;); top: -449px; left: 503px; border-left-color: rgba(149, 149, 149, 0); border-right-color: rgba(149, 149, 149, 0); border-top-color: rgba(149, 149, 149, 0); border-bottom-color: rgba(149, 149, 149, 0);"/>
-        <ui:Button text="" name="rightBtn" style="position: absolute; height: 99px; width: 126px; background-color: rgba(188, 188, 188, 0); -unity-background-image-tint-color: rgb(255, 255, 255); background-image: url(&quot;project://database/Assets/Resources/Images/right.png?fileID=2800000&amp;guid=b3e21d7fe7210824f88c106d61a5888e&amp;type=3#right&quot;); top: -429px; left: 1444px; border-left-color: rgba(149, 149, 149, 0); border-right-color: rgba(149, 149, 149, 0); border-top-color: rgba(149, 149, 149, 0); border-bottom-color: rgba(149, 149, 149, 0);"/>
+        <ui:Button text="" name="leftBtn" style="position: absolute; height: 118px; width: 114px; background-color: rgba(188, 188, 188, 0); -unity-background-image-tint-color: rgb(255, 255, 255); background-image: url(&quot;project://database/Assets/Resources/Images/left.png?fileID=2800000&amp;guid=28c35f7303fbb4c42bb68ab18cccbd33&amp;type=3#left&quot;); top: -267px; left: 396px; border-left-color: rgba(149, 149, 149, 0); border-right-color: rgba(149, 149, 149, 0); border-top-color: rgba(149, 149, 149, 0); border-bottom-color: rgba(149, 149, 149, 0);"/>
+        <ui:Button text="" name="rightBtn" style="position: absolute; height: 99px; width: 126px; background-color: rgba(188, 188, 188, 0); -unity-background-image-tint-color: rgb(255, 255, 255); background-image: url(&quot;project://database/Assets/Resources/Images/right.png?fileID=2800000&amp;guid=b3e21d7fe7210824f88c106d61a5888e&amp;type=3#right&quot;); top: -250px; left: 1408px; border-left-color: rgba(149, 149, 149, 0); border-right-color: rgba(149, 149, 149, 0); border-top-color: rgba(149, 149, 149, 0); border-bottom-color: rgba(149, 149, 149, 0);"/>
         <ui:Image style="position: absolute; background-image: resource(&quot;Images/stats&quot;); height: 528px; width: 596px; top: -782px; left: -54px;"/>
     </ui:VisualElement>
     <ui:VisualElement name="Missions" style="flex-grow: 1; position: absolute; height: 285px; width: 1261px; top: 791px; left: -12px;">
@@ -22,5 +22,19 @@
         </ui:VisualElement>
         <ui:Button text="" name="missionLeftBtn" style="position: absolute; height: 108px; width: 129px; background-color: rgba(188, 188, 188, 0); -unity-background-image-tint-color: rgb(255, 255, 255); background-image: url(&quot;project://database/Assets/Resources/Images/left.png?fileID=2800000&amp;guid=28c35f7303fbb4c42bb68ab18cccbd33&amp;type=3#left&quot;); top: 77px; left: 120px; border-left-color: rgba(149, 149, 149, 0); border-right-color: rgba(149, 149, 149, 0); border-top-color: rgba(149, 149, 149, 0); border-bottom-color: rgba(149, 149, 149, 0);"/>
         <ui:Button text="" name="missionRightBtn" style="position: absolute; height: 102px; width: 107px; background-color: rgba(188, 188, 188, 0); -unity-background-image-tint-color: rgb(255, 255, 255); background-image: url(&quot;project://database/Assets/Resources/Images/right.png?fileID=2800000&amp;guid=b3e21d7fe7210824f88c106d61a5888e&amp;type=3#right&quot;); top: 78px; left: 1055px; border-left-color: rgba(149, 149, 149, 0); border-right-color: rgba(149, 149, 149, 0); border-top-color: rgba(149, 149, 149, 0); border-bottom-color: rgba(149, 149, 149, 0);"/>
+    </ui:VisualElement>
+    <ui:VisualElement name="PlaneStatsGroup" style="flex-grow: 1; position: absolute; height: 409px; width: 1921px; top: 2px; left: -1px;">
+        <ui:VisualElement name="Boeing737" style="flex-grow: 1; position: absolute; height: 536px; width: 1918px;">
+            <ui:Image/>
+        </ui:VisualElement>
+        <ui:VisualElement name="Boeing777" style="flex-grow: 1; position: absolute; height: 538px; width: 1918px;">
+            <ui:Image/>
+        </ui:VisualElement>
+        <ui:VisualElement name="Helicopter" style="flex-grow: 1; position: absolute; height: 449px; width: 1916px;">
+            <ui:Image source="project://database/Assets/Resources/Images/HELICOPTER_text_no_bg.png?fileID=2800000&amp;guid=9bedca7f20b5246488b3472c55e1645f&amp;type=3#HELICOPTER_text_no_bg"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="LearJet45" style="flex-grow: 1; position: absolute; height: 514px; width: 1923px;">
+            <ui:Image source="project://database/Assets/Resources/Images/LEARJET45_text_style_match.png?fileID=2800000&amp;guid=b45121abe2cd2514fb21cc6de5619554&amp;type=3#LEARJET45_text_style_match"/>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

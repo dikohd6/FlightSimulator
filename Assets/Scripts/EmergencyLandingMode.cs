@@ -19,13 +19,13 @@ public class EmergencyLandingMode : MonoBehaviour
     [SerializeField] private FailureType forcedFailure = FailureType.PartialEngineLoss;
     [SerializeField] private bool randomizeFailure = true;
 
-    [Tooltip("Seconds AFTER ActivateEmergency before the emergency effects begin.")]
-    [SerializeField] private float startDelay = 150f; // 2:30 minutes default
+    [Tooltip("Fallback seconds AFTER ActivateEmergency before effects begin if player never finishes info phase.")]
+    [SerializeField] private float startDelay = 150f; // fallback
 
-    [Tooltip("Seconds to fade in the initial failure effects once the delay ends (0 = instant).")]
+    [Tooltip("Seconds to fade in the initial failure effects once emergency begins (0 = instant).")]
     [SerializeField] private float rampInTime = 1.5f;
 
-    [Tooltip("How long (seconds) the emergency gets progressively worse (after delay).")]
+    [Tooltip("How long (seconds) the emergency gets progressively worse (after effects begin).")]
     [SerializeField] private float degradeDuration = 80f;
 
     [Tooltip("Extra drag added over time (makes energy management harder).")]
@@ -74,10 +74,10 @@ public class EmergencyLandingMode : MonoBehaviour
     [SerializeField] private float preMaxPitch = 15f;
 
     [Header("Pre-Objective Random Ranges (Realistic)")]
-    [Tooltip("Target AGL altitude range (Unity units; if 1u ≈ 1m, this is meters).")]
+    [Tooltip("Target AGL altitude range.")]
     [SerializeField] private Vector2 preAltRange = new Vector2(150f, 300f);
 
-    [Tooltip("Target speed range in km/h (prop/trainer feel).")]
+    [Tooltip("Target speed range in km/h.")]
     [SerializeField] private Vector2 preTargetSpeedRangeKmh = new Vector2(50f, 80f);
 
     [Tooltip("Allowed +/- band around target speed in km/h.")]
@@ -99,7 +99,7 @@ public class EmergencyLandingMode : MonoBehaviour
     // Hold bonus scoring (earn points while holding, until emergency begins)
     // ----------------------------
     [Header("Hold Bonus Scoring")]
-    [SerializeField] private int pointsPerSecondWhileHolding = 2; // tune (2 * 150s = 300 pts max)
+    [SerializeField] private int pointsPerSecondWhileHolding = 2;
 
     private float holdScoreAccumulator;
 
@@ -113,16 +113,17 @@ public class EmergencyLandingMode : MonoBehaviour
 
     private FailureType activeFailure;
 
-    private float activateTime;   // when ActivateEmergency was called
-    private float t0;             // when effects actually begin (after delay)
-    private bool active;          // emergency running
-    private bool pending;         // waiting for delay to elapse
-    private bool startedEffects;  // initial failure has been applied (or ramping)
+    private float activateTime;
+    private float delayEndTime;    // fallback: activateTime + startDelay
+    private float effectsStartTime; // when effects actually begin
+    private bool active;
+    private bool pending;
+    private bool startedEffects;
 
     void Awake()
     {
-        if (plane == null) plane = FindFirstObjectByType<PlaneController>();
-        if (hud == null) hud = FindFirstObjectByType<HUDController>();
+        if (plane == null) plane = FindObjectOfType<PlaneController>();
+        if (hud == null) hud = FindObjectOfType<HUDController>();
     }
 
     void OnEnable()
@@ -147,8 +148,8 @@ public class EmergencyLandingMode : MonoBehaviour
 
     public void ActivateEmergency()
     {
-        if (plane == null) plane = FindFirstObjectByType<PlaneController>();
-        if (hud == null) hud = FindFirstObjectByType<HUDController>();
+        if (plane == null) plane = FindObjectOfType<PlaneController>();
+        if (hud == null) hud = FindObjectOfType<HUDController>();
         if (plane == null) return;
 
         activeFailure = randomizeFailure
@@ -156,11 +157,13 @@ public class EmergencyLandingMode : MonoBehaviour
             : forcedFailure;
 
         activateTime = Time.time;
-        t0 = activateTime + Mathf.Max(0f, startDelay);
+        delayEndTime = activateTime + Mathf.Max(0f, startDelay);
 
-        pending = true;
-        active = false;
+        pending = true;       // info phase
+        active = false;       // no effects yet
         startedEffects = false;
+
+        effectsStartTime = 0f;
 
         // start universal pre-objective (randomized once)
         preTimer = 0f;
@@ -175,34 +178,25 @@ public class EmergencyLandingMode : MonoBehaviour
     {
         if (plane == null) return;
 
-        // -------- PRE PHASE (delay window) --------
+        // -------- INFO PHASE (pending) --------
         if (pending)
         {
             if (enableUniversalPreObjective && !preComplete)
                 RunUniversalPreObjective();
 
-            // Keep adding points WHILE the player is holding the condition
             AwardHoldPointsIfHoldingNow();
 
-            if (Time.time < t0) return;
+            // Info is "done" when preComplete (if enabled),
+            // OR fallback time reached so it won't be stuck forever.
+            bool infoDone = (!enableUniversalPreObjective) || preComplete;
+            bool fallbackReached = Time.time >= delayEndTime;
 
-            // Delay finished -> start emergency now
-            pending = false;
-            active = true;
+            if (!infoDone && !fallbackReached)
+                return; // keep showing info, NO emergency effects yet
 
-            // Base emergency feel (apply at the moment emergency begins)
-            plane.maxSpeedCap = Mathf.Min(plane.maxSpeedCap, 0.75f);
-            plane.accelMultiplier = Mathf.Min(plane.accelMultiplier, 0.6f);
-            plane.speedBleed = Mathf.Max(plane.speedBleed, 0.6f);
-
-            plane.stallSpeed = baseStall * stallMult;
-
-            // If no ramp, apply immediately; otherwise we'll ramp it below
-            if (rampInTime <= 0f)
-            {
-                ApplyImmediateFailure(activeFailure, 1f);
-                startedEffects = true;
-            }
+            // Start emergency effects now (info phase ends)
+            StartEffectsNow();
+            return;
         }
 
         if (!active) return;
@@ -210,14 +204,14 @@ public class EmergencyLandingMode : MonoBehaviour
         // Ramp-in initial failure effects smoothly (optional)
         if (!startedEffects)
         {
-            float ramp = Mathf.Clamp01((Time.time - t0) / Mathf.Max(0.0001f, rampInTime));
+            float ramp = Mathf.Clamp01((Time.time - effectsStartTime) / Mathf.Max(0.0001f, rampInTime));
             ApplyImmediateFailure(activeFailure, ramp);
 
             if (ramp >= 1f) startedEffects = true;
         }
 
-        // Progressive worsening (start counting from t0)
-        float u = Mathf.Clamp01((Time.time - t0) / Mathf.Max(1f, degradeDuration));
+        // Progressive worsening (start counting from effectsStartTime)
+        float u = Mathf.Clamp01((Time.time - effectsStartTime) / Mathf.Max(1f, degradeDuration));
         float worsen = SmoothStep01(u);
 
         // Always: gradually increase bleed so player must commit to runway
@@ -256,13 +250,34 @@ public class EmergencyLandingMode : MonoBehaviour
         }
     }
 
+    private void StartEffectsNow()
+    {
+        pending = false;
+        active = true;
+        startedEffects = false;
+
+        effectsStartTime = Time.time;
+
+        // Base emergency feel
+        plane.maxSpeedCap = Mathf.Min(plane.maxSpeedCap, 0.75f);
+        plane.accelMultiplier = Mathf.Min(plane.accelMultiplier, 0.6f);
+        plane.speedBleed = Mathf.Max(plane.speedBleed, 0.6f);
+        plane.stallSpeed = baseStall * stallMult;
+
+        // If no ramp, apply immediately
+        if (rampInTime <= 0f)
+        {
+            ApplyImmediateFailure(activeFailure, 1f);
+            startedEffects = true;
+        }
+    }
+
     private void AwardHoldPointsIfHoldingNow()
     {
         if (hud == null || pointsPerSecondWhileHolding <= 0) return;
 
-        // Only earn during pre-emergency delay
+        // Only earn during pending info phase
         if (!pending) return;
-        if (Time.time >= t0) return;
 
         // Earn ONLY while currently meeting the condition
         if (!IsPreObjectiveSatisfiedNow()) return;
@@ -277,7 +292,7 @@ public class EmergencyLandingMode : MonoBehaviour
         }
     }
 
-    // IMPORTANT: now takes "blend" so we can ramp in smoothly
+    // IMPORTANT: takes "blend" so we can ramp in smoothly
     private void ApplyImmediateFailure(FailureType f, float blend01)
     {
         blend01 = Mathf.Clamp01(blend01);
@@ -341,7 +356,13 @@ public class EmergencyLandingMode : MonoBehaviour
         if (plane == null) return 0f;
         Rigidbody rb = plane.GetComponent<Rigidbody>();
         if (rb == null) return 0f;
-        return rb.linearVelocity.magnitude * 3.6f;
+
+#if UNITY_6000_0_OR_NEWER
+        float ms = rb.linearVelocity.magnitude;
+#else
+        float ms = rb.velocity.magnitude;
+#endif
+        return ms * 3.6f;
     }
 
     // ----------------------------
@@ -403,48 +424,29 @@ public class EmergencyLandingMode : MonoBehaviour
         return altOk && speedOk && stableOk;
     }
 
-    // Clean banner text for infoTxt (no emergency words)
-    public string GetInfoTextSimple()
-    {
-        if (!enableUniversalPreObjective) return "";
-
-        float alt = GetAltitudeAGL_Smoothed();
-        float spd = GetSpeedKmh();
-
-        bool altOk = alt >= preSafeAltChosen;
-        bool spdOk = spd >= (preTargetSpeedChosenKmh - preSpeedBandChosenKmh) &&
-                     spd <= (preTargetSpeedChosenKmh + preSpeedBandChosenKmh);
-
-        float remain = Mathf.Max(0f, preHoldChosen - preTimer);
-
-        string line1 = $"REACH {preSafeAltChosen:0}m AGL • {preTargetSpeedChosenKmh:0}±{preSpeedBandChosenKmh:0} km/h if";
-
-        if (preComplete)
-            return "READY\nEMERGENCY IMMINENT…";
-
-        if (altOk && spdOk && IsPreObjectiveSatisfiedNow())
-            return $"GOOD • HOLDING…\n{remain:0.0}s LEFT";
-
-        if (!altOk)
-            return $"{line1}\nCLIMB ({alt:0}m) • HOLD {remain:0.0}s";
-
-        return $"{line1}\nADJUST SPEED ({spd:0} km/h) • HOLD {remain:0.0}s";
-    }
-
-    // If you prefer one-line info:
     public string GetInfoText()
     {
         if (!enableUniversalPreObjective) return "";
+
         float alt = GetAltitudeAGL_Smoothed();
         float spd = GetSpeedKmh();
         float remain = Mathf.Max(0f, preHoldChosen - preTimer);
+
         return $"ALT {alt:0}m ≥{preSafeAltChosen:0}m • SPD {spd:0}km/h {preTargetSpeedChosenKmh:0}±{preSpeedBandChosenKmh:0} • HOLD {remain:0.0}s";
     }
 
+    // ----------------------------
+    // Public getters used by HUD
+    // ----------------------------
     public bool IsPending() => pending;
     public bool IsActive() => active;
 
     public FailureType GetActiveFailure() => activeFailure;
+
+    public bool IsPreObjectiveComplete() => preComplete;
+
+    // HUD uses this so info disappears before effects begin
+    public bool ShouldShowInfoText() => pending && enableUniversalPreObjective && !preComplete;
 
     public void ResetToBaseline()
     {

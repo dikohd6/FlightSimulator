@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -48,6 +49,28 @@ public class HUDController : MonoBehaviour
     [SerializeField] private string altitudeSuffix = " m";
     [SerializeField] private bool altitudeUseAGL = true;
 
+    // ---------------- Emergency Banner (Image) ----------------
+    [Header("Emergency Banner (UXML)")]
+    [SerializeField] private string emergencyBannerImageName = "emergencyBannerImage";
+
+    [Header("Emergency Banner Textures (drag into Inspector)")]
+    [SerializeField] private Texture2D banner_PartialEngineLoss;
+    [SerializeField] private Texture2D banner_EngineFlameout;
+    [SerializeField] private Texture2D banner_HydraulicsDamage;
+    [SerializeField] private Texture2D banner_ControlSurfaceDamage;
+    [SerializeField] private Texture2D banner_GearFailure;
+    [SerializeField] private Texture2D banner_Default;
+
+    [Header("Emergency Banner Flash")]
+    [SerializeField] private bool flashBanner = true;
+    [SerializeField] private float flashIntervalSeconds = 0.35f;
+    [SerializeField, Range(0f, 1f)] private float flashDimOpacity = 0.15f;
+
+    private Image emergencyBannerImage;
+    private Coroutine bannerFlashRoutine;
+    private bool bannerFlashOn;
+    // -----------------------------------------------------------
+
     private Label timeLabel;
     private Label scoreLabel;
     private Label speedLabel;
@@ -62,9 +85,9 @@ public class HUDController : MonoBehaviour
     void Awake()
     {
         if (hudDocument == null) hudDocument = GetComponent<UIDocument>();
-        if (plane == null) plane = FindFirstObjectByType<PlaneController>();
-        if (emergency == null) emergency = FindFirstObjectByType<EmergencyLandingMode>();
-        if (fuelMode == null) fuelMode = FindFirstObjectByType<FuelModeAddon>();
+        if (plane == null) plane = FindObjectOfType<PlaneController>();
+        if (emergency == null) emergency = FindObjectOfType<EmergencyLandingMode>();
+        if (fuelMode == null) fuelMode = FindObjectOfType<FuelModeAddon>();
 
         if (hudDocument == null)
         {
@@ -100,6 +123,16 @@ public class HUDController : MonoBehaviour
         if (fuelFrame == null) Debug.LogWarning($"HUDController: Missing '{fuelFrameName}'.");
         if (fuelFill == null) Debug.LogWarning($"HUDController: Missing '{fuelFillName}'.");
 
+        // Emergency banner image
+        emergencyBannerImage = root.Q<Image>(emergencyBannerImageName);
+        if (emergencyBannerImage == null)
+            Debug.LogWarning($"HUDController: Missing Image '{emergencyBannerImageName}'. (Name it in UXML/UI Builder)");
+        else
+        {
+            emergencyBannerImage.style.display = DisplayStyle.None;
+            emergencyBannerImage.style.opacity = 1f;
+        }
+
         // Default hidden
         if (fuelGroup != null) fuelGroup.style.display = DisplayStyle.None;
         fuelUIVisible = false;
@@ -112,6 +145,11 @@ public class HUDController : MonoBehaviour
         UpdateTime(0f);
         UpdateSpeed(0f);
         UpdateAltitude(0f);
+    }
+
+    void OnDisable()
+    {
+        StopBannerFlash();
     }
 
     void Update()
@@ -137,26 +175,95 @@ public class HUDController : MonoBehaviour
             UpdateAltitude(alt);
         }
 
-        // INFO
-        if (infoLabel != null && emergency != null)
+        // INFO: show only during "info phase" (pending + pre-objective not complete)
+        bool infoVisibleNow = false;
+        if (infoLabel != null && emergency != null && emergency.ShouldShowInfoText())
         {
-            if (emergency.IsPending())
-            {
-                infoLabel.style.display = DisplayStyle.Flex;
-                infoLabel.text = emergency.GetInfoText();
+            infoVisibleNow = true;
+            infoLabel.style.display = DisplayStyle.Flex;
+            infoLabel.text = emergency.GetInfoText();
 
-                bool okNow = emergency.IsPreObjectiveSatisfiedNow();
-                if (!okNow) infoLabel.AddToClassList("info-banner--warning");
-                else infoLabel.RemoveFromClassList("info-banner--warning");
-            }
-            else
-            {
-                infoLabel.style.display = DisplayStyle.None;
-            }
+            bool okNow = emergency.IsPreObjectiveSatisfiedNow();
+            if (!okNow) infoLabel.AddToClassList("info-banner--warning");
+            else infoLabel.RemoveFromClassList("info-banner--warning");
         }
+        else
+        {
+            if (infoLabel != null) infoLabel.style.display = DisplayStyle.None;
+        }
+
+        // EMERGENCY BANNER: show ONLY after info is gone
+        UpdateEmergencyBanner(infoVisibleNow);
 
         // FUEL
         UpdateFuelUI();
+    }
+
+    private void UpdateEmergencyBanner(bool infoVisibleNow)
+    {
+        if (emergencyBannerImage == null || emergency == null) return;
+
+        // Requirement: show after info text is done -> only when active and info not visible
+        bool shouldShow = emergency.IsActive() && !infoVisibleNow;
+
+        emergencyBannerImage.style.display = shouldShow ? DisplayStyle.Flex : DisplayStyle.None;
+
+        if (!shouldShow)
+        {
+            StopBannerFlash();
+            return;
+        }
+
+        Texture2D tex = GetBannerTexture(emergency.GetActiveFailure());
+        if (tex != null && emergencyBannerImage.image != tex)
+            emergencyBannerImage.image = tex;
+
+        if (flashBanner) StartBannerFlash();
+        else StopBannerFlash();
+    }
+
+    private Texture2D GetBannerTexture(EmergencyLandingMode.FailureType t)
+    {
+        return t switch
+        {
+            EmergencyLandingMode.FailureType.PartialEngineLoss => banner_PartialEngineLoss,
+            EmergencyLandingMode.FailureType.EngineFlameout => banner_EngineFlameout,
+            EmergencyLandingMode.FailureType.HydraulicsDamage => banner_HydraulicsDamage,
+            EmergencyLandingMode.FailureType.ControlSurfaceDamage => banner_ControlSurfaceDamage,
+            EmergencyLandingMode.FailureType.GearFailure => banner_GearFailure,
+            _ => banner_Default
+        };
+    }
+
+    private void StartBannerFlash()
+    {
+        if (bannerFlashRoutine != null) return;
+        bannerFlashRoutine = StartCoroutine(BannerFlashLoop());
+    }
+
+    private void StopBannerFlash()
+    {
+        if (bannerFlashRoutine != null)
+        {
+            StopCoroutine(bannerFlashRoutine);
+            bannerFlashRoutine = null;
+        }
+
+        bannerFlashOn = false;
+        if (emergencyBannerImage != null)
+            emergencyBannerImage.style.opacity = 1f;
+    }
+
+    private IEnumerator BannerFlashLoop()
+    {
+        while (true)
+        {
+            bannerFlashOn = !bannerFlashOn;
+            if (emergencyBannerImage != null)
+                emergencyBannerImage.style.opacity = bannerFlashOn ? 1f : flashDimOpacity;
+
+            yield return new WaitForSecondsRealtime(flashIntervalSeconds);
+        }
     }
 
     private void UpdateFuelUI()
@@ -174,7 +281,6 @@ public class HUDController : MonoBehaviour
         float target = Mathf.Clamp01(fuelMode.Fuel01);
         fuelDisplay01 = Mathf.Lerp(fuelDisplay01, target, Time.deltaTime * fuelSmooth);
 
-        // Uses fixed frame height from USS (reliable)
         float frameH = fuelFrame.resolvedStyle.height;
         float pad = fuelFrame.resolvedStyle.paddingTop + fuelFrame.resolvedStyle.paddingBottom;
         float innerH = Mathf.Max(0f, frameH - pad);
