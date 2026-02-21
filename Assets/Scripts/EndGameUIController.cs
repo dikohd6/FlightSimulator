@@ -11,11 +11,12 @@ public class EndGameUIController : MonoBehaviour
 
     private VisualElement root;
     private VisualElement resultsRoot;
-    private VisualElement panel;
 
     private Label titleTxt;
     private Label lineLanding, lineAlignment, lineBank, lineDescent, lineSpeed, lineTotal;
     private Button mainMenuBtn;
+
+    private FuelModeAddon fuelAddon;
 
     void Awake()
     {
@@ -24,7 +25,6 @@ public class EndGameUIController : MonoBehaviour
         root = doc.rootVisualElement;
 
         resultsRoot = root.Q<VisualElement>("ResultsRoot");
-        panel = root.Q<VisualElement>("Panel");
 
         titleTxt = root.Q<Label>("titleTxt");
         lineLanding = root.Q<Label>("lineLanding");
@@ -36,10 +36,18 @@ public class EndGameUIController : MonoBehaviour
 
         mainMenuBtn = root.Q<Button>("mainMenuBtn");
 
+        fuelAddon = FindFirstObjectByType<FuelModeAddon>();
+
         if (mainMenuBtn != null)
-            mainMenuBtn.clicked += () => SceneManager.LoadScene(mainMenuSceneName);
+            mainMenuBtn.clicked += OnMainMenuClicked;
 
         HideAll();
+    }
+
+    private void OnMainMenuClicked()
+    {
+        if (fuelAddon != null) fuelAddon.SetFuelPaused(false);
+        SceneManager.LoadScene(mainMenuSceneName);
     }
 
     public void HideAll()
@@ -54,6 +62,8 @@ public class EndGameUIController : MonoBehaviour
         Hide(lineTotal);
 
         if (mainMenuBtn != null) mainMenuBtn.style.display = DisplayStyle.None;
+
+        if (fuelAddon != null) fuelAddon.SetFuelPaused(false);
     }
 
     private void Hide(Label l)
@@ -74,10 +84,12 @@ public class EndGameUIController : MonoBehaviour
     {
         StopAllCoroutines();
 
+        if (fuelAddon == null) fuelAddon = FindFirstObjectByType<FuelModeAddon>();
+        if (fuelAddon != null) fuelAddon.SetFuelPaused(true);
+
         if (resultsRoot != null) resultsRoot.style.display = DisplayStyle.Flex;
         if (titleTxt != null) titleTxt.text = d.success ? "LANDING SUCCESS" : "LANDING FAILED";
 
-        // start hidden
         Hide(lineLanding);
         Hide(lineAlignment);
         Hide(lineBank);
@@ -111,5 +123,7 @@ public class EndGameUIController : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(revealDelay);
         if (mainMenuBtn != null) mainMenuBtn.style.display = DisplayStyle.Flex;
+
+        // Keep fuel paused until they leave / HideAll is called
     }
 }

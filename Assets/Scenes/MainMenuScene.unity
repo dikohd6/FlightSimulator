@@ -782,12 +782,12 @@ MonoBehaviour:
     speed: 500
     acceleration: 40
     deceleration: 5
-    rotation: 8
-    levelSpeed: 5
+    rotation: 30
+    levelSpeed: 10
     shoulderOffset: {x: 1.43, y: 5, z: -40.4}
   - planePrefab: {fileID: 4749636126818360162, guid: 719a1210064dfd64f8cc1d7c0af30594, type: 3}
     uiNameElement: Boeing777
-    speed: 800
+    speed: 600
     acceleration: 60
     deceleration: 8
     rotation: 50
@@ -795,19 +795,19 @@ MonoBehaviour:
     shoulderOffset: {x: 3.07, y: 7.42, z: -61.9}
   - planePrefab: {fileID: 2407291213859380536, guid: 27b3a3bede542df4faa703c8e3e6d758, type: 3}
     uiNameElement: Helicopter
-    speed: 20
-    acceleration: 5
-    deceleration: 5
-    rotation: 15
+    speed: 400
+    acceleration: 65
+    deceleration: 8
+    rotation: 75
     levelSpeed: 20
     shoulderOffset: {x: 3.1, y: 2.98, z: -61}
   - planePrefab: {fileID: 4693425654840330386, guid: a98becf48d91c384db0df87ceee924b1, type: 3}
     uiNameElement: LearJet45
-    speed: 35
-    acceleration: 5
-    deceleration: 5
-    rotation: 15
-    levelSpeed: 20
+    speed: 650
+    acceleration: 60
+    deceleration: 15
+    rotation: 55
+    levelSpeed: 40
     shoulderOffset: {x: -0.06, y: 2.47, z: -20}
 --- !u!1 &705507993
 GameObject:
@@ -1049,7 +1049,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2407291213859380536, guid: 27b3a3bede542df4faa703c8e3e6d758, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1363177433}
   m_SourcePrefab: {fileID: 100100000, guid: 27b3a3bede542df4faa703c8e3e6d758, type: 3}
 --- !u!4 &774521208 stripped
 Transform:
@@ -1545,6 +1548,41 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1363177432 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2407291213859380536, guid: 27b3a3bede542df4faa703c8e3e6d758, type: 3}
+  m_PrefabInstance: {fileID: 774521207}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1363177433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363177432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41b7ae17978f0e54085e953a9f54f4a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HelicopterRotorSpin
+  mainRotor: {fileID: 1363564650}
+  tailRotor: {fileID: 1363911822}
+  mainAxis: 1
+  tailAxis: 0
+  mainRotorSpeed: 1800
+  tailRotorSpeed: 3600
+  requireSelectedIndexMatch: 1
+  helicopterPlaneIndex: 2
+--- !u!4 &1363564650 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2396877527411040345, guid: 27b3a3bede542df4faa703c8e3e6d758, type: 3}
+  m_PrefabInstance: {fileID: 774521207}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1363911822 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4346243174315351375, guid: 27b3a3bede542df4faa703c8e3e6d758, type: 3}
+  m_PrefabInstance: {fileID: 774521207}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1420739114
 PrefabInstance:
   m_ObjectHideFlags: 0

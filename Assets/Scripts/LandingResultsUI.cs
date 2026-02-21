@@ -18,9 +18,17 @@ public class LandingResultsUI : MonoBehaviour
 
     private Label lineLanding, lineAlignment, lineBank, lineDescent, lineSpeed, lineTotal;
 
+    // NEW: Only pause fuel in Fuel mode
+    private FuelModeAddon fuelAddon;
+    private ModeManager modeManager;
+
     void Awake()
     {
         if (resultsDocument == null) resultsDocument = GetComponent<UIDocument>();
+
+        // NEW
+        modeManager = ModeManager.Instance != null ? ModeManager.Instance : FindFirstObjectByType<ModeManager>();
+        fuelAddon = FindFirstObjectByType<FuelModeAddon>();
 
         var ve = resultsDocument.rootVisualElement;
 
@@ -36,15 +44,34 @@ public class LandingResultsUI : MonoBehaviour
         mainMenuBtn = ve.Q<Button>(mainMenuButtonName);
 
         if (mainMenuBtn != null)
-            mainMenuBtn.clicked += () => SceneManager.LoadScene("MainMenuScene");
+            mainMenuBtn.clicked += OnMainMenuClicked;
 
         HideAll();
+    }
+
+    private void OnMainMenuClicked()
+    {
+        // NEW: resume fuel before leaving (Fuel mode only)
+        if (modeManager != null && modeManager.CurrentMode == ModeManager.ModeType.Fuel)
+        {
+            if (fuelAddon == null) fuelAddon = FindFirstObjectByType<FuelModeAddon>();
+            if (fuelAddon != null) fuelAddon.SetFuelPaused(false);
+        }
+
+        SceneManager.LoadScene("MainMenuScene");
     }
 
     public void HideAll()
     {
         if (root != null) root.style.display = DisplayStyle.None;
         ClearAndHideLines();
+
+        // NEW: resume fuel if hiding (Fuel mode only)
+        if (modeManager != null && modeManager.CurrentMode == ModeManager.ModeType.Fuel)
+        {
+            if (fuelAddon == null) fuelAddon = FindFirstObjectByType<FuelModeAddon>();
+            if (fuelAddon != null) fuelAddon.SetFuelPaused(false);
+        }
     }
 
     private void ClearAndHideLines()
@@ -78,6 +105,14 @@ public class LandingResultsUI : MonoBehaviour
     {
         StopAllCoroutines();
 
+        // NEW: pause fuel as soon as results show (Fuel mode only)
+        if (modeManager == null) modeManager = ModeManager.Instance != null ? ModeManager.Instance : FindFirstObjectByType<ModeManager>();
+        if (modeManager != null && modeManager.CurrentMode == ModeManager.ModeType.Fuel)
+        {
+            if (fuelAddon == null) fuelAddon = FindFirstObjectByType<FuelModeAddon>();
+            if (fuelAddon != null) fuelAddon.SetFuelPaused(true);
+        }
+
         if (root != null) root.style.display = DisplayStyle.Flex;
         ClearAndHideLines();
 
@@ -108,5 +143,7 @@ public class LandingResultsUI : MonoBehaviour
 
         if (mainMenuBtn != null)
             mainMenuBtn.style.display = DisplayStyle.Flex;
+
+        // Keep fuel paused until user leaves or HideAll() is called
     }
 }

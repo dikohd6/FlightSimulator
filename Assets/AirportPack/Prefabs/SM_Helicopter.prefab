@@ -190,6 +190,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1671736245892886315}
+  - component: {fileID: 445678326472060766}
   m_Layer: 0
   m_Name: SM_Helicopter
   m_TagString: Untagged
@@ -219,6 +220,26 @@ Transform:
   - {fileID: 4346243174315351375}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &445678326472060766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2407291213859380536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41b7ae17978f0e54085e953a9f54f4a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HelicopterRotorSpin
+  mainRotor: {fileID: 2396877527411040345}
+  tailRotor: {fileID: 4346243174315351375}
+  mainAxis: 1
+  tailAxis: 0
+  mainRotorSpeed: 1800
+  tailRotorSpeed: 3600
+  requireSelectedIndexMatch: 1
+  helicopterPlaneIndex: 2
 --- !u!1 &2489469216262913619
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,6 +14,8 @@ public class UIController : MonoBehaviour
     private VisualElement mainMenuOverlay;
     private VisualElement gameMenuOverlay;
     private VisualElement gameMenuMissionsOverlay;
+    private VisualElement gameMenuStatsOverlay;
+
     private VisualElement optionsOverlay;
 
     private Button startBtn;
@@ -37,13 +39,17 @@ public class UIController : MonoBehaviour
 
     private void Awake()
     {
+        // IMPORTANT: always bind to the persistent singleton after scene loads
+        if (modeManager == null) modeManager = ModeManager.Instance;
+        if (modeManager == null) modeManager = FindFirstObjectByType<ModeManager>();
+
         var mainRoot = mainMenuDocument.rootVisualElement;
         var gameRoot = gameMenuDocument.rootVisualElement;
 
         // --- game menu overlays ---
         gameMenuOverlay = gameRoot.Q<VisualElement>("missionSelect");
         gameMenuMissionsOverlay = gameRoot.Q<VisualElement>("Missions");
-
+        gameMenuStatsOverlay = gameRoot.Q<VisualElement>("PlaneStatsGroup");
         // --- main menu overlays ---
         mainMenuOverlay = mainRoot.Q<VisualElement>("MainMenu");
         optionsOverlay = mainRoot.Q<VisualElement>("Options");
@@ -63,7 +69,7 @@ public class UIController : MonoBehaviour
         optionsOverlay.style.display = DisplayStyle.None;
         gameMenuOverlay.style.display = DisplayStyle.None;
         gameMenuMissionsOverlay.style.display = DisplayStyle.None;
-
+        gameMenuStatsOverlay.style.display= DisplayStyle.None;
         // --- Leaderboard panel (your UXML) ---
         leaderboardRoot = mainRoot.Q<VisualElement>("LeaderboardRoot");
         if (leaderboardRoot != null)
@@ -86,20 +92,27 @@ public class UIController : MonoBehaviour
             Debug.LogError("UIController: Could not find LeaderboardRoot in MainMenu UXML.");
         }
 
-        // Hooks
-        startBtn.clicked += OnStartClicked;
-        optionsBtn.clicked += OnOptionsClicked;
-        exitBtn.clicked += OnExitClicked;
+        // Hooks (null-safe)
+        if (startBtn != null) startBtn.clicked += OnStartClicked;
+        if (optionsBtn != null) optionsBtn.clicked += OnOptionsClicked;
+        if (exitBtn != null) exitBtn.clicked += OnExitClicked;
 
-        menubtn.clicked += OnMainMenuClicked;
-        GameMenubtn.clicked += OnMainMenuClicked;
+        if (menubtn != null) menubtn.clicked += OnMainMenuClicked;
+        if (GameMenubtn != null) GameMenubtn.clicked += OnMainMenuClicked;
 
-        playBtn.clicked += OnPlayClicked;
+        if (playBtn != null) playBtn.clicked += OnPlayClicked;
 
-        leaderboardMainMenuBtn.clicked += OnMainMenuClicked;
+        if (leaderboardMainMenuBtn != null) leaderboardMainMenuBtn.clicked += OnMainMenuClicked;
 
         if (leaderboardBtn != null) leaderboardBtn.clicked += OnLeaderboardClicked;
         if (leaderboardClearBtn != null) leaderboardClearBtn.clicked += ClearLeaderboard;
+    }
+
+    private void Start()
+    {
+        // Extra safety if scene reload timing is weird
+        if (modeManager == null) modeManager = ModeManager.Instance;
+        if (modeManager == null) modeManager = FindFirstObjectByType<ModeManager>();
     }
 
     // ---------------- Main Menu ----------------
@@ -110,8 +123,8 @@ public class UIController : MonoBehaviour
 
         gameMenuOverlay.style.display = DisplayStyle.Flex;
         gameMenuMissionsOverlay.style.display = DisplayStyle.Flex;
-
-        hangarGate.OpenGates();
+        gameMenuStatsOverlay.style.display = DisplayStyle.Flex;
+        if (hangarGate != null) hangarGate.OpenGates();
     }
 
     private void OnOptionsClicked()
@@ -135,11 +148,15 @@ public class UIController : MonoBehaviour
         optionsOverlay.style.display = DisplayStyle.None;
         gameMenuOverlay.style.display = DisplayStyle.None;
         gameMenuMissionsOverlay.style.display = DisplayStyle.None;
+        gameMenuStatsOverlay.style.display = DisplayStyle.None;
 
         if (leaderboardRoot != null)
             leaderboardRoot.style.display = DisplayStyle.None;
 
         background.style.display = DisplayStyle.Flex;
+
+        // IMPORTANT: rebind singleton again (in case scene got reloaded)
+        if (modeManager == null) modeManager = ModeManager.Instance;
     }
 
     // ---------------- Leaderboard ----------------
@@ -160,6 +177,16 @@ public class UIController : MonoBehaviour
 
     private void OnPlayClicked()
     {
+        // Rebind if needed
+        if (modeManager == null) modeManager = ModeManager.Instance;
+        if (modeManager == null) modeManager = FindFirstObjectByType<ModeManager>();
+
+        if (modeManager == null)
+        {
+            Debug.LogError("UIController: ModeManager is missing, cannot Play.");
+            return;
+        }
+
         if (modeManager.CurrentMode == ModeManager.ModeType.Emergency)
         {
             SceneManager.LoadScene("EmergencyLanding");
@@ -213,7 +240,6 @@ public class UIController : MonoBehaviour
 
             var e = cachedEntries[index];
 
-            // query labels by name we assigned in MakeCol
             element.Q<Label>("rank").text = (index + 1).ToString();
             element.Q<Label>("mode").text = e.mode;
             element.Q<Label>("time").text = FormatTime(e.timeSeconds);
@@ -228,10 +254,7 @@ public class UIController : MonoBehaviour
         var l = new Label("-");
         l.name = name;
         l.AddToClassList(className);
-
-        // If you already have a ".rank" selector etc, this lets it apply too
         l.AddToClassList(name);
-
         return l;
     }
 
@@ -239,7 +262,6 @@ public class UIController : MonoBehaviour
     {
         if (leaderboardList == null) return;
 
-        // Load newest data
         cachedEntries = new List<LeaderboardStore.Entry>(LeaderboardStore.GetEntriesSorted());
         leaderboardList.itemsSource = cachedEntries;
         leaderboardList.Rebuild();

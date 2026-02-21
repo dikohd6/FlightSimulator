@@ -77,17 +77,20 @@ public class HUDController : MonoBehaviour
     private Label altitudeLabel;
     private Label infoLabel;
 
+    // Countdown override
+    private string infoOverrideText = null;
+
     private float startTime;
     private float frozenElapsed;
     private bool timerRunning = true;
     private int score;
 
-    void Awake()
+    private void Awake()
     {
         if (hudDocument == null) hudDocument = GetComponent<UIDocument>();
-        if (plane == null) plane = FindObjectOfType<PlaneController>();
-        if (emergency == null) emergency = FindObjectOfType<EmergencyLandingMode>();
-        if (fuelMode == null) fuelMode = FindObjectOfType<FuelModeAddon>();
+        if (plane == null) plane = FindFirstObjectByType<PlaneController>();
+        if (emergency == null) emergency = FindFirstObjectByType<EmergencyLandingMode>();
+        if (fuelMode == null) fuelMode = FindFirstObjectByType<FuelModeAddon>();
 
         if (hudDocument == null)
         {
@@ -109,7 +112,6 @@ public class HUDController : MonoBehaviour
         if (timeLabel == null) Debug.LogError($"HUDController: Missing Label '{timeLabelName}'.");
         if (scoreLabel == null) Debug.LogError($"HUDController: Missing Label '{scoreLabelName}'.");
         if (speedLabel == null) Debug.LogError($"HUDController: Missing Label '{speedLabelName}'.");
-
         if (altitudeLabel == null) Debug.LogWarning($"HUDController: Missing Label '{altitudeLabelName}'.");
         if (infoLabel == null) Debug.LogWarning($"HUDController: Missing Label '{infoLabelName}'.");
 
@@ -147,12 +149,12 @@ public class HUDController : MonoBehaviour
         UpdateAltitude(0f);
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         StopBannerFlash();
     }
 
-    void Update()
+    private void Update()
     {
         // TIME
         float elapsed = timerRunning ? (Time.time - startTime) : frozenElapsed;
@@ -165,37 +167,65 @@ public class HUDController : MonoBehaviour
             UpdateSpeed(spd);
         }
 
-        // ALTITUDE
+        // ALTITUDE (AGL from emergency if available, otherwise from fuel addon if available)
         if (altitudeLabel != null)
         {
             float alt = 0f;
-            if (altitudeUseAGL && emergency != null) alt = emergency.GetAltitudeAGL_Smoothed();
-            else if (plane != null) alt = plane.transform.position.y;
+
+            if (altitudeUseAGL && emergency != null)
+                alt = emergency.GetAltitudeAGL_Smoothed();
+            else if (altitudeUseAGL && fuelMode != null)
+                alt = fuelMode.GetAltitudeAGL_Smoothed();
+            else if (plane != null)
+                alt = plane.transform.position.y;
 
             UpdateAltitude(alt);
         }
 
-        // INFO: show only during "info phase" (pending + pre-objective not complete)
+        // ---------------- INFO (Countdown > Fuel pre-objective > Emergency) ----------------
         bool infoVisibleNow = false;
-        if (infoLabel != null && emergency != null && emergency.ShouldShowInfoText())
-        {
-            infoVisibleNow = true;
-            infoLabel.style.display = DisplayStyle.Flex;
-            infoLabel.text = emergency.GetInfoText();
 
-            bool okNow = emergency.IsPreObjectiveSatisfiedNow();
-            if (!okNow) infoLabel.AddToClassList("info-banner--warning");
-            else infoLabel.RemoveFromClassList("info-banner--warning");
-        }
-        else
+        if (infoLabel != null)
         {
-            if (infoLabel != null) infoLabel.style.display = DisplayStyle.None;
+            // 1) Countdown override
+            if (!string.IsNullOrEmpty(infoOverrideText))
+            {
+                infoVisibleNow = true;
+                infoLabel.style.display = DisplayStyle.Flex;
+                infoLabel.text = infoOverrideText;
+                infoLabel.RemoveFromClassList("info-banner--warning");
+            }
+            // 2) Fuel pre-objective
+            else if (fuelMode != null && fuelMode.IsPreObjectiveActive)
+            {
+                infoVisibleNow = true;
+                infoLabel.style.display = DisplayStyle.Flex;
+                infoLabel.text = fuelMode.GetPreObjectiveInfoText();
+                infoLabel.RemoveFromClassList("info-banner--warning");
+            }
+            // 3) Emergency pre-objective
+            else if (emergency != null && emergency.ShouldShowInfoText())
+            {
+                infoVisibleNow = true;
+                infoLabel.style.display = DisplayStyle.Flex;
+                infoLabel.text = emergency.GetInfoText();
+
+                bool okNow = emergency.IsPreObjectiveSatisfiedNow();
+                if (!okNow) infoLabel.AddToClassList("info-banner--warning");
+                else infoLabel.RemoveFromClassList("info-banner--warning");
+            }
+            else
+            {
+                infoLabel.style.display = DisplayStyle.None;
+                infoLabel.RemoveFromClassList("info-banner--warning");
+            }
         }
+        // -------------------------------------------------------------------------------
 
         // EMERGENCY BANNER: show ONLY after info is gone
         UpdateEmergencyBanner(infoVisibleNow);
 
-        // FUEL
+        // FUEL UI
         UpdateFuelUI();
     }
 
@@ -203,7 +233,6 @@ public class HUDController : MonoBehaviour
     {
         if (emergencyBannerImage == null || emergency == null) return;
 
-        // Requirement: show after info text is done -> only when active and info not visible
         bool shouldShow = emergency.IsActive() && !infoVisibleNow;
 
         emergencyBannerImage.style.display = shouldShow ? DisplayStyle.Flex : DisplayStyle.None;
@@ -340,6 +369,10 @@ public class HUDController : MonoBehaviour
         if (altitudeLabel != null)
             altitudeLabel.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
     }
+
+    // Countdown helpers
+    public void SetInfoOverride(string text) => infoOverrideText = text;
+    public void ClearInfoOverride() => infoOverrideText = null;
 
     // ---------- Internals ----------
     private void UpdateTime(float seconds)

@@ -55,11 +55,17 @@ public class PlaneSelection : MonoBehaviour
 
     private void Start()
     {
-        // Wait one tick so UI Toolkit has fully built the visual tree.
+        if (modeManager == null) modeManager = ModeManager.Instance;
+
         root.schedule.Execute(() =>
         {
             CacheNameElements();
-            SetIndex(0, true);
+
+            int startIndex = 0;
+            if (modeManager != null)
+                startIndex = Mathf.Clamp(modeManager.SelectedPlaneIndex, 0, planeManager.planes.Length - 1);
+
+            SetIndex(startIndex, true);
         }).StartingIn(0);
     }
 
@@ -123,7 +129,8 @@ public class PlaneSelection : MonoBehaviour
     {
         if (!force && newIndex == currentIndex) return;
 
-        currentIndex = Mathf.Clamp(newIndex, 0, planeManager.planes.Length - 1);
+        int count = planeManager.planes.Length;
+        currentIndex = ((newIndex % count) + count) % count;
 
         SpawnPreview(currentIndex);
         ShowNameForIndex(currentIndex);

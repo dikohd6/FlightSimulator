@@ -5,11 +5,11 @@
         <ui:Button text="" name="mainMenuBtn" style="height: 144px; width: 482px; position: absolute; top: 132px; left: 1359px;"/>
         <ui:Button text="" name="leftBtn" style="position: absolute; height: 118px; width: 114px; background-color: rgba(188, 188, 188, 0); -unity-background-image-tint-color: rgb(255, 255, 255); background-image: url(&quot;project://database/Assets/Resources/Images/left.png?fileID=2800000&amp;guid=28c35f7303fbb4c42bb68ab18cccbd33&amp;type=3#left&quot;); top: -267px; left: 396px; border-left-color: rgba(149, 149, 149, 0); border-right-color: rgba(149, 149, 149, 0); border-top-color: rgba(149, 149, 149, 0); border-bottom-color: rgba(149, 149, 149, 0);"/>
         <ui:Button text="" name="rightBtn" style="position: absolute; height: 99px; width: 126px; background-color: rgba(188, 188, 188, 0); -unity-background-image-tint-color: rgb(255, 255, 255); background-image: url(&quot;project://database/Assets/Resources/Images/right.png?fileID=2800000&amp;guid=b3e21d7fe7210824f88c106d61a5888e&amp;type=3#right&quot;); top: -250px; left: 1408px; border-left-color: rgba(149, 149, 149, 0); border-right-color: rgba(149, 149, 149, 0); border-top-color: rgba(149, 149, 149, 0); border-bottom-color: rgba(149, 149, 149, 0);"/>
-        <ui:Image style="position: absolute; background-image: resource(&quot;Images/stats&quot;); height: 528px; width: 596px; top: -782px; left: -54px;"/>
+        <ui:Image style="position: absolute; background-image: resource(&quot;Images/stats&quot;); height: 455px; width: 500px; top: -782px; left: -54px;"/>
     </ui:VisualElement>
     <ui:VisualElement name="Missions" style="flex-grow: 1; position: absolute; height: 285px; width: 1261px; top: 791px; left: -12px;">
         <ui:VisualElement name="StandardMission" enabled="true" style="flex-grow: 1; position: absolute; height: 285px; width: 1261px; top: 4px; left: 4px;">
-            <ui:Label text="STANDARD&#10;" name="standardTxt" style="height: 70px; -unity-text-auto-size: none; color: rgb(255, 255, 255); font-size: 55px; width: 322px; position: absolute; top: 68px; left: 611px; -unity-font-style: bold;"/>
+            <ui:Label text="STANDARD&#10;(Coming Soon)" name="standardTxt" style="height: 70px; -unity-text-auto-size: none; color: rgb(255, 255, 255); font-size: 55px; width: 322px; position: absolute; top: 68px; left: 611px; -unity-font-style: bold;"/>
             <ui:Image name="Image" style="height: 185px; background-image: resource(&quot;Images/airplane&quot;); position: absolute; width: 258px; top: 38px; left: 330px;"/>
         </ui:VisualElement>
         <ui:VisualElement name="FuelMission" enabled="true" style="flex-grow: 1; position: absolute; height: 285px; width: 1261px; top: 4px; left: 4px;">
@@ -24,17 +24,21 @@
         <ui:Button text="" name="missionRightBtn" style="position: absolute; height: 102px; width: 107px; background-color: rgba(188, 188, 188, 0); -unity-background-image-tint-color: rgb(255, 255, 255); background-image: url(&quot;project://database/Assets/Resources/Images/right.png?fileID=2800000&amp;guid=b3e21d7fe7210824f88c106d61a5888e&amp;type=3#right&quot;); top: 78px; left: 1055px; border-left-color: rgba(149, 149, 149, 0); border-right-color: rgba(149, 149, 149, 0); border-top-color: rgba(149, 149, 149, 0); border-bottom-color: rgba(149, 149, 149, 0);"/>
     </ui:VisualElement>
     <ui:VisualElement name="PlaneStatsGroup" style="flex-grow: 1; position: absolute; height: 409px; width: 1921px; top: 2px; left: -1px;">
-        <ui:VisualElement name="Boeing737" style="flex-grow: 1; position: absolute; height: 536px; width: 1918px;">
-            <ui:Image/>
+        <ui:VisualElement name="Boeing737" style="flex-grow: 1; position: absolute; height: 359px; width: 1918px;">
+            <ui:Image source="project://database/Assets/Resources/Images/boeing737.png?fileID=2800000&amp;guid=1b219e72e7c427246aedcf2f96aa0741&amp;type=3#boeing737" style="height: 127px; width: 492px; position: absolute; top: 13px; left: 762px;"/>
+            <ui:Image source="project://database/Assets/Resources/Images/boeing737Stats.png?fileID=2800000&amp;guid=08134cbe9bc1a0946824307bdfbce1aa&amp;type=3#boeing737Stats" style="position: absolute; top: 29px; left: 393px; height: 290px; width: 94px;"/>
         </ui:VisualElement>
-        <ui:VisualElement name="Boeing777" style="flex-grow: 1; position: absolute; height: 538px; width: 1918px;">
-            <ui:Image/>
+        <ui:VisualElement name="Boeing777" style="flex-grow: 1; position: absolute; height: 370px; width: 1918px;">
+            <ui:Image source="project://database/Assets/Resources/Images/boeing777.png?fileID=2800000&amp;guid=ccc308b8b32b5994d9d3b31fb2e5839d&amp;type=3#boeing777" style="height: 130px; position: absolute; top: 6px; left: 749px;"/>
+            <ui:Image source="project://database/Assets/Resources/Images/boeing777Stats.png?fileID=2800000&amp;guid=f9bcae9d6e73fde4f8c1eb60b1eab4b2&amp;type=3#boeing777Stats" name="Image" tint-color="rgb(255, 255, 255)" style="position: absolute; top: 29px; left: 393px; height: 290px; width: 94px;"/>
         </ui:VisualElement>
-        <ui:VisualElement name="Helicopter" style="flex-grow: 1; position: absolute; height: 449px; width: 1916px;">
-            <ui:Image source="project://database/Assets/Resources/Images/HELICOPTER_text_no_bg.png?fileID=2800000&amp;guid=9bedca7f20b5246488b3472c55e1645f&amp;type=3#HELICOPTER_text_no_bg"/>
+        <ui:VisualElement name="Helicopter" style="flex-grow: 1; position: absolute; height: 366px; width: 1916px;">
+            <ui:Image source="project://database/Assets/Resources/Images/helicopter.png?fileID=2800000&amp;guid=eabf99a581eeef6498e842817e474c40&amp;type=3#helicopter" style="position: absolute; top: 10px; left: 754px; width: 494px; height: 125px;"/>
+            <ui:Image source="project://database/Assets/Resources/Images/helicopterStats.png?fileID=2800000&amp;guid=0dcbe541bdbca3c4284caed4ed8c562e&amp;type=3#helicopterStats" name="Image" tint-color="rgb(255, 255, 255)" style="position: absolute; top: 29px; left: 393px; height: 290px; width: 94px;"/>
         </ui:VisualElement>
-        <ui:VisualElement name="LearJet45" style="flex-grow: 1; position: absolute; height: 514px; width: 1923px;">
-            <ui:Image source="project://database/Assets/Resources/Images/LEARJET45_text_style_match.png?fileID=2800000&amp;guid=b45121abe2cd2514fb21cc6de5619554&amp;type=3#LEARJET45_text_style_match"/>
+        <ui:VisualElement name="LearJet45" style="flex-grow: 1; position: absolute; height: 373px; width: 1923px;">
+            <ui:Image source="project://database/Assets/Resources/Images/learjet45.png?fileID=2800000&amp;guid=8d30a608e0770014e910bea38f996dbc&amp;type=3#learjet45" style="position: absolute; top: 0; left: 753px; height: 125px;"/>
+            <ui:Image source="project://database/Assets/Resources/Images/learjetStats.png?fileID=2800000&amp;guid=be32b44902eb15644bf164c2ff7ff3bd&amp;type=3#learjetStats" name="Image" tint-color="rgb(255, 255, 255)" style="position: absolute; top: 29px; left: 393px; height: 290px; width: 94px;"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
