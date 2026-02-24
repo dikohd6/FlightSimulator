@@ -25293,7 +25293,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4699391405731405451, guid: 538e06a2c6a802549b8eb4250403935a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 636.31
+      value: -6218.79
       objectReference: {fileID: 0}
     - target: {fileID: 4699391405731405451, guid: 538e06a2c6a802549b8eb4250403935a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -25570,7 +25570,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3240213556223363557, guid: f1a0bbb1b8c295b4b839185ca80a3e74, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 636.31
+      value: -6218.79
       objectReference: {fileID: 0}
     - target: {fileID: 3240213556223363557, guid: f1a0bbb1b8c295b4b839185ca80a3e74, type: 3}
       propertyPath: m_LocalRotation.w
@@ -25683,7 +25683,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2346108967213425614, guid: 67000f18c460e3a4e85f5dc08c208bde, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 611.1
+      value: -6244
       objectReference: {fileID: 0}
     - target: {fileID: 2346108967213425614, guid: 67000f18c460e3a4e85f5dc08c208bde, type: 3}
       propertyPath: m_LocalRotation.w
@@ -25821,8 +25821,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FuelModeAddon
   fuelModeEnabled: 1
-  maxFuel: 100
-  fuel: 100
+  maxFuel: 500
+  fuel: 500
   baseDrain: 0.6
   speedDrain: 0.02
   climbDrain: 0.25
@@ -25834,6 +25834,21 @@ MonoBehaviour:
   runwayTag: Runway
   outOfFuelTimeout: 15
   pauseFuelDrain: 0
+  enablePreObjective: 1
+  preMaxBank: 25
+  preMaxPitch: 15
+  preAltRange: {x: 150, y: 300}
+  preTargetSpeedRangeKmh: {x: 50, y: 80}
+  preSpeedBandRangeKmh: {x: 10, y: 20}
+  preHoldSecondsRange: {x: 3, y: 5}
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  maxGroundCheck: 10000
+  rayStartOffset: 2
+  aglSmoothing: 8
+  awardPointsWhileHolding: 0
+  pointsPerSecondWhileHolding: 2
 --- !u!114 &6943881644835287879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25846,7 +25861,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9ffc5f086c8af1479e357c97a08e061, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AirSpawnGrace
-  graceSeconds: 3
+  countdownSeconds: 3
   initialForwardSpeed: 35
   setInitialSpeed: 1
 --- !u!1660057539 &9223372036854775807
