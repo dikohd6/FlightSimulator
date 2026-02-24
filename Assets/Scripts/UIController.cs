@@ -193,7 +193,8 @@ public class UIController : MonoBehaviour
         }
         else if (modeManager.CurrentMode == ModeManager.ModeType.Standard)
         {
-            // standard logic
+            //SceneManager.LoadScene("StandardMode");
+
         }
         else if (modeManager.CurrentMode == ModeManager.ModeType.Fuel)
         {

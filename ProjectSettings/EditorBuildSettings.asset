@@ -14,6 +14,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/FuelMode.unity
     guid: 8c281608c20efac4a97c9d4f5292a42c
+  - enabled: 1
+    path: Assets/Scenes/StandardMode.unity
+    guid: dfa400b997931bd4e8b2afc05ee2e804
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 289c1b55c9541489481df5cc06664110, type: 3}
   m_UseUCBPForAssetBundles: 0

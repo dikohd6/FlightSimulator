@@ -780,7 +780,7 @@ MonoBehaviour:
   - planePrefab: {fileID: 7328843155243425838, guid: d240b1b90d42b6c4690a4d530c96be1c, type: 3}
     uiNameElement: Boeing737
     speed: 500
-    acceleration: 40
+    acceleration: 25
     deceleration: 5
     rotation: 30
     levelSpeed: 10
@@ -788,7 +788,7 @@ MonoBehaviour:
   - planePrefab: {fileID: 4749636126818360162, guid: 719a1210064dfd64f8cc1d7c0af30594, type: 3}
     uiNameElement: Boeing777
     speed: 600
-    acceleration: 60
+    acceleration: 30
     deceleration: 8
     rotation: 50
     levelSpeed: 20
@@ -796,7 +796,7 @@ MonoBehaviour:
   - planePrefab: {fileID: 2407291213859380536, guid: 27b3a3bede542df4faa703c8e3e6d758, type: 3}
     uiNameElement: Helicopter
     speed: 400
-    acceleration: 65
+    acceleration: 35
     deceleration: 8
     rotation: 75
     levelSpeed: 20
@@ -804,7 +804,7 @@ MonoBehaviour:
   - planePrefab: {fileID: 4693425654840330386, guid: a98becf48d91c384db0df87ceee924b1, type: 3}
     uiNameElement: LearJet45
     speed: 650
-    acceleration: 60
+    acceleration: 40
     deceleration: 15
     rotation: 55
     levelSpeed: 40
