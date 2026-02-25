@@ -1,17 +1,18 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/EndGameUI.uss?fileID=7433441132597879392&amp;guid=884bc18cb7d912b4883c7486c2424d1e&amp;type=3#EndGameUI"/>
-    <ui:VisualElement name="ResultsRoot" class="hud-panel" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.72); align-items: center; justify-content: center; align-content: auto;">
-        <ui:VisualElement name="Panel" class="hud-panel" style="flex-grow: 1; width: 1412px; height: 700px; padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px; background-color: rgba(0, 0, 0, 0.31); border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px;">
-            <ui:Label text="SUMMARY" name="titleTxt" class="hud-label" style="font-size: 50px; width: 283px; align-items: center; align-self: center;"/>
-            <ui:Label text="Label" name="lineLanding" class="hud-label" style="font-size: 35px; padding-bottom: 43px; padding-top: 24px; padding-left: 60px;"/>
-            <ui:Label text="Label" name="lineAlignment" class="hud-label" style="font-size: 35px; padding-bottom: 43px; padding-left: 60px;"/>
-            <ui:Label text="Label" name="lineBank" class="hud-label" style="font-size: 35px; padding-bottom: 43px; padding-left: 60px;"/>
-            <ui:Label text="Label" name="lineDescent" class="hud-label" style="font-size: 35px; padding-bottom: 43px; padding-left: 60px;"/>
-            <ui:Label text="Label" name="lineSpeed" class="hud-label" style="font-size: 35px; padding-bottom: 43px; padding-left: 60px;"/>
-            <ui:Label text="Label" name="lineTotal" class="hud-label" style="font-size: 46px; padding-bottom: 43px; padding-left: 60px;"/>
-            <ui:Button text="" name="mainMenuBtn" style="height: 101px; width: 462px; align-items: center; align-self: center;"/>
+    <ui:VisualElement name="ResultsRoot" style="flex-grow: 1;">
+        <ui:VisualElement name="LinesGroup" class="hud-panel" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.72); align-items: center; justify-content: center; align-content: auto;">
+            <ui:VisualElement name="Panel" class="hud-panel" style="flex-grow: 1; width: 1412px; height: 700px; padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px; background-color: rgba(0, 0, 0, 0.31); border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px;">
+                <ui:Label text="SUMMARY" name="titleTxt" class="hud-label" style="font-size: 50px; width: 283px; align-items: center; align-self: center; -unity-font-style: bold;"/>
+                <ui:Label text="Label" name="lineLanding" class="hud-label" style="font-size: 35px; padding-bottom: 43px; padding-top: 24px; padding-left: 60px;"/>
+                <ui:Label text="Label" name="lineAlignment" class="hud-label" style="font-size: 35px; padding-bottom: 43px; padding-left: 60px;"/>
+                <ui:Label text="Label" name="lineBank" class="hud-label" style="font-size: 35px; padding-bottom: 43px; padding-left: 60px;"/>
+                <ui:Label text="Label" name="lineDescent" class="hud-label" style="font-size: 35px; padding-bottom: 43px; padding-left: 60px;"/>
+                <ui:Label text="Label" name="lineSpeed" class="hud-label" style="font-size: 35px; padding-bottom: 43px; padding-left: 60px;"/>
+                <ui:Label text="Label" name="lineCoins" class="hud-label" style="font-size: 35px; padding-bottom: 43px; padding-left: 60px;"/>
+                <ui:Label text="Label" name="lineTotal" class="hud-label" style="font-size: 46px; padding-bottom: 43px; padding-left: 60px;"/>
+                <ui:Button text="" name="mainMenuBtn" style="height: 101px; width: 462px; align-items: center; align-self: center; top: 0;"/>
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
-
-
 </ui:UXML>

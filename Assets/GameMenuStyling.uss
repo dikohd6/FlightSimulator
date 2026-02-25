@@ -34,3 +34,59 @@
 #mainMenuBtn:hover {
     background-image: resource("Images/mainMenuBtnHover");
 }
+#purchaseBtn {
+    width: 320px;
+    height: 90px;
+
+    /* Force the button to use OUR background, not the theme */
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-image-tint-color: white;
+    background-image: resource("Images/purchaseBtn");
+    -unity-background-scale-mode: scale-to-fit;
+    background-repeat: no-repeat;
+
+    /* Kill default button styling */
+    border-width: 0;
+    padding: 0;
+}
+
+#purchaseBtn:hover {
+    background-image: resource("Images/purchaseHvr");
+}
+.coinText {
+    position: absolute;
+    right: 18px;
+    top: 10px;
+    width: 90px;
+    height: 28px;
+
+    -unity-font-style: bold;
+    font-size: 20px;
+    color: rgb(255, 239, 170);
+
+    unity-text-align: middle-center;
+    letter-spacing: 0.5px;
+
+    /* fake readability boost using text shadow if supported by your version */
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.85);
+}
+
+    #purchaseFeedbackTxt {
+    position: absolute;
+    left: 520px;   /* adjust to your purchase area */
+    top: 610px;    /* adjust to your purchase area */
+    width: 260px;
+    height: 32px;
+
+    unity-text-align: middle-center;
+    -unity-font-style: bold;
+    font-size: 18px;
+    color: rgb(255, 90, 90);
+
+    opacity: 0;
+    display: none;
+
+    /* readability */
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: rgba(0, 0, 0, 0.9);
+}

@@ -16,6 +16,10 @@ public class LandingScoreData
     public int maxDescentPts;
     public int maxSpeedPts;
 
+    public int gameScore;
+    public int coinsEarned;
+    public int totalCoinsAfter;
+
     public int total;
     public string grade;
 }

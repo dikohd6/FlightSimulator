@@ -8,7 +8,7 @@ public class LandingJudge : MonoBehaviour
     [SerializeField] private EmergencyLandingMode emergency;
     [SerializeField] private LandingCinematicController ending;
     [SerializeField] private HUDController hud;
-    [SerializeField] private ModeManager modeManager; // NEW
+    [SerializeField] private ModeManager modeManager;
 
     [Header("Touchdown Limits (pass/fail)")]
     [SerializeField] private float maxDescentRate = -5.5f;
@@ -56,6 +56,23 @@ public class LandingJudge : MonoBehaviour
     [SerializeField] private int pointsDescent = 30;
     [SerializeField] private int pointsSpeed = 20;
 
+    [Header("Coin Reward Tuning")]
+    [Tooltip("Scales combined score (landing + HUD score) into coins.")]
+    [SerializeField] private float coinMultiplier = 0.35f;
+
+    [Tooltip("Random reward factor min/max.")]
+    [SerializeField] private Vector2 coinRandomFactorRange = new Vector2(0.85f, 1.20f);
+
+    [Tooltip("Extra random bonus on successful landing.")]
+    [SerializeField] private Vector2Int successBonusRange = new Vector2Int(20, 60);
+
+    [Tooltip("Fail reward is reduced by this factor.")]
+    [SerializeField] private float failRewardFactor = 0.4f;
+
+    [Tooltip("Minimum reward on success/fail.")]
+    [SerializeField] private int minCoinsOnSuccess = 25;
+    [SerializeField] private int minCoinsOnFail = 5;
+
     private enum Result { None, Success, Fail }
     private Result result = Result.None;
 
@@ -63,13 +80,13 @@ public class LandingJudge : MonoBehaviour
     private bool insideRunway;
     private float lastInsideTime;
 
-    void Awake()
+    private void Awake()
     {
         if (plane == null) plane = FindFirstObjectByType<PlaneController>();
         if (emergency == null) emergency = FindFirstObjectByType<EmergencyLandingMode>();
         if (ending == null) ending = FindFirstObjectByType<LandingCinematicController>();
         if (hud == null) hud = FindFirstObjectByType<HUDController>();
-        if (modeManager == null) modeManager = FindFirstObjectByType<ModeManager>(); // NEW
+        if (modeManager == null) modeManager = FindFirstObjectByType<ModeManager>();
 
         if (plane != null) planeRb = plane.GetComponent<Rigidbody>();
         if (planeRb == null) planeRb = GetComponentInParent<Rigidbody>();
@@ -92,7 +109,7 @@ public class LandingJudge : MonoBehaviour
         insideRunway = false;
     }
 
-    void OnCollisionEnter(Collision col)
+    private void OnCollisionEnter(Collision col)
     {
         if (result != Result.None) return;
         if (plane == null || planeRb == null || col == null) return;
@@ -152,14 +169,32 @@ public class LandingJudge : MonoBehaviour
 
     private void TriggerEnding(bool success, string reason, ScoreBreakdown b, string grade)
     {
-        // stop HUD timer at end
+        // Stop HUD timer at end
         if (hud != null) hud.FreezeTimer();
 
         // Get mode string from ModeManager
         string mode = GetModeDisplayName();
 
-        // time
+        // Time + HUD score
         float timeSec = hud != null ? hud.GetElapsedTimeSeconds() : 0f;
+        int gameScore = hud != null ? hud.GetScore() : 0;
+
+        // Calculate coin reward
+        int coinsEarned = CalculateCoinsEarned(b.total, gameScore, success);
+
+        // Add to existing coins + save (via PlaneManager)
+        int totalCoinsAfter = 0;
+        var planeManager = PlaneManager.Instance != null ? PlaneManager.Instance : FindFirstObjectByType<PlaneManager>();
+        if (planeManager != null)
+        {
+            // Assumes PlaneManager.AddCoins(amount) saves to PlayerPrefs in your existing economy system
+            planeManager.AddCoins(coinsEarned);
+            totalCoinsAfter = planeManager.Coins;
+        }
+        else
+        {
+            Debug.LogWarning("LandingJudge: PlaneManager not found. Coins could not be awarded/saved.");
+        }
 
         // Save leaderboard
         LeaderboardStore.AddEntry(new LeaderboardStore.Entry
@@ -172,7 +207,7 @@ public class LandingJudge : MonoBehaviour
             dateUtc = DateTime.UtcNow.ToString("o")
         });
 
-        // UI/cinematic data
+        // UI / cinematic data
         var data = new LandingScoreData
         {
             success = success,
@@ -188,6 +223,10 @@ public class LandingJudge : MonoBehaviour
             maxDescentPts = pointsDescent,
             maxSpeedPts = pointsSpeed,
 
+            gameScore = gameScore,
+            coinsEarned = coinsEarned,
+            totalCoinsAfter = totalCoinsAfter,
+
             total = b.total,
             grade = grade
         };
@@ -195,12 +234,40 @@ public class LandingJudge : MonoBehaviour
         if (ending != null)
             ending.PlayEnding(data);
 
-        Debug.Log(success
-            ? $"✅ Emergency landing SUCCESS! Score {b.total}/100 ({grade})"
-            : $"❌ Emergency landing FAILED: {reason}  Score {b.total}/100 ({grade})");
+        Debug.Log(
+            $"{(success ? "✅" : "❌")} Landing End | LandingScore={b.total} | GameScore={gameScore} | CoinsEarned=+{coinsEarned} | TotalCoins={totalCoinsAfter} | Grade={grade}"
+        );
     }
 
-    // NEW: Get mode name from ModeManager
+    private int CalculateCoinsEarned(int landingScore, int gameScore, bool success)
+    {
+        landingScore = Mathf.Max(0, landingScore);
+        gameScore = Mathf.Max(0, gameScore);
+
+        int combined = landingScore + gameScore;
+
+        float minRand = Mathf.Min(coinRandomFactorRange.x, coinRandomFactorRange.y);
+        float maxRand = Mathf.Max(coinRandomFactorRange.x, coinRandomFactorRange.y);
+        float randomFactor = UnityEngine.Random.Range(minRand, maxRand);
+
+        int coins = Mathf.RoundToInt(combined * coinMultiplier * randomFactor);
+
+        if (success)
+        {
+            int bonusMin = Mathf.Min(successBonusRange.x, successBonusRange.y);
+            int bonusMaxInclusive = Mathf.Max(successBonusRange.x, successBonusRange.y);
+            coins += UnityEngine.Random.Range(bonusMin, bonusMaxInclusive + 1);
+            coins = Mathf.Max(minCoinsOnSuccess, coins);
+        }
+        else
+        {
+            coins = Mathf.RoundToInt(coins * failRewardFactor);
+            coins = Mathf.Max(minCoinsOnFail, coins);
+        }
+
+        return Mathf.Max(0, coins);
+    }
+
     private string GetModeDisplayName()
     {
         if (modeManager == null)
@@ -212,7 +279,6 @@ public class LandingJudge : MonoBehaviour
                 return "Standard Landing";
 
             case ModeManager.ModeType.Emergency:
-                // Add failure type detail if available
                 if (emergency != null && emergency.enabled)
                     return $"Emergency - {emergency.GetActiveFailure()}";
                 return "Emergency Landing";
@@ -231,7 +297,6 @@ public class LandingJudge : MonoBehaviour
         if (result != Result.None) return;
         result = Result.Fail;
 
-        // Minimal breakdown for crashes (0 score)
         ScoreBreakdown b = new ScoreBreakdown
         {
             yawPts = 0,
@@ -275,8 +340,8 @@ public class LandingJudge : MonoBehaviour
         b.speedPts = Mathf.RoundToInt(speed01 * pointsSpeed);
 
         b.zonePts = inZone ? 0 : -30;
-
         b.total = Mathf.Clamp(b.yawPts + b.bankPts + b.descentPts + b.speedPts + b.zonePts, 0, 100);
+
         return b;
     }
 

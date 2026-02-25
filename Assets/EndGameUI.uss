@@ -1,33 +1,5 @@
 #ResultsRoot {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0,0,0,0.55);
-}
-
-#Panel {
-    width: 650px;
-    padding: 24px;
-    border-radius: 12px;
-    background-color: rgba(20, 25, 35, 0.95);
-}
-
-#titleTxt {
-    width: 100%;
-    text-align: center;
-    unity-font-style: bold;
-    font-size: 34px;          /* bigger title */
-    margin-bottom: 18px;
-}
-
-
-Label {
-    font-size: 18px;
-    margin-top: 6px;
+    display: none;
 }
 
 
@@ -49,69 +21,178 @@ Label {
     background-image: resource("Images/mainMenuBtnHover");
 }
 
-.hud-panel{
-    padding-left: 14px;
-    padding-right: 14px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+/* Full-screen dim overlay */
+#ResultsRoot {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
 
-    border-radius: 14px;
-    background-color: rgba(0, 0, 0, 0.55);
+    justify-content: center;
+    align-items: center;
 
-    border-width: 2px;
-    border-color: rgba(120, 200, 255, 0.65);
-
-   
+    background-color: rgba(0, 0, 0, 0.45);
 }
 
-/* Small label: SPEED / TIME */
-.hud-label{
-    -unity-font-style: bold;
-    font-size: 14px;
-    color: rgba(190, 235, 255, 0.95);
-
-    -unity-text-outline-width: 2px;
-    -unity-text-outline-color: rgba(0, 0, 0, 0.85);
-}
-
-/* Big value: 245 KM/H, 01:32 */
-.hud-value{
-    -unity-font-style: bold-and-italic;
-    font-size: 34px;
-    color: rgba(245, 252, 255, 1.0);
-
-    -unity-text-outline-width: 4px;
-    -unity-text-outline-color: rgba(10, 25, 55, 0.95);
-}
-
-/* Warning: low time / overspeed */
-.hud-value--warning{
-    color: rgba(255, 235, 170, 1.0);
-    -unity-text-outline-color: rgba(60, 35, 0, 0.95);
-}
-
-    /* Make the panel itself a bit bigger */
+/* Main summary panel */
 #Panel {
-    width: 760px;             /* was ~650 */
-    padding: 32px;
-    border-radius: 14px;
+    width: 870px;
+    min-height: 560px;
+
+    padding-top: 18px;
+    padding-right: 26px;
+    padding-bottom: 18px;
+    padding-left: 26px;
+
+    background-color: rgba(10, 18, 28, 0.86);
+
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+
+    border-top-color: rgba(95, 185, 255, 0.9);
+    border-right-color: rgba(95, 185, 255, 0.9);
+    border-bottom-color: rgba(95, 185, 255, 0.9);
+    border-left-color: rgba(95, 185, 255, 0.9);
+
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
 }
 
-/* Make score lines bigger */
+/* Title */
+#titleTxt {
+    align-self: center;
+    margin-top: 4px;
+    margin-bottom: 10px;
+
+    font-size: 30px;
+    color: rgb(185, 228, 255);
+    unity-font-style: bold;
+    letter-spacing: 1.5px;
+
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: rgba(0, 40, 90, 0.9);
+}
+
+/* Container for all lines */
+#linesGroup {
+    flex-grow: 1;
+    margin-top: 6px;
+    margin-bottom: 12px;
+
+    padding-top: 12px;
+    padding-right: 14px;
+    padding-bottom: 12px;
+    padding-left: 14px;
+
+    background-color: rgba(0, 0, 0, 0.14);
+
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+
+    border-top-color: rgba(100, 180, 255, 0.25);
+    border-right-color: rgba(100, 180, 255, 0.25);
+    border-bottom-color: rgba(100, 180, 255, 0.25);
+    border-left-color: rgba(100, 180, 255, 0.25);
+
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    row-gap: 10px;
+}
+
+/* Base style for all result lines */
 #lineLanding,
 #lineAlignment,
 #lineBank,
 #lineDescent,
 #lineSpeed,
-#lineTotal {
-    font-size: 24px;
-    margin-top: 10px;
+#lineTotal,
+#coinTxt,
+#lineCoins {
+    font-size: 20px;
+    color: rgb(218, 239, 255);
+    unity-font-style: bold;
+
+    padding-top: 6px;
+    padding-right: 10px;
+    padding-bottom: 6px;
+    padding-left: 10px;
+
+    background-color: rgba(20, 45, 70, 0.22);
+
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+
+    border-top-color: rgba(110, 190, 255, 0.22);
+    border-right-color: rgba(110, 190, 255, 0.22);
+    border-bottom-color: rgba(110, 190, 255, 0.22);
+    border-left-color: rgba(110, 190, 255, 0.22);
+
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: rgba(0, 30, 70, 0.85);
 }
 
-/* Make the button bigger */
+/* Total score should pop more */
+#lineTotal {
+    margin-top: 6px;
+    font-size: 24px;
+    color: rgb(255, 255, 255);
+
+    background-color: rgba(30, 80, 130, 0.30);
+
+    border-top-color: rgba(120, 210, 255, 0.45);
+    border-right-color: rgba(120, 210, 255, 0.45);
+    border-bottom-color: rgba(120, 210, 255, 0.45);
+    border-left-color: rgba(120, 210, 255, 0.45);
+}
+
+/* Coin reward line (gold) */
+#coinTxt,
+#lineCoins {
+    margin-top: 2px;
+    font-size: 24px;
+    color: rgb(255, 228, 120);
+
+    background-color: rgba(90, 65, 10, 0.22);
+
+    border-top-color: rgba(255, 210, 80, 0.45);
+    border-right-color: rgba(255, 210, 80, 0.45);
+    border-bottom-color: rgba(255, 210, 80, 0.45);
+    border-left-color: rgba(255, 210, 80, 0.45);
+
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: rgba(60, 35, 0, 0.95);
+}
+
+/* Main menu button placement */
 #mainMenuBtn {
-    margin-top: 24px;
+    align-self: center;
+    margin-top: 8px;
+    margin-bottom: 4px;
+
+    width: 220px;
     height: 56px;
-    font-size: 22px;
-    unity-font-style: bold;
 }

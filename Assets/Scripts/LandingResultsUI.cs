@@ -13,24 +13,62 @@ public class LandingResultsUI : MonoBehaviour
 
     [SerializeField] private float revealDelay = 0.7f;
 
+    [Header("Coin Count Animation")]
+    [SerializeField] private float minCoinCountDuration = 0.8f;
+    [SerializeField] private float maxCoinCountDuration = 2.0f;
+    [SerializeField] private bool showTotalCoinsAfterReward = true;
+
     private VisualElement root;
     private Button mainMenuBtn;
 
-    private Label lineLanding, lineAlignment, lineBank, lineDescent, lineSpeed, lineTotal;
+    private Label lineLanding;
+    private Label lineAlignment;
+    private Label lineBank;
+    private Label lineDescent;
+    private Label lineSpeed;
+    private Label lineCoins;   // NEW
+    private Label lineTotal;
 
-    // NEW: Only pause fuel in Fuel mode
     private FuelModeAddon fuelAddon;
     private ModeManager modeManager;
 
-    void Awake()
+    private void Awake()
     {
         if (resultsDocument == null) resultsDocument = GetComponent<UIDocument>();
 
-        // NEW
         modeManager = ModeManager.Instance != null ? ModeManager.Instance : FindFirstObjectByType<ModeManager>();
         fuelAddon = FindFirstObjectByType<FuelModeAddon>();
 
+        BindUI();
+    }
+
+    private void OnEnable()
+    {
+        // UI Toolkit can need one tick before styles/elements settle
+        SafeHideResultsInstant();
+
+        if (resultsDocument != null && resultsDocument.rootVisualElement != null)
+        {
+            resultsDocument.rootVisualElement.schedule.Execute(() =>
+            {
+                BindUI();
+                SafeHideResultsInstant();
+            }).StartingIn(0);
+        }
+    }
+
+    private void Start()
+    {
+        BindUI();
+        SafeHideResultsInstant();
+    }
+
+    private void BindUI()
+    {
+        if (resultsDocument == null) return;
+
         var ve = resultsDocument.rootVisualElement;
+        if (ve == null) return;
 
         root = ve.Q<VisualElement>(rootName);
 
@@ -39,19 +77,20 @@ public class LandingResultsUI : MonoBehaviour
         lineBank = ve.Q<Label>("lineBank");
         lineDescent = ve.Q<Label>("lineDescent");
         lineSpeed = ve.Q<Label>("lineSpeed");
+        lineCoins = ve.Q<Label>("lineCoins");   // NEW
         lineTotal = ve.Q<Label>("lineTotal");
 
         mainMenuBtn = ve.Q<Button>(mainMenuButtonName);
 
         if (mainMenuBtn != null)
+        {
+            mainMenuBtn.clicked -= OnMainMenuClicked; // avoid duplicate subscriptions
             mainMenuBtn.clicked += OnMainMenuClicked;
-
-        HideAll();
+        }
     }
 
     private void OnMainMenuClicked()
     {
-        // NEW: resume fuel before leaving (Fuel mode only)
         if (modeManager != null && modeManager.CurrentMode == ModeManager.ModeType.Fuel)
         {
             if (fuelAddon == null) fuelAddon = FindFirstObjectByType<FuelModeAddon>();
@@ -61,17 +100,37 @@ public class LandingResultsUI : MonoBehaviour
         SceneManager.LoadScene("MainMenuScene");
     }
 
-    public void HideAll()
+    private void SafeHideResultsInstant()
     {
-        if (root != null) root.style.display = DisplayStyle.None;
-        ClearAndHideLines();
+        if (root != null)
+        {
+            root.style.display = DisplayStyle.None;
+            root.style.opacity = 0f;
+            root.pickingMode = PickingMode.Ignore; // prevent blocking clicks while hidden
+        }
 
-        // NEW: resume fuel if hiding (Fuel mode only)
+        HideLine(lineLanding);
+        HideLine(lineAlignment);
+        HideLine(lineBank);
+        HideLine(lineDescent);
+        HideLine(lineSpeed);
+        HideLine(lineCoins);   // NEW
+        HideLine(lineTotal);
+
+        if (mainMenuBtn != null)
+            mainMenuBtn.style.display = DisplayStyle.None;
+
+        // Resume fuel if this gets hidden during gameplay setup (Fuel mode only)
         if (modeManager != null && modeManager.CurrentMode == ModeManager.ModeType.Fuel)
         {
             if (fuelAddon == null) fuelAddon = FindFirstObjectByType<FuelModeAddon>();
             if (fuelAddon != null) fuelAddon.SetFuelPaused(false);
         }
+    }
+
+    public void HideAll()
+    {
+        SafeHideResultsInstant();
     }
 
     private void ClearAndHideLines()
@@ -81,6 +140,7 @@ public class LandingResultsUI : MonoBehaviour
         HideLine(lineBank);
         HideLine(lineDescent);
         HideLine(lineSpeed);
+        HideLine(lineCoins);   // NEW
         HideLine(lineTotal);
 
         if (mainMenuBtn != null)
@@ -105,45 +165,90 @@ public class LandingResultsUI : MonoBehaviour
     {
         StopAllCoroutines();
 
-        // NEW: pause fuel as soon as results show (Fuel mode only)
-        if (modeManager == null) modeManager = ModeManager.Instance != null ? ModeManager.Instance : FindFirstObjectByType<ModeManager>();
+        if (modeManager == null)
+            modeManager = ModeManager.Instance != null ? ModeManager.Instance : FindFirstObjectByType<ModeManager>();
+
         if (modeManager != null && modeManager.CurrentMode == ModeManager.ModeType.Fuel)
         {
             if (fuelAddon == null) fuelAddon = FindFirstObjectByType<FuelModeAddon>();
             if (fuelAddon != null) fuelAddon.SetFuelPaused(true);
         }
 
-        if (root != null) root.style.display = DisplayStyle.Flex;
-        ClearAndHideLines();
+        if (root != null)
+        {
+            root.style.display = DisplayStyle.Flex;
+            root.style.opacity = 1f;
+            root.pickingMode = PickingMode.Position;
+        }
 
+        ClearAndHideLines();
         StartCoroutine(SequenceRoutine(data));
     }
 
     private IEnumerator SequenceRoutine(LandingScoreData d)
     {
         yield return new WaitForSecondsRealtime(revealDelay);
-
         ShowLine(lineLanding, d.success ? "LANDING: SUCCESS" : $"LANDING: FAILED ({d.failReason})");
-        yield return new WaitForSecondsRealtime(revealDelay);
 
+        yield return new WaitForSecondsRealtime(revealDelay);
         ShowLine(lineAlignment, $"ALIGNMENT: {d.yawPts}/{d.maxYawPts}");
-        yield return new WaitForSecondsRealtime(revealDelay);
 
+        yield return new WaitForSecondsRealtime(revealDelay);
         ShowLine(lineBank, $"WINGS LEVEL: {d.bankPts}/{d.maxBankPts}");
-        yield return new WaitForSecondsRealtime(revealDelay);
 
+        yield return new WaitForSecondsRealtime(revealDelay);
         ShowLine(lineDescent, $"SMOOTHNESS: {d.descentPts}/{d.maxDescentPts}");
-        yield return new WaitForSecondsRealtime(revealDelay);
 
+        yield return new WaitForSecondsRealtime(revealDelay);
         ShowLine(lineSpeed, $"SPEED: {d.speedPts}/{d.maxSpeedPts}");
-        yield return new WaitForSecondsRealtime(revealDelay);
 
+        // COINS line (before total, or move this below total if you prefer)
+        if (lineCoins != null)
+        {
+            yield return new WaitForSecondsRealtime(revealDelay);
+            lineCoins.style.display = DisplayStyle.Flex;
+            lineCoins.text = "COINS EARNED: +0";
+            yield return StartCoroutine(CountCoinsRoutine(d.coinsEarned, d.totalCoinsAfter));
+        }
+
+        yield return new WaitForSecondsRealtime(revealDelay);
         ShowLine(lineTotal, $"TOTAL: {d.total}/100  ({d.grade})");
-        yield return new WaitForSecondsRealtime(revealDelay);
 
+        yield return new WaitForSecondsRealtime(revealDelay * 0.5f);
         if (mainMenuBtn != null)
             mainMenuBtn.style.display = DisplayStyle.Flex;
+    }
 
-        // Keep fuel paused until user leaves or HideAll() is called
+    private IEnumerator CountCoinsRoutine(int coinsEarned, int totalCoinsAfter)
+    {
+        if (lineCoins == null) yield break;
+
+        coinsEarned = Mathf.Max(0, coinsEarned);
+
+        float duration = Mathf.Clamp(0.6f + (coinsEarned / 700f), minCoinCountDuration, maxCoinCountDuration);
+        float t = 0f;
+        int shown = -1;
+
+        while (t < duration)
+        {
+            t += Time.unscaledDeltaTime;
+            float p = Mathf.Clamp01(t / duration);
+            float eased = 1f - Mathf.Pow(1f - p, 3f); // ease out cubic
+
+            int value = Mathf.RoundToInt(Mathf.Lerp(0f, coinsEarned, eased));
+            if (value != shown)
+            {
+                shown = value;
+                lineCoins.text = showTotalCoinsAfterReward
+                    ? $"COINS EARNED: +{shown}   TOTAL COINS: {totalCoinsAfter}"
+                    : $"COINS EARNED: +{shown}";
+            }
+
+            yield return null;
+        }
+
+        lineCoins.text = showTotalCoinsAfterReward
+            ? $"COINS EARNED: +{coinsEarned}   TOTAL COINS: {totalCoinsAfter}"
+            : $"COINS EARNED: +{coinsEarned}";
     }
 }

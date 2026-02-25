@@ -1,4 +1,4 @@
-using AirportPack;
+﻿using AirportPack;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -177,7 +177,6 @@ public class UIController : MonoBehaviour
 
     private void OnPlayClicked()
     {
-        // Rebind if needed
         if (modeManager == null) modeManager = ModeManager.Instance;
         if (modeManager == null) modeManager = FindFirstObjectByType<ModeManager>();
 
@@ -187,13 +186,20 @@ public class UIController : MonoBehaviour
             return;
         }
 
+        var pm = PlaneManager.Instance != null ? PlaneManager.Instance : FindFirstObjectByType<PlaneManager>();
+        if (pm != null && !pm.IsPlanePurchased(modeManager.SelectedPlaneIndex))
+        {
+            Debug.Log("🚫 Selected plane is locked. Purchase it first.");
+            return;
+        }
+
         if (modeManager.CurrentMode == ModeManager.ModeType.Emergency)
         {
             SceneManager.LoadScene("EmergencyLanding");
         }
         else if (modeManager.CurrentMode == ModeManager.ModeType.Standard)
         {
-            // standard logic
+            SceneManager.LoadScene("StandardMode");
         }
         else if (modeManager.CurrentMode == ModeManager.ModeType.Fuel)
         {
