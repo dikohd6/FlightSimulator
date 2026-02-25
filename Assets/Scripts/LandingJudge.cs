@@ -230,6 +230,33 @@ public class LandingJudge : MonoBehaviour
             total = b.total,
             grade = grade
         };
+        // Quest progress + rewards (auto adds coins via PlaneManager)
+        int questCoinsAwarded = 0;
+
+        if (modeManager != null)
+        {
+            questCoinsAwarded = QuestSystem.ReportLandingResult(
+                success,
+                b.total,
+                grade,
+                modeManager.CurrentMode
+            );
+        }
+        else
+        {
+            // fallback if mode manager missing
+            questCoinsAwarded = QuestSystem.ReportLandingResult(
+                success,
+                b.total,
+                grade,
+                ModeManager.ModeType.Standard
+            );
+        }
+
+        if (questCoinsAwarded > 0)
+        {
+            Debug.Log($"✅ Quest coins awarded this run: +{questCoinsAwarded}");
+        }
 
         if (ending != null)
             ending.PlayEnding(data);

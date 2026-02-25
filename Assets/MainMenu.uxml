@@ -18,6 +18,10 @@
             <ui:Button text="" name="leaderboardBtn" style="height: 125px; width: 513px;"/>
             <ui:Button text="" name="exitBtn" style="height: 114px; width: 513px;"/>
         </ui:GroupBox>
+        <ui:VisualElement name="questsRoot" style="flex-grow: 1;">
+            <ui:Label text="Label" name="questsTitleTxt"/>
+            <ui:Label text="Label" name="questsBodyTxt"/>
+        </ui:VisualElement>
     </ui:VisualElement>
     <ui:VisualElement name="LeaderboardRoot" enabled="true" style="flex-grow: 1; position: absolute; height: 1072px; width: 1916px; background-image: resource(&quot;Images/planeBackground&quot;); top: 0; left: 0; bottom: 0; right: 0; justify-content: center; align-items: center;">
         <ui:Image name="titleTxt" style="background-image: resource(&quot;Images/leaderboardTitle&quot;); height: 100px; position: absolute; top: 28px; width: 696px; left: 608px;"/>
