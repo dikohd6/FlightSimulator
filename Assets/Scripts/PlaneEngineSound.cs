@@ -26,7 +26,6 @@ public class PlaneEngineSound : MonoBehaviour
     [SerializeField] private float pitchLerpSpeed = 10f;
 
     [Header("Audio Space")]
-    [Tooltip("Turn ON to test. If you can hear it immediately in 2D, your issue is 3D distance/listener.")]
     [SerializeField] private bool force2D = false;
 
     [SerializeField] private bool force3DSettings = true;
@@ -34,10 +33,13 @@ public class PlaneEngineSound : MonoBehaviour
     [SerializeField] private float maxDistance = 800f;
 
     [Header("Reliability")]
+    [Tooltip("If no AudioListener exists yet, wait until one appears (fixes 'starts late').")]
+    [SerializeField] private bool waitForAudioListener = true;
+
     [Tooltip("How often we re-check and restart the audio if it stops (seconds).")]
     [SerializeField] private float watchdogInterval = 0.35f;
 
-    [Tooltip("Print logs if the clip is unloaded/failed/stops.")]
+    [Tooltip("Turn on for debugging.")]
     [SerializeField] private bool debugLogs = false;
 
     public const string SfxVolumeKey = "sfx_volume";
@@ -46,7 +48,7 @@ public class PlaneEngineSound : MonoBehaviour
     private bool pausedByMenu = false;
     private bool wasPlayingBeforePause = false;
 
-    private Coroutine startRoutine;
+    private Coroutine startupRoutine;
     private float watchdogTimer;
 
     private void Awake()
@@ -69,6 +71,8 @@ public class PlaneEngineSound : MonoBehaviour
         engineSource.playOnAwake = false;
         engineSource.mute = false;
 
+        // IMPORTANT: do NOT let the clip stream in late if you want instant sound.
+        // We'll also request LoadAudioData in code below.
         if (force2D)
         {
             engineSource.spatialBlend = 0f;
@@ -82,103 +86,87 @@ public class PlaneEngineSound : MonoBehaviour
             engineSource.maxDistance = maxDistance;
         }
 
-        // audible idle immediately
+        // audible idle immediately (even before speed updates)
         engineSource.volume = Mathf.Clamp01(idleVolume * sfxVolumeMultiplier * engineBoost);
         engineSource.pitch = idlePitch;
+
+        // Preload clip if possible (prevents late start)
+        if (engineSource.clip != null && engineSource.clip.loadState == AudioDataLoadState.Unloaded)
+        {
+            engineSource.clip.LoadAudioData();
+            if (debugLogs) Debug.Log($"PlaneEngineSound ({name}): Requested LoadAudioData()");
+        }
     }
 
     private void OnEnable()
     {
-        StartOrRestartIfNeeded();
+        StartStartupRoutine();
     }
 
     private void Start()
     {
-        StartOrRestartIfNeeded();
+        StartStartupRoutine();
     }
 
     private void OnDisable()
     {
-        if (startRoutine != null)
+        if (startupRoutine != null)
         {
-            StopCoroutine(startRoutine);
-            startRoutine = null;
+            StopCoroutine(startupRoutine);
+            startupRoutine = null;
         }
     }
 
-    private void StartOrRestartIfNeeded()
+    private void StartStartupRoutine()
     {
-        if (pausedByMenu) return;
-        if (engineSource == null) return;
+        if (startupRoutine != null) return;
+        startupRoutine = StartCoroutine(StartupSequence());
+    }
 
-        // If no clip assigned, we can’t play
-        if (engineSource.clip == null)
+    private IEnumerator StartupSequence()
+    {
+        // 1) Wait for clip
+        while (engineSource != null && engineSource.clip == null)
+            yield return null;
+
+        if (engineSource == null || engineSource.clip == null)
         {
-            if (debugLogs) Debug.LogWarning($"PlaneEngineSound ({name}): AudioSource has no clip assigned.");
-            return;
+            startupRoutine = null;
+            yield break;
         }
 
-        // If clip isn’t loaded yet (Streaming / load-in-background), ensure it loads then play
-        if (engineSource.clip.loadState == AudioDataLoadState.Unloaded ||
-            engineSource.clip.loadState == AudioDataLoadState.Loading)
+        // 2) Ensure audio data is loaded (prevents late start)
+        if (engineSource.clip.loadState == AudioDataLoadState.Unloaded)
+            engineSource.clip.LoadAudioData();
+
+        while (engineSource.clip.loadState == AudioDataLoadState.Loading)
+            yield return null;
+
+        if (engineSource.clip.loadState == AudioDataLoadState.Failed)
         {
-            if (startRoutine == null)
-                startRoutine = StartCoroutine(StartWhenReady());
-            return;
+            Debug.LogError($"PlaneEngineSound ({name}): Clip failed to load. Change AudioClip import settings.");
+            startupRoutine = null;
+            yield break;
         }
 
-        // Loaded: just play
-        if (!engineSource.isPlaying)
+        // 3) Wait until an AudioListener exists (THIS is often why it "starts late")
+        if (waitForAudioListener)
+        {
+            while (FindAnyObjectByType<AudioListener>() == null)
+            {
+                if (debugLogs) Debug.Log($"PlaneEngineSound ({name}): Waiting for AudioListener...");
+                yield return null;
+            }
+        }
+
+        // 4) Play immediately
+        if (!pausedByMenu && engineSource != null && !engineSource.isPlaying)
         {
             engineSource.Play();
             if (debugLogs) Debug.Log($"PlaneEngineSound ({name}): Started playing.");
         }
-    }
 
-    private IEnumerator StartWhenReady()
-    {
-        if (engineSource == null || engineSource.clip == null)
-        {
-            startRoutine = null;
-            yield break;
-        }
-
-        // If unloaded, request load
-        if (engineSource.clip.loadState == AudioDataLoadState.Unloaded)
-        {
-            engineSource.clip.LoadAudioData();
-            if (debugLogs) Debug.Log($"PlaneEngineSound ({name}): Loading audio data...");
-        }
-
-        // Wait while loading
-        while (engineSource != null &&
-               engineSource.clip != null &&
-               engineSource.clip.loadState == AudioDataLoadState.Loading)
-        {
-            yield return null;
-        }
-
-        if (engineSource == null || engineSource.clip == null)
-        {
-            startRoutine = null;
-            yield break;
-        }
-
-        if (engineSource.clip.loadState == AudioDataLoadState.Failed)
-        {
-            Debug.LogError($"PlaneEngineSound ({name}): AudioClip failed to load. Check import settings.");
-            startRoutine = null;
-            yield break;
-        }
-
-        // Play once ready
-        if (!pausedByMenu && !engineSource.isPlaying)
-        {
-            engineSource.Play();
-            if (debugLogs) Debug.Log($"PlaneEngineSound ({name}): Started after load.");
-        }
-
-        startRoutine = null;
+        startupRoutine = null;
     }
 
     private void Update()
@@ -186,7 +174,7 @@ public class PlaneEngineSound : MonoBehaviour
         if (engineSource == null || planeRb == null) return;
         if (pausedByMenu) return;
 
-        // Watchdog: if the audio stops for any reason, restart it
+        // Watchdog: restart if stopped
         watchdogTimer += Time.unscaledDeltaTime;
         if (watchdogTimer >= watchdogInterval)
         {
@@ -194,23 +182,20 @@ public class PlaneEngineSound : MonoBehaviour
 
             if (engineSource.clip != null)
             {
-                // If Unity unloaded the clip mid-game, load it again and restart
-                if (engineSource.clip.loadState == AudioDataLoadState.Unloaded ||
-                    engineSource.clip.loadState == AudioDataLoadState.Loading)
+                // If no listener, sound will "seem late" / not audible. Keep trying.
+                if (waitForAudioListener && FindAnyObjectByType<AudioListener>() == null)
                 {
-                    if (debugLogs) Debug.LogWarning($"PlaneEngineSound ({name}): Clip not ready (state={engineSource.clip.loadState}). Restarting loader.");
-                    if (startRoutine == null)
-                        startRoutine = StartCoroutine(StartWhenReady());
+                    if (debugLogs) Debug.LogWarning($"PlaneEngineSound ({name}): No AudioListener found (yet).");
                 }
-                else if (engineSource.clip.loadState == AudioDataLoadState.Loaded && !engineSource.isPlaying)
+                else if (!engineSource.isPlaying && engineSource.clip.loadState == AudioDataLoadState.Loaded)
                 {
-                    if (debugLogs) Debug.LogWarning($"PlaneEngineSound ({name}): Audio stopped unexpectedly -> restarting.");
+                    if (debugLogs) Debug.LogWarning($"PlaneEngineSound ({name}): Audio stopped -> restarting.");
                     engineSource.Play();
                 }
             }
         }
 
-        // Update volume/pitch based on speed (even at idle)
+        // Volume/pitch based on speed
         float speed = planeRb.linearVelocity.magnitude;
         if (useKmh) speed *= 3.6f;
 
@@ -224,18 +209,13 @@ public class PlaneEngineSound : MonoBehaviour
         engineSource.pitch = Mathf.Lerp(engineSource.pitch, targetPitch, pitchLerpSpeed * dt);
     }
 
-    // Called by PauseMenu when SFX slider changes
     public void SetSfxVolume(float value)
     {
         sfxVolumeMultiplier = Mathf.Clamp01(value);
         PlayerPrefs.SetFloat(SfxVolumeKey, sfxVolumeMultiplier);
         PlayerPrefs.Save();
-
-        if (debugLogs && sfxVolumeMultiplier <= 0.001f)
-            Debug.LogWarning($"PlaneEngineSound ({name}): SFX volume is 0 (muted).");
     }
 
-    // Called by PauseMenu when pausing/resuming
     public void SetPausedByMenu(bool paused)
     {
         if (engineSource == null) return;
@@ -253,11 +233,14 @@ public class PlaneEngineSound : MonoBehaviour
             if (!pausedByMenu) return;
             pausedByMenu = false;
 
-            if (wasPlayingBeforePause && engineSource.clip != null) engineSource.UnPause();
+            if (wasPlayingBeforePause && engineSource.clip != null)
+                engineSource.UnPause();
+
             wasPlayingBeforePause = false;
 
-            // Ensure it resumes immediately
-            StartOrRestartIfNeeded();
+            // make sure it resumes instantly
+            if (!engineSource.isPlaying && engineSource.clip != null && engineSource.clip.loadState == AudioDataLoadState.Loaded)
+                engineSource.Play();
         }
     }
 

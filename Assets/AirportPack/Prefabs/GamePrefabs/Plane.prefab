@@ -169,6 +169,10 @@ MonoBehaviour:
   yawMult: 0.55
   partialEngineStart: 0.75
   partialEngineEnd: 0.45
+  alarmClip: {fileID: 0}
+  alarmSource: {fileID: 0}
+  alarmBaseVolume: 1
+  alarmForce2D: 1
   groundMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -249,15 +253,19 @@ MonoBehaviour:
   useKmh: 0
   speedForMaxEffect: 60
   idleVolume: 0.15
-  maxVolume: 0.9
+  maxVolume: 0.432
   engineBoost: 1.35
   idlePitch: 0.85
   maxPitch: 1.35
   volumeLerpSpeed: 6
   pitchLerpSpeed: 6
+  force2D: 0
   force3DSettings: 1
   minDistance: 15
   maxDistance: 800
+  waitForAudioListener: 1
+  watchdogInterval: 0.35
+  debugLogs: 0
 --- !u!114 &8153919063615101265
 MonoBehaviour:
   m_ObjectHideFlags: 0

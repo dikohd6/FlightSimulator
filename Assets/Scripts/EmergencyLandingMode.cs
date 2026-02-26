@@ -44,6 +44,18 @@ public class EmergencyLandingMode : MonoBehaviour
     [Range(0f, 1f)][SerializeField] private float partialEngineEnd = 0.45f;
 
     // ----------------------------
+    // Alarm SFX (plays once when info phase ends and emergency begins)
+    // ----------------------------
+    [Header("Alarm SFX")]
+    [SerializeField] private AudioClip alarmClip;                  // assign in Inspector
+    [SerializeField] private AudioSource alarmSource;              // optional (auto-created if null)
+    [Range(0f, 1f)][SerializeField] private float alarmBaseVolume = 1f;
+    [SerializeField] private bool alarmForce2D = true;
+
+    private const string SfxVolumeKey = "sfx_volume";
+    private bool alarmPlayedThisEmergency = false;
+
+    // ----------------------------
     // Altitude (AGL) using raycast
     // ----------------------------
     [Header("Altitude (AGL)")]
@@ -114,7 +126,7 @@ public class EmergencyLandingMode : MonoBehaviour
     private FailureType activeFailure;
 
     private float activateTime;
-    private float delayEndTime;    // fallback: activateTime + startDelay
+    private float delayEndTime;     // fallback: activateTime + startDelay
     private float effectsStartTime; // when effects actually begin
     private bool active;
     private bool pending;
@@ -124,6 +136,24 @@ public class EmergencyLandingMode : MonoBehaviour
     {
         if (plane == null) plane = FindObjectOfType<PlaneController>();
         if (hud == null) hud = FindObjectOfType<HUDController>();
+
+        // Alarm source setup (optional)
+        if (alarmSource == null)
+        {
+            alarmSource = GetComponent<AudioSource>();
+            // If the same object already has another AudioSource you don't want to reuse, assign a dedicated one in inspector.
+        }
+
+        if (alarmSource == null && alarmClip != null)
+            alarmSource = gameObject.AddComponent<AudioSource>();
+
+        if (alarmSource != null)
+        {
+            alarmSource.playOnAwake = false;
+            alarmSource.loop = false;
+            alarmSource.dopplerLevel = 0f;
+            if (alarmForce2D) alarmSource.spatialBlend = 0f;
+        }
     }
 
     void OnEnable()
@@ -172,6 +202,9 @@ public class EmergencyLandingMode : MonoBehaviour
 
         // reset hold-score accumulation
         holdScoreAccumulator = 0f;
+
+        // reset alarm guard per emergency activation
+        alarmPlayedThisEmergency = false;
     }
 
     void FixedUpdate()
@@ -258,6 +291,9 @@ public class EmergencyLandingMode : MonoBehaviour
 
         effectsStartTime = Time.time;
 
+        // PLAY ALARM ONCE when info ends and emergency begins (banner appears)
+        PlayAlarmOnce();
+
         // Base emergency feel
         plane.maxSpeedCap = Mathf.Min(plane.maxSpeedCap, 0.75f);
         plane.accelMultiplier = Mathf.Min(plane.accelMultiplier, 0.6f);
@@ -270,6 +306,20 @@ public class EmergencyLandingMode : MonoBehaviour
             ApplyImmediateFailure(activeFailure, 1f);
             startedEffects = true;
         }
+    }
+
+    private void PlayAlarmOnce()
+    {
+        if (alarmPlayedThisEmergency) return;
+        alarmPlayedThisEmergency = true;
+
+        if (alarmClip == null || alarmSource == null)
+            return;
+
+        float sfx = Mathf.Clamp01(PlayerPrefs.GetFloat(SfxVolumeKey, 1f));
+        float vol = Mathf.Clamp01(alarmBaseVolume * sfx);
+
+        alarmSource.PlayOneShot(alarmClip, vol);
     }
 
     private void AwardHoldPointsIfHoldingNow()
@@ -292,7 +342,6 @@ public class EmergencyLandingMode : MonoBehaviour
         }
     }
 
-    // IMPORTANT: takes "blend" so we can ramp in smoothly
     private void ApplyImmediateFailure(FailureType f, float blend01)
     {
         blend01 = Mathf.Clamp01(blend01);
@@ -320,7 +369,6 @@ public class EmergencyLandingMode : MonoBehaviour
                 break;
 
             case FailureType.GearFailure:
-                // flight mostly okay; judge handles touchdown strictness
                 break;
         }
     }
@@ -375,13 +423,11 @@ public class EmergencyLandingMode : MonoBehaviour
         preSpeedBandChosenKmh = Random.Range(preSpeedBandRangeKmh.x, preSpeedBandRangeKmh.y);
         preHoldChosen = Random.Range(preHoldSecondsRange.x, preHoldSecondsRange.y);
 
-        // nicer numbers
         preSafeAltChosen = Mathf.Round(preSafeAltChosen / 10f) * 10f;
         preTargetSpeedChosenKmh = Mathf.Round(preTargetSpeedChosenKmh / 5f) * 5f;
         preSpeedBandChosenKmh = Mathf.Round(preSpeedBandChosenKmh / 5f) * 5f;
         preHoldChosen = Mathf.Round(preHoldChosen * 10f) / 10f;
 
-        // safety clamps
         preSpeedBandChosenKmh = Mathf.Max(5f, preSpeedBandChosenKmh);
         preHoldChosen = Mathf.Max(1.5f, preHoldChosen);
         preSafeAltChosen = Mathf.Max(20f, preSafeAltChosen);
@@ -472,6 +518,9 @@ public class EmergencyLandingMode : MonoBehaviour
         preComplete = false;
 
         holdScoreAccumulator = 0f;
+
+        // allow alarm to play next time emergency activates
+        alarmPlayedThisEmergency = false;
     }
 
     private float SmoothStep01(float x) => x * x * (3f - 2f * x);

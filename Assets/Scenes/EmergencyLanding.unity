@@ -3046,13 +3046,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1813982929}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.11821456, y: 0.72225744, z: -0.12754843, w: 0.66940343}
   m_LocalPosition: {x: -972.2657, y: 991.5, z: 337.2407}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 20.03, y: 94.35, z: 0}
 --- !u!20 &1813982932
 Camera:
   m_ObjectHideFlags: 0
@@ -3497,6 +3497,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4817870578220757661, guid: 538e06a2c6a802549b8eb4250403935a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1428424985134146686}
+    - targetCorrespondingSourceObject: {fileID: 4817870578220757661, guid: 538e06a2c6a802549b8eb4250403935a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1428424985134146687}
   m_SourcePrefab: {fileID: 100100000, guid: 538e06a2c6a802549b8eb4250403935a, type: 3}
 --- !u!1 &1428424985134146685 stripped
 GameObject:
@@ -3528,6 +3531,14 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!81 &1428424985134146687
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1428424985134146685}
+  m_Enabled: 1
 --- !u!1001 &1734189352118882932
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3929,10 +3940,46 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3871234130830758795, guid: 67000f18c460e3a4e85f5dc08c208bde, type: 3}
+      propertyPath: useKmh
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3871234130830758795, guid: 67000f18c460e3a4e85f5dc08c208bde, type: 3}
+      propertyPath: force2D
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3871234130830758795, guid: 67000f18c460e3a4e85f5dc08c208bde, type: 3}
+      propertyPath: debugLogs
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3871234130830758795, guid: 67000f18c460e3a4e85f5dc08c208bde, type: 3}
+      propertyPath: maxDistance
+      value: 5300.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3871234130830758795, guid: 67000f18c460e3a4e85f5dc08c208bde, type: 3}
+      propertyPath: minDistance
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3871234130830758795, guid: 67000f18c460e3a4e85f5dc08c208bde, type: 3}
+      propertyPath: force3DSettings
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4095671101387901491, guid: 67000f18c460e3a4e85f5dc08c208bde, type: 3}
       propertyPath: hud
       value: 
       objectReference: {fileID: 1098053991}
+    - target: {fileID: 4095671101387901491, guid: 67000f18c460e3a4e85f5dc08c208bde, type: 3}
+      propertyPath: alarmClip
+      value: 
+      objectReference: {fileID: 8300000, guid: e2f9066e0baee734c8ea6a172bb3b3e6, type: 3}
+    - target: {fileID: 4095671101387901491, guid: 67000f18c460e3a4e85f5dc08c208bde, type: 3}
+      propertyPath: alarmSource
+      value: 
+      objectReference: {fileID: 6943881644835287877}
+    - target: {fileID: 4095671101387901491, guid: 67000f18c460e3a4e85f5dc08c208bde, type: 3}
+      propertyPath: alarmBaseVolume
+      value: 0.697
+      objectReference: {fileID: 0}
     - target: {fileID: 4095671101387901491, guid: 67000f18c460e3a4e85f5dc08c208bde, type: 3}
       propertyPath: randomizeFailure
       value: 1
@@ -3957,6 +4004,10 @@ PrefabInstance:
       propertyPath: runwayTransform
       value: 
       objectReference: {fileID: 1144290707}
+    - target: {fileID: 6572596032037259349, guid: 67000f18c460e3a4e85f5dc08c208bde, type: 3}
+      propertyPath: panLevelCustomCurve.m_Curve.Array.data[0].value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8105863845799783639, guid: 67000f18c460e3a4e85f5dc08c208bde, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.45
@@ -4008,6 +4059,11 @@ MonoBehaviour:
   tailRotorSpeed: 3600
   requireSelectedIndexMatch: 1
   helicopterPlaneIndex: 2
+--- !u!82 &6943881644835287877 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 6572596032037259349, guid: 67000f18c460e3a4e85f5dc08c208bde, type: 3}
+  m_PrefabInstance: {fileID: 6943881644835287872}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

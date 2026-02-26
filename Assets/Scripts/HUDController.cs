@@ -71,6 +71,18 @@ public class HUDController : MonoBehaviour
     private bool bannerFlashOn;
     // -----------------------------------------------------------
 
+    // ---------------- Screen Alarm Flash (Red Overlay) ----------------
+    [Header("Emergency Screen Flash (UXML)")]
+    [SerializeField] private string alarmFlashElementName = "alarmFlash";
+    [SerializeField] private bool flashScreenOnEmergency = true;
+    [SerializeField] private float alarmFlashIntervalSeconds = 0.25f;
+    [SerializeField, Range(0f, 1f)] private float alarmFlashOpacity = 0.20f;
+
+    private VisualElement alarmFlash;
+    private Coroutine alarmFlashRoutine;
+    private bool alarmFlashOn;
+    // -----------------------------------------------------------
+
     private Label timeLabel;
     private Label scoreLabel;
     private Label speedLabel;
@@ -135,6 +147,19 @@ public class HUDController : MonoBehaviour
             emergencyBannerImage.style.opacity = 1f;
         }
 
+        // Screen flash overlay
+        alarmFlash = root.Q<VisualElement>(alarmFlashElementName);
+        if (alarmFlash == null)
+        {
+            Debug.LogWarning($"HUDController: Missing VisualElement '{alarmFlashElementName}' (screen alarm flash).");
+        }
+        else
+        {
+            alarmFlash.style.display = DisplayStyle.None;
+            alarmFlash.style.opacity = 0f;
+            alarmFlash.pickingMode = PickingMode.Ignore;
+        }
+
         // Default hidden
         if (fuelGroup != null) fuelGroup.style.display = DisplayStyle.None;
         fuelUIVisible = false;
@@ -152,6 +177,7 @@ public class HUDController : MonoBehaviour
     private void OnDisable()
     {
         StopBannerFlash();
+        StopAlarmFlash();
     }
 
     private void Update()
@@ -237,6 +263,9 @@ public class HUDController : MonoBehaviour
 
         emergencyBannerImage.style.display = shouldShow ? DisplayStyle.Flex : DisplayStyle.None;
 
+        // Screen red flash while banner is showing
+        UpdateAlarmFlash(shouldShow);
+
         if (!shouldShow)
         {
             StopBannerFlash();
@@ -249,6 +278,52 @@ public class HUDController : MonoBehaviour
 
         if (flashBanner) StartBannerFlash();
         else StopBannerFlash();
+    }
+
+    private void UpdateAlarmFlash(bool shouldFlash)
+    {
+        if (!flashScreenOnEmergency || alarmFlash == null) return;
+
+        if (shouldFlash)
+        {
+            alarmFlash.style.display = DisplayStyle.Flex;
+            if (alarmFlashRoutine == null)
+                alarmFlashRoutine = StartCoroutine(AlarmFlashLoop());
+        }
+        else
+        {
+            StopAlarmFlash();
+        }
+    }
+
+    private void StopAlarmFlash()
+    {
+        if (alarmFlashRoutine != null)
+        {
+            StopCoroutine(alarmFlashRoutine);
+            alarmFlashRoutine = null;
+        }
+
+        alarmFlashOn = false;
+
+        if (alarmFlash != null)
+        {
+            alarmFlash.style.opacity = 0f;
+            alarmFlash.style.display = DisplayStyle.None;
+        }
+    }
+
+    private IEnumerator AlarmFlashLoop()
+    {
+        while (true)
+        {
+            alarmFlashOn = !alarmFlashOn;
+
+            if (alarmFlash != null)
+                alarmFlash.style.opacity = alarmFlashOn ? alarmFlashOpacity : 0f;
+
+            yield return new WaitForSecondsRealtime(alarmFlashIntervalSeconds);
+        }
     }
 
     private Texture2D GetBannerTexture(EmergencyLandingMode.FailureType t)
