@@ -15,6 +15,10 @@ public class UIController : MonoBehaviour
     [SerializeField] private string volumeSliderName = "volumeSlider"; // set this to your slider's UXML name
     [SerializeField] private bool sliderUsesPercentRange = true;       // true if slider range is 0-100, false if 0-1
 
+    // Root documents (important fix: hide/show entire docs)
+    private VisualElement mainRoot;
+    private VisualElement gameRoot;
+
     private VisualElement mainMenuOverlay;
     private VisualElement gameMenuOverlay;
     private VisualElement gameMenuMissionsOverlay;
@@ -25,8 +29,8 @@ public class UIController : MonoBehaviour
     private Button startBtn;
     private Button optionsBtn;
     private Button exitBtn;
-    private Button menubtn;
-    private Button GameMenubtn;
+    private Button menubtn;       // main menu button inside Options (main doc)
+    private Button GameMenubtn;   // main menu button inside Hangar (game doc)
     private Button playBtn;
 
     private Image background;
@@ -61,12 +65,12 @@ public class UIController : MonoBehaviour
             return;
         }
 
-        // IMPORTANT: always bind to the persistent singleton after scene loads
+        // Bind singleton
         if (modeManager == null) modeManager = ModeManager.Instance;
         if (modeManager == null) modeManager = FindFirstObjectByType<ModeManager>();
 
-        var mainRoot = mainMenuDocument.rootVisualElement;
-        var gameRoot = gameMenuDocument.rootVisualElement;
+        mainRoot = mainMenuDocument.rootVisualElement;
+        gameRoot = gameMenuDocument.rootVisualElement;
 
         if (mainRoot == null || gameRoot == null)
         {
@@ -83,7 +87,6 @@ public class UIController : MonoBehaviour
         // --- main menu overlays ---
         mainMenuOverlay = mainRoot.Q<VisualElement>("MainMenu");
         optionsOverlay = mainRoot.Q<VisualElement>("Options");
-
         background = mainRoot.Q<Image>("background");
 
         startBtn = mainRoot.Q<Button>("startBtn");
@@ -99,12 +102,7 @@ public class UIController : MonoBehaviour
         if (optionsOverlay != null)
         {
             volumeSlider = optionsOverlay.Q<Slider>(volumeSliderName);
-
-            if (volumeSlider == null)
-            {
-                // fallback: grab first slider in options panel if name doesn't match
-                volumeSlider = optionsOverlay.Q<Slider>();
-            }
+            if (volumeSlider == null) volumeSlider = optionsOverlay.Q<Slider>();
 
             if (volumeSlider != null)
             {
@@ -121,23 +119,14 @@ public class UIController : MonoBehaviour
             Debug.LogWarning("UIController: Could not find 'Options' panel in MainMenu UXML.");
         }
 
-        // Start hidden
-        if (optionsOverlay != null) optionsOverlay.style.display = DisplayStyle.None;
-        if (gameMenuOverlay != null) gameMenuOverlay.style.display = DisplayStyle.None;
-        if (gameMenuMissionsOverlay != null) gameMenuMissionsOverlay.style.display = DisplayStyle.None;
-        if (gameMenuStatsOverlay != null) gameMenuStatsOverlay.style.display = DisplayStyle.None;
-
-        // --- Leaderboard panel (your UXML) ---
+        // --- Leaderboard panel ---
         leaderboardRoot = mainRoot.Q<VisualElement>("LeaderboardRoot");
         if (leaderboardRoot != null)
         {
             leaderboardMainMenuBtn = leaderboardRoot.Q<Button>("mainMenuBtn");
             leaderboardClearBtn = leaderboardRoot.Q<Button>("clearBtn");
 
-            // Prefer a named list
             leaderboardList = leaderboardRoot.Q<ListView>("leaderboardList");
-
-            // Fallback: if you forgot to name it, grab the first ListView inside LeaderboardRoot
             if (leaderboardList == null)
                 leaderboardList = leaderboardRoot.Q<ListView>();
 
@@ -149,7 +138,7 @@ public class UIController : MonoBehaviour
             Debug.LogError("UIController: Could not find LeaderboardRoot in MainMenu UXML.");
         }
 
-        // Hooks (null-safe)
+        // Hooks
         if (startBtn != null) startBtn.clicked += OnStartClicked;
         if (optionsBtn != null) optionsBtn.clicked += OnOptionsClicked;
         if (exitBtn != null) exitBtn.clicked += OnExitClicked;
@@ -160,18 +149,18 @@ public class UIController : MonoBehaviour
         if (playBtn != null) playBtn.clicked += OnPlayClicked;
 
         if (leaderboardMainMenuBtn != null) leaderboardMainMenuBtn.clicked += OnMainMenuClicked;
-
         if (leaderboardBtn != null) leaderboardBtn.clicked += OnLeaderboardClicked;
         if (leaderboardClearBtn != null) leaderboardClearBtn.clicked += ClearLeaderboard;
+
+        // ✅ IMPORTANT FIX: start in main menu state and HIDE the entire game menu document
+        ShowMainMenuState();
     }
 
     private void Start()
     {
-        // Extra safety if scene reload timing is weird
         if (modeManager == null) modeManager = ModeManager.Instance;
         if (modeManager == null) modeManager = FindFirstObjectByType<ModeManager>();
 
-        // Ensure music volume is applied when menu starts
         var mm = MusicManager.Instance != null ? MusicManager.Instance : FindFirstObjectByType<MusicManager>();
         if (mm != null)
             mm.SetVolume(GameAudioSettings.MusicVolume);
@@ -197,17 +186,57 @@ public class UIController : MonoBehaviour
         if (leaderboardClearBtn != null) leaderboardClearBtn.clicked -= ClearLeaderboard;
     }
 
-    // ---------------- Main Menu ----------------
-    private void OnStartClicked()
+    // ---------------- STATE HELPERS (KEY FIX) ----------------
+
+    private void ShowMainMenuState()
     {
+        // Show main doc, hide game doc completely (this prevents purchaseBtn leaking)
+        if (mainRoot != null) mainRoot.style.display = DisplayStyle.Flex;
+        if (gameRoot != null) gameRoot.style.display = DisplayStyle.None;
+
+        if (mainMenuOverlay != null) mainMenuOverlay.style.display = DisplayStyle.Flex;
+        if (optionsOverlay != null) optionsOverlay.style.display = DisplayStyle.None;
+
+        if (leaderboardRoot != null) leaderboardRoot.style.display = DisplayStyle.None;
+
+        if (background != null) background.style.display = DisplayStyle.Flex;
+
+        // Extra safety
+        if (gameMenuOverlay != null) gameMenuOverlay.style.display = DisplayStyle.None;
+        if (gameMenuMissionsOverlay != null) gameMenuMissionsOverlay.style.display = DisplayStyle.None;
+        if (gameMenuStatsOverlay != null) gameMenuStatsOverlay.style.display = DisplayStyle.None;
+    }
+
+    private void ShowHangarState()
+    {
+        // Hide main menu stuff
         if (mainMenuOverlay != null) mainMenuOverlay.style.display = DisplayStyle.None;
+        if (optionsOverlay != null) optionsOverlay.style.display = DisplayStyle.None;
+        if (leaderboardRoot != null) leaderboardRoot.style.display = DisplayStyle.None;
         if (background != null) background.style.display = DisplayStyle.None;
+
+        // Show game menu doc + overlays
+        if (gameRoot != null) gameRoot.style.display = DisplayStyle.Flex;
 
         if (gameMenuOverlay != null) gameMenuOverlay.style.display = DisplayStyle.Flex;
         if (gameMenuMissionsOverlay != null) gameMenuMissionsOverlay.style.display = DisplayStyle.Flex;
         if (gameMenuStatsOverlay != null) gameMenuStatsOverlay.style.display = DisplayStyle.Flex;
 
         if (hangarGate != null) hangarGate.OpenGates();
+    }
+
+    private void HideAllDocsBeforeSceneLoad()
+    {
+        // If anything persists unexpectedly, this prevents stuck UI across scene load
+        if (mainRoot != null) mainRoot.style.display = DisplayStyle.None;
+        if (gameRoot != null) gameRoot.style.display = DisplayStyle.None;
+    }
+
+    // ---------------- Main Menu ----------------
+
+    private void OnStartClicked()
+    {
+        ShowHangarState();
     }
 
     private void OnOptionsClicked()
@@ -229,23 +258,13 @@ public class UIController : MonoBehaviour
 
     private void OnMainMenuClicked()
     {
-        if (mainMenuOverlay != null) mainMenuOverlay.style.display = DisplayStyle.Flex;
-        if (optionsOverlay != null) optionsOverlay.style.display = DisplayStyle.None;
-        if (gameMenuOverlay != null) gameMenuOverlay.style.display = DisplayStyle.None;
-        if (gameMenuMissionsOverlay != null) gameMenuMissionsOverlay.style.display = DisplayStyle.None;
-        if (gameMenuStatsOverlay != null) gameMenuStatsOverlay.style.display = DisplayStyle.None;
+        ShowMainMenuState();
 
-        if (leaderboardRoot != null)
-            leaderboardRoot.style.display = DisplayStyle.None;
-
-        if (background != null)
-            background.style.display = DisplayStyle.Flex;
-
-        // IMPORTANT: rebind singleton again (in case scene got reloaded)
         if (modeManager == null) modeManager = ModeManager.Instance;
     }
 
     // ---------------- Volume ----------------
+
     private void SyncVolumeSliderFromSavedSettings()
     {
         if (volumeSlider == null) return;
@@ -266,21 +285,18 @@ public class UIController : MonoBehaviour
             ? Mathf.Clamp01(evt.newValue / 100f)
             : Mathf.Clamp01(evt.newValue);
 
-        // Save + apply immediately
         var mm = MusicManager.Instance != null ? MusicManager.Instance : FindFirstObjectByType<MusicManager>();
         if (mm != null)
-            mm.SetVolume(v01); // <-- fixed (was SetMusicVolume)
+            mm.SetVolume(v01);
         else
-            GameAudioSettings.MusicVolume = v01; // still save even if manager not found yet
+            GameAudioSettings.MusicVolume = v01;
     }
 
     // ---------------- Leaderboard ----------------
+
     private void OnLeaderboardClicked()
     {
-        // Hide other overlays
         if (optionsOverlay != null) optionsOverlay.style.display = DisplayStyle.None;
-
-        // Keep background visible (looks like your design)
         if (background != null) background.style.display = DisplayStyle.Flex;
 
         if (leaderboardRoot != null)
@@ -308,18 +324,14 @@ public class UIController : MonoBehaviour
             return;
         }
 
+        HideAllDocsBeforeSceneLoad();
+
         if (modeManager.CurrentMode == ModeManager.ModeType.Emergency)
-        {
             SceneManager.LoadScene("EmergencyLanding");
-        }
         else if (modeManager.CurrentMode == ModeManager.ModeType.Standard)
-        {
             SceneManager.LoadScene("StandardMode");
-        }
         else if (modeManager.CurrentMode == ModeManager.ModeType.Fuel)
-        {
             SceneManager.LoadScene("FuelMode");
-        }
     }
 
     private void ClearLeaderboard()
@@ -338,13 +350,11 @@ public class UIController : MonoBehaviour
 
         leaderboardList.selectionType = SelectionType.None;
 
-        // Create a row VisualElement (matches your .row/.col styling approach)
         leaderboardList.makeItem = () =>
         {
             var row = new VisualElement();
             row.AddToClassList("row");
 
-            // 6 columns: Rank | Mode | Time | Score | Grade | Result
             row.Add(MakeCol("rank", "col"));
             row.Add(MakeCol("mode", "col"));
             row.Add(MakeCol("time", "col"));
