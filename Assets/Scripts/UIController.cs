@@ -11,6 +11,10 @@ public class UIController : MonoBehaviour
     [SerializeField] private HangarGateControl hangarGate;
     [SerializeField] private ModeManager modeManager;
 
+    [Header("Options UI (Volume Slider)")]
+    [SerializeField] private string volumeSliderName = "volumeSlider"; // set this to your slider's UXML name
+    [SerializeField] private bool sliderUsesPercentRange = true;       // true if slider range is 0-100, false if 0-1
+
     private VisualElement mainMenuOverlay;
     private VisualElement gameMenuOverlay;
     private VisualElement gameMenuMissionsOverlay;
@@ -27,6 +31,10 @@ public class UIController : MonoBehaviour
 
     private Image background;
 
+    // ---------- Options ----------
+    private Slider volumeSlider;
+    private bool suppressVolumeSliderCallback;
+
     // ---------- Leaderboard ----------
     private VisualElement leaderboardRoot;
     private Button leaderboardBtn;
@@ -39,6 +47,20 @@ public class UIController : MonoBehaviour
 
     private void Awake()
     {
+        if (mainMenuDocument == null)
+        {
+            Debug.LogError("UIController: mainMenuDocument is not assigned.");
+            enabled = false;
+            return;
+        }
+
+        if (gameMenuDocument == null)
+        {
+            Debug.LogError("UIController: gameMenuDocument is not assigned.");
+            enabled = false;
+            return;
+        }
+
         // IMPORTANT: always bind to the persistent singleton after scene loads
         if (modeManager == null) modeManager = ModeManager.Instance;
         if (modeManager == null) modeManager = FindFirstObjectByType<ModeManager>();
@@ -46,10 +68,18 @@ public class UIController : MonoBehaviour
         var mainRoot = mainMenuDocument.rootVisualElement;
         var gameRoot = gameMenuDocument.rootVisualElement;
 
+        if (mainRoot == null || gameRoot == null)
+        {
+            Debug.LogError("UIController: rootVisualElement is null. Check UIDocument setup.");
+            enabled = false;
+            return;
+        }
+
         // --- game menu overlays ---
         gameMenuOverlay = gameRoot.Q<VisualElement>("missionSelect");
         gameMenuMissionsOverlay = gameRoot.Q<VisualElement>("Missions");
         gameMenuStatsOverlay = gameRoot.Q<VisualElement>("PlaneStatsGroup");
+
         // --- main menu overlays ---
         mainMenuOverlay = mainRoot.Q<VisualElement>("MainMenu");
         optionsOverlay = mainRoot.Q<VisualElement>("Options");
@@ -61,15 +91,42 @@ public class UIController : MonoBehaviour
         leaderboardBtn = mainRoot.Q<Button>("leaderboardBtn");
         exitBtn = mainRoot.Q<Button>("exitBtn");
 
-        menubtn = optionsOverlay.Q<Button>("mainMenuBtn");
-        GameMenubtn = gameMenuOverlay.Q<Button>("mainMenuBtn");
-        playBtn = gameMenuOverlay.Q<Button>("playBtn");
+        menubtn = optionsOverlay != null ? optionsOverlay.Q<Button>("mainMenuBtn") : null;
+        GameMenubtn = gameMenuOverlay != null ? gameMenuOverlay.Q<Button>("mainMenuBtn") : null;
+        playBtn = gameMenuOverlay != null ? gameMenuOverlay.Q<Button>("playBtn") : null;
+
+        // -------- Volume Slider bind --------
+        if (optionsOverlay != null)
+        {
+            volumeSlider = optionsOverlay.Q<Slider>(volumeSliderName);
+
+            if (volumeSlider == null)
+            {
+                // fallback: grab first slider in options panel if name doesn't match
+                volumeSlider = optionsOverlay.Q<Slider>();
+            }
+
+            if (volumeSlider != null)
+            {
+                volumeSlider.RegisterValueChangedCallback(OnVolumeSliderChanged);
+                SyncVolumeSliderFromSavedSettings();
+            }
+            else
+            {
+                Debug.LogWarning($"UIController: Could not find volume slider '{volumeSliderName}' in Options panel.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("UIController: Could not find 'Options' panel in MainMenu UXML.");
+        }
 
         // Start hidden
-        optionsOverlay.style.display = DisplayStyle.None;
-        gameMenuOverlay.style.display = DisplayStyle.None;
-        gameMenuMissionsOverlay.style.display = DisplayStyle.None;
-        gameMenuStatsOverlay.style.display= DisplayStyle.None;
+        if (optionsOverlay != null) optionsOverlay.style.display = DisplayStyle.None;
+        if (gameMenuOverlay != null) gameMenuOverlay.style.display = DisplayStyle.None;
+        if (gameMenuMissionsOverlay != null) gameMenuMissionsOverlay.style.display = DisplayStyle.None;
+        if (gameMenuStatsOverlay != null) gameMenuStatsOverlay.style.display = DisplayStyle.None;
+
         // --- Leaderboard panel (your UXML) ---
         leaderboardRoot = mainRoot.Q<VisualElement>("LeaderboardRoot");
         if (leaderboardRoot != null)
@@ -113,27 +170,55 @@ public class UIController : MonoBehaviour
         // Extra safety if scene reload timing is weird
         if (modeManager == null) modeManager = ModeManager.Instance;
         if (modeManager == null) modeManager = FindFirstObjectByType<ModeManager>();
+
+        // Ensure music volume is applied when menu starts
+        var mm = MusicManager.Instance != null ? MusicManager.Instance : FindFirstObjectByType<MusicManager>();
+        if (mm != null)
+            mm.SetVolume(GameAudioSettings.MusicVolume);
+
+        SyncVolumeSliderFromSavedSettings();
+    }
+
+    private void OnDestroy()
+    {
+        if (volumeSlider != null)
+            volumeSlider.UnregisterValueChangedCallback(OnVolumeSliderChanged);
+
+        if (startBtn != null) startBtn.clicked -= OnStartClicked;
+        if (optionsBtn != null) optionsBtn.clicked -= OnOptionsClicked;
+        if (exitBtn != null) exitBtn.clicked -= OnExitClicked;
+
+        if (menubtn != null) menubtn.clicked -= OnMainMenuClicked;
+        if (GameMenubtn != null) GameMenubtn.clicked -= OnMainMenuClicked;
+        if (playBtn != null) playBtn.clicked -= OnPlayClicked;
+
+        if (leaderboardMainMenuBtn != null) leaderboardMainMenuBtn.clicked -= OnMainMenuClicked;
+        if (leaderboardBtn != null) leaderboardBtn.clicked -= OnLeaderboardClicked;
+        if (leaderboardClearBtn != null) leaderboardClearBtn.clicked -= ClearLeaderboard;
     }
 
     // ---------------- Main Menu ----------------
     private void OnStartClicked()
     {
-        mainMenuOverlay.style.display = DisplayStyle.None;
-        background.style.display = DisplayStyle.None;
+        if (mainMenuOverlay != null) mainMenuOverlay.style.display = DisplayStyle.None;
+        if (background != null) background.style.display = DisplayStyle.None;
 
-        gameMenuOverlay.style.display = DisplayStyle.Flex;
-        gameMenuMissionsOverlay.style.display = DisplayStyle.Flex;
-        gameMenuStatsOverlay.style.display = DisplayStyle.Flex;
+        if (gameMenuOverlay != null) gameMenuOverlay.style.display = DisplayStyle.Flex;
+        if (gameMenuMissionsOverlay != null) gameMenuMissionsOverlay.style.display = DisplayStyle.Flex;
+        if (gameMenuStatsOverlay != null) gameMenuStatsOverlay.style.display = DisplayStyle.Flex;
+
         if (hangarGate != null) hangarGate.OpenGates();
     }
 
     private void OnOptionsClicked()
     {
-        optionsOverlay.style.display = DisplayStyle.Flex;
-        mainMenuOverlay.style.display = DisplayStyle.None;
+        if (optionsOverlay != null) optionsOverlay.style.display = DisplayStyle.Flex;
+        if (mainMenuOverlay != null) mainMenuOverlay.style.display = DisplayStyle.None;
 
         if (leaderboardRoot != null)
             leaderboardRoot.style.display = DisplayStyle.None;
+
+        SyncVolumeSliderFromSavedSettings();
     }
 
     private void OnExitClicked()
@@ -144,29 +229,59 @@ public class UIController : MonoBehaviour
 
     private void OnMainMenuClicked()
     {
-        mainMenuOverlay.style.display = DisplayStyle.Flex;
-        optionsOverlay.style.display = DisplayStyle.None;
-        gameMenuOverlay.style.display = DisplayStyle.None;
-        gameMenuMissionsOverlay.style.display = DisplayStyle.None;
-        gameMenuStatsOverlay.style.display = DisplayStyle.None;
+        if (mainMenuOverlay != null) mainMenuOverlay.style.display = DisplayStyle.Flex;
+        if (optionsOverlay != null) optionsOverlay.style.display = DisplayStyle.None;
+        if (gameMenuOverlay != null) gameMenuOverlay.style.display = DisplayStyle.None;
+        if (gameMenuMissionsOverlay != null) gameMenuMissionsOverlay.style.display = DisplayStyle.None;
+        if (gameMenuStatsOverlay != null) gameMenuStatsOverlay.style.display = DisplayStyle.None;
 
         if (leaderboardRoot != null)
             leaderboardRoot.style.display = DisplayStyle.None;
 
-        background.style.display = DisplayStyle.Flex;
+        if (background != null)
+            background.style.display = DisplayStyle.Flex;
 
         // IMPORTANT: rebind singleton again (in case scene got reloaded)
         if (modeManager == null) modeManager = ModeManager.Instance;
+    }
+
+    // ---------------- Volume ----------------
+    private void SyncVolumeSliderFromSavedSettings()
+    {
+        if (volumeSlider == null) return;
+
+        float saved01 = GameAudioSettings.MusicVolume;
+        float sliderValue = sliderUsesPercentRange ? (saved01 * 100f) : saved01;
+
+        suppressVolumeSliderCallback = true;
+        volumeSlider.SetValueWithoutNotify(sliderValue);
+        suppressVolumeSliderCallback = false;
+    }
+
+    private void OnVolumeSliderChanged(ChangeEvent<float> evt)
+    {
+        if (suppressVolumeSliderCallback) return;
+
+        float v01 = sliderUsesPercentRange
+            ? Mathf.Clamp01(evt.newValue / 100f)
+            : Mathf.Clamp01(evt.newValue);
+
+        // Save + apply immediately
+        var mm = MusicManager.Instance != null ? MusicManager.Instance : FindFirstObjectByType<MusicManager>();
+        if (mm != null)
+            mm.SetVolume(v01); // <-- fixed (was SetMusicVolume)
+        else
+            GameAudioSettings.MusicVolume = v01; // still save even if manager not found yet
     }
 
     // ---------------- Leaderboard ----------------
     private void OnLeaderboardClicked()
     {
         // Hide other overlays
-        optionsOverlay.style.display = DisplayStyle.None;
+        if (optionsOverlay != null) optionsOverlay.style.display = DisplayStyle.None;
 
         // Keep background visible (looks like your design)
-        background.style.display = DisplayStyle.Flex;
+        if (background != null) background.style.display = DisplayStyle.Flex;
 
         if (leaderboardRoot != null)
         {
@@ -246,12 +361,19 @@ public class UIController : MonoBehaviour
 
             var e = cachedEntries[index];
 
-            element.Q<Label>("rank").text = (index + 1).ToString();
-            element.Q<Label>("mode").text = e.mode;
-            element.Q<Label>("time").text = FormatTime(e.timeSeconds);
-            element.Q<Label>("score").text = e.score.ToString();
-            element.Q<Label>("grade").text = e.grade;
-            element.Q<Label>("result").text = e.success ? "SUCCESS" : "FAIL";
+            var rank = element.Q<Label>("rank");
+            var mode = element.Q<Label>("mode");
+            var time = element.Q<Label>("time");
+            var score = element.Q<Label>("score");
+            var grade = element.Q<Label>("grade");
+            var result = element.Q<Label>("result");
+
+            if (rank != null) rank.text = (index + 1).ToString();
+            if (mode != null) mode.text = e.mode;
+            if (time != null) time.text = FormatTime(e.timeSeconds);
+            if (score != null) score.text = e.score.ToString();
+            if (grade != null) grade.text = e.grade;
+            if (result != null) result.text = e.success ? "SUCCESS" : "FAIL";
         };
     }
 

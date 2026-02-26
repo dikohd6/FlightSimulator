@@ -6,13 +6,17 @@
         <ui:Button text="" name="mainMenuBtn" style="position: absolute; height: 136px; width: 586px; top: 600px; left: 694px;"/>
     </ui:VisualElement>
     <ui:VisualElement name="OptionsMenu" style="flex-grow: 1; position: absolute; height: 1082px; width: 1925px; top: 4px; left: -5px;">
-        <ui:VisualElement class="volume-panel" style="flex-grow: 1; position: absolute; height: 661px; width: 650px; top: 47px; left: 663px;">
-            <ui:Image style="height: 615px; background-image: resource(&quot;Images/controls&quot;); position: absolute; width: 598px; top: 24px; left: 25px;"/>
+        <ui:VisualElement class="volume-panel" style="flex-grow: 1; position: absolute; height: 605px; width: 552px; top: 117px; left: 712px;">
+            <ui:Image style="height: 552px; background-image: resource(&quot;Images/controls&quot;); position: absolute; width: 499px; top: 24px; left: 25px;"/>
         </ui:VisualElement>
-        <ui:VisualElement class="volume-panel" style="flex-grow: 1; position: absolute; height: 96px; width: 683px; top: 776px; left: 955px;">
-            <ui:Slider label="" value="42" high-value="100" class="volume-slider" style="position: absolute; height: 56px; width: 599px; top: 19px; left: 39px;"/>
+        <ui:VisualElement name="musicVolume" class="volume-panel" style="flex-grow: 1; position: absolute; height: 75px; width: 565px; top: 744px; left: 705px;">
+            <ui:Slider label="" value="42" high-value="100" class="volume-slider" style="position: absolute; height: 35px; width: 546px; top: 18px; left: 4px;"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="sfxVolume" class="volume-panel" style="flex-grow: 1; position: absolute; height: 75px; width: 565px; top: 844px; left: 705px;">
+            <ui:Slider label="" value="42" high-value="100" class="volume-slider" style="position: absolute; height: 35px; width: 546px; top: 18px; left: 4px;"/>
         </ui:VisualElement>
         <ui:Button text="" name="backBtn" style="position: absolute; height: 121px; width: 471px; top: 925px; left: 758px;"/>
-        <ui:Image style="height: 105px; background-image: resource(&quot;Images/volumeTxt&quot;); position: absolute; width: 377px; top: 761px; left: 411px;"/>
+        <ui:Image style="height: 61px; background-image: resource(&quot;Images/volumeTxt&quot;); position: absolute; width: 256px; top: 752px; left: 411px;"/>
+        <ui:Image style="height: 61px; background-image: resource(&quot;Images/sfxVolumeTxt&quot;); position: absolute; width: 312px; top: 856px; left: 354px;"/>
     </ui:VisualElement>
 </ui:UXML>
